@@ -12,7 +12,9 @@ class MusicsController < ApplicationController
   def create
     @music = @band.musics.new(music_params)
     if @music.save
-      redirect_to band_music_path(@band, @music), notice: "Music added."
+      flash[:notice] = "Music added."
+      flash[:new_music_link] = new_band_music_path(@band)
+      redirect_to band_music_path(@band, @music)
     else
       render :new, status: :unprocessable_entity
     end

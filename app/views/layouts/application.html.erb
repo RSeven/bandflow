@@ -38,8 +38,11 @@
     </nav>
     <main class="container mx-auto px-4 py-6 max-w-5xl">
       <% if notice %>
-        <div class="mb-4 bg-emerald-900/50 border border-emerald-700 text-emerald-300 px-4 py-3 rounded-lg text-sm">
-          <%= notice %>
+        <div class="mb-4 bg-emerald-900/50 border border-emerald-700 text-emerald-300 px-4 py-3 rounded-lg text-sm flex items-center justify-between">
+          <span><%= notice %></span>
+          <% if flash[:new_music_link] %>
+            <%= link_to "Add a new one", flash[:new_music_link], class: "text-emerald-400 hover:text-emerald-200 font-medium ml-4" %>
+          <% end %>
         </div>
       <% end %>
       <% if alert %>
