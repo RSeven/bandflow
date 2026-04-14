@@ -37,26 +37,25 @@
 
     <%# ——— Add Items Panel ——— %>
     <div class="space-y-4">
-      <%= render "available_musics", band: @band, setlist: @setlist, musics: @musics %>
+      <%= render "available_musics",
+          band: @band,
+          setlist: @setlist,
+          musics: @musics,
+          music_page: @music_page,
+          music_query: @music_query,
+          musics_total_pages: @musics_total_pages,
+          event_page: @event_page,
+          event_query: @event_query %>
 
-      <% if @events.any? %>
-        <div>
-          <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-2">Add Event</h3>
-          <div class="space-y-1 max-h-48 overflow-y-auto">
-            <% @events.each do |event| %>
-              <%= button_to band_setlist_setlist_items_path(@band, @setlist),
-                  params: { item_type: "Event", item_id: event.id },
-                  data: { turbo_stream: true },
-                  class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 border-blue-900/40 rounded-lg px-3 py-2 text-sm transition-colors" do %>
-                <div class="font-medium text-blue-300 truncate"><%= event.title %></div>
-                <% if event.description.present? %>
-                  <div class="text-zinc-400 text-xs truncate"><%= event.description %></div>
-                <% end %>
-              <% end %>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
+      <%= render "available_events",
+          band: @band,
+          setlist: @setlist,
+          events: @events,
+          event_page: @event_page,
+          event_query: @event_query,
+          events_total_pages: @events_total_pages,
+          music_page: @music_page,
+          music_query: @music_query %>
 
       <div class="pt-2 space-y-2 border-t border-zinc-800">
         <%= link_to "+ Add music to repertoire", new_band_music_path(@band), class: "block text-sm text-amber-400 hover:text-amber-300" %>

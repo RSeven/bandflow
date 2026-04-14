@@ -1,12 +1,13 @@
 class SetlistsController < ApplicationController
+  SIDEBAR_PAGE_SIZE = 5
+
   before_action :set_band
   before_action :require_membership
   before_action :set_setlist, only: [ :show, :edit, :update, :destroy, :present ]
 
   def show
     @setlist_items = @setlist.ordered_items
-    @musics        = available_musics
-    @events        = @band.events.order(:title)
+    load_sidebar_collections
   end
 
   def new
@@ -61,8 +62,53 @@ class SetlistsController < ApplicationController
   end
 
   def available_musics
-    @band.musics
+    scope = @band.musics
       .where.not(id: @setlist.setlist_items.where(item_type: "Music").select(:item_id))
       .order(:title)
+
+    if @music_query.present?
+      escaped_query = ActiveRecord::Base.sanitize_sql_like(@music_query)
+      scope = scope.where("title LIKE :query OR artist LIKE :query", query: "%#{escaped_query}%")
+    end
+
+    scope
+  end
+
+  def available_events
+    scope = @band.events.order(:title)
+
+    if @event_query.present?
+      escaped_query = ActiveRecord::Base.sanitize_sql_like(@event_query)
+      scope = scope.where("title LIKE :query OR description LIKE :query", query: "%#{escaped_query}%")
+    end
+
+    scope
+  end
+
+  def load_sidebar_collections
+    @music_query = params[:music_query].to_s.strip
+    @event_query = params[:event_query].to_s.strip
+    @music_page = page_param(:music_page)
+    @event_page = page_param(:event_page)
+
+    musics_scope = available_musics
+    events_scope = available_events
+
+    @musics_total_pages = total_pages_for(musics_scope)
+    @events_total_pages = total_pages_for(events_scope)
+    @music_page = [ @music_page, @musics_total_pages ].min
+    @event_page = [ @event_page, @events_total_pages ].min
+
+    @musics = musics_scope.offset((@music_page - 1) * SIDEBAR_PAGE_SIZE).limit(SIDEBAR_PAGE_SIZE)
+    @events = events_scope.offset((@event_page - 1) * SIDEBAR_PAGE_SIZE).limit(SIDEBAR_PAGE_SIZE)
+  end
+
+  def page_param(key)
+    value = params[key].to_i
+    value.positive? ? value : 1
+  end
+
+  def total_pages_for(scope)
+    [(scope.count.to_f / SIDEBAR_PAGE_SIZE).ceil, 1].max
   end
 end

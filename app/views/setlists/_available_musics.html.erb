@@ -1,11 +1,58 @@
 <div id="available-musics-panel">
-  <% if musics.any? %>
-    <div>
-      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-2">Add Music</h3>
-      <div class="space-y-1 max-h-64 overflow-y-auto">
+  <div>
+    <div class="flex items-center justify-between gap-3 mb-2">
+      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide">Add Music</h3>
+      <% if musics_total_pages > 1 %>
+        <div class="flex items-center gap-2 text-xs text-zinc-500">
+          <span>Page <%= music_page %> of <%= musics_total_pages %></span>
+          <% if music_page > 1 %>
+            <%= link_to "Previous", band_setlist_path(band, setlist,
+                music_page: music_page - 1,
+                music_query: music_query,
+                event_page: event_page,
+                event_query: event_query),
+                class: "text-zinc-400 hover:text-zinc-200 transition-colors" %>
+          <% end %>
+          <% if music_page < musics_total_pages %>
+            <%= link_to "Next", band_setlist_path(band, setlist,
+                music_page: music_page + 1,
+                music_query: music_query,
+                event_page: event_page,
+                event_query: event_query),
+                class: "text-zinc-400 hover:text-zinc-200 transition-colors" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if musics_total_pages > 1 || music_query.present? %>
+      <%= form_with url: band_setlist_path(band, setlist), method: :get, local: true,
+          data: { controller: "auto-submit", auto_submit_delay_value: 350 },
+          class: "mb-3" do |form| %>
+        <%= form.hidden_field :event_page, value: event_page %>
+        <%= form.hidden_field :event_query, value: event_query %>
+        <%= form.hidden_field :music_page, value: 1 %>
+        <%= form.label :music_query, "Search musics", class: "sr-only" %>
+        <%= form.text_field :music_query,
+            value: music_query,
+            placeholder: "Search by title or artist",
+            data: { action: "input->auto-submit#submit" },
+            class: "w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
+      <% end %>
+    <% end %>
+
+    <% if musics.any? %>
+      <div class="space-y-1">
         <% musics.each do |music| %>
           <%= button_to band_setlist_setlist_items_path(band, setlist),
-              params: { item_type: "Music", item_id: music.id },
+              params: {
+                item_type: "Music",
+                item_id: music.id,
+                music_page: music_page,
+                music_query: music_query,
+                event_page: event_page,
+                event_query: event_query
+              },
               data: { turbo_stream: true },
               class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg px-3 py-2 text-sm transition-colors" do %>
             <div class="font-medium truncate"><%= music.title %></div>
@@ -13,13 +60,10 @@
           <% end %>
         <% end %>
       </div>
-    </div>
-  <% else %>
-    <div>
-      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-2">Add Music</h3>
+    <% else %>
       <div class="bg-zinc-900 border border-dashed border-zinc-800 rounded-xl px-4 py-5 text-sm text-zinc-500">
-        All repertoire songs are already in this setlist.
+        <%= music_query.present? ? "No songs match your search." : "All repertoire songs are already in this setlist." %>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>

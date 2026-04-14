@@ -1,0 +1,71 @@
+<div id="available-events-panel">
+  <div>
+    <div class="flex items-center justify-between gap-3 mb-2">
+      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide">Add Event</h3>
+      <% if events_total_pages > 1 %>
+        <div class="flex items-center gap-2 text-xs text-zinc-500">
+          <span>Page <%= event_page %> of <%= events_total_pages %></span>
+          <% if event_page > 1 %>
+            <%= link_to "Previous", band_setlist_path(band, setlist,
+                event_page: event_page - 1,
+                event_query: event_query,
+                music_page: music_page,
+                music_query: music_query),
+                class: "text-zinc-400 hover:text-zinc-200 transition-colors" %>
+          <% end %>
+          <% if event_page < events_total_pages %>
+            <%= link_to "Next", band_setlist_path(band, setlist,
+                event_page: event_page + 1,
+                event_query: event_query,
+                music_page: music_page,
+                music_query: music_query),
+                class: "text-zinc-400 hover:text-zinc-200 transition-colors" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if events_total_pages > 1 || event_query.present? %>
+      <%= form_with url: band_setlist_path(band, setlist), method: :get, local: true,
+          data: { controller: "auto-submit", auto_submit_delay_value: 350 },
+          class: "mb-3" do |form| %>
+        <%= form.hidden_field :music_page, value: music_page %>
+        <%= form.hidden_field :music_query, value: music_query %>
+        <%= form.hidden_field :event_page, value: 1 %>
+        <%= form.label :event_query, "Search events", class: "sr-only" %>
+        <%= form.text_field :event_query,
+            value: event_query,
+            placeholder: "Search by title or description",
+            data: { action: "input->auto-submit#submit" },
+            class: "w-full bg-zinc-900 border border-zinc-800 focus:border-blue-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
+      <% end %>
+    <% end %>
+
+    <% if events.any? %>
+      <div class="space-y-1">
+        <% events.each do |event| %>
+          <%= button_to band_setlist_setlist_items_path(band, setlist),
+              params: {
+                item_type: "Event",
+                item_id: event.id,
+                music_page: music_page,
+                music_query: music_query,
+                event_page: event_page,
+                event_query: event_query
+              },
+              data: { turbo_stream: true },
+              class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 border-blue-900/40 rounded-lg px-3 py-2 text-sm transition-colors" do %>
+            <div class="font-medium text-blue-300 truncate"><%= event.title %></div>
+            <% if event.description.present? %>
+              <div class="text-zinc-400 text-xs truncate"><%= event.description %></div>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="bg-zinc-900 border border-dashed border-zinc-800 rounded-xl px-4 py-5 text-sm text-zinc-500">
+        <%= event_query.present? ? "No events match your search." : "No events available yet." %>
+      </div>
+    <% end %>
+  </div>
+</div>

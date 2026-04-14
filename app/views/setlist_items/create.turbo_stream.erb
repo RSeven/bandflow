@@ -1,13 +1,45 @@
 <turbo-stream action="replace" target="setlist-items-panel">
   <template>
     <div id="setlist-items-panel">
-      <%= render partial: "setlists/setlist_items", formats: [ :html ], locals: { band: @band, setlist: @setlist, setlist_items: @setlist_items } %>
+      <%= render partial: "setlists/setlist_items", formats: [ :html ], locals: {
+          band: @band,
+          setlist: @setlist,
+          setlist_items: @setlist_items,
+          music_page: @music_page,
+          music_query: @music_query,
+          event_page: @event_page,
+          event_query: @event_query
+        } %>
     </div>
   </template>
 </turbo-stream>
 
 <turbo-stream action="replace" target="available-musics-panel">
   <template>
-    <%= render partial: "setlists/available_musics", formats: [ :html ], locals: { band: @band, setlist: @setlist, musics: @musics } %>
+    <%= render partial: "setlists/available_musics", formats: [ :html ], locals: {
+        band: @band,
+        setlist: @setlist,
+        musics: @musics,
+        music_page: @music_page,
+        music_query: @music_query,
+        musics_total_pages: @musics_total_pages,
+        event_page: @event_page,
+        event_query: @event_query
+      } %>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="replace" target="available-events-panel">
+  <template>
+    <%= render partial: "setlists/available_events", formats: [ :html ], locals: {
+        band: @band,
+        setlist: @setlist,
+        events: @events,
+        event_page: @event_page,
+        event_query: @event_query,
+        events_total_pages: @events_total_pages,
+        music_page: @music_page,
+        music_query: @music_query
+      } %>
   </template>
 </turbo-stream>

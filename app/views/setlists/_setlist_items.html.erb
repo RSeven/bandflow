@@ -34,6 +34,12 @@
         <% end %>
 
         <%= button_to "×", band_setlist_setlist_item_path(band, setlist, si), method: :delete,
+            params: {
+              music_page: local_assigns.fetch(:music_page, 1),
+              music_query: local_assigns.fetch(:music_query, ""),
+              event_page: local_assigns.fetch(:event_page, 1),
+              event_query: local_assigns.fetch(:event_query, "")
+            },
             class: "text-zinc-600 hover:text-red-400 transition-colors text-lg leading-none flex-shrink-0",
             data: { turbo_stream: true } %>
       </div>

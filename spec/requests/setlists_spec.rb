@@ -30,6 +30,27 @@ RSpec.describe "Setlists", type: :request do
       expect(response.body).to include("Available Song")
       expect(response.body).not_to include(%(params[item_id]" value="#{excluded_music.id}"))
     end
+
+    it "paginates and filters add-music and add-event panels" do
+      9.times do |i|
+        create(:music, band: band, title: format("Song %02d", i), artist: "Artist")
+        create(:event, band: band, title: format("Event %02d", i))
+      end
+
+      get band_setlist_path(band, setlist), params: {
+        music_page: 2,
+        event_page: 2,
+        music_query: "Song 08",
+        event_query: "Event 08"
+      }
+
+      expect(response.body).to include("Search by title or artist")
+      expect(response.body).to include("Search by title or description")
+      expect(response.body).to include("Song 08")
+      expect(response.body).not_to include("Song 00")
+      expect(response.body).to include("Event 08")
+      expect(response.body).not_to include("Event 00")
+    end
   end
 
   describe "POST /bands/:band_id/setlists" do
@@ -61,8 +82,33 @@ RSpec.describe "Setlists", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(response.body).not_to include(%(value="#{added_music.id}" autocomplete="off"))
+      expect(response.body).not_to include(%(name="item_id" value="#{added_music.id}" autocomplete="off"))
       expect(response.body).to include("Still Available")
+    end
+
+    it "preserves sidebar search and pagination state in turbo responses" do
+      9.times do |i|
+        create(:music, band: band, title: format("Song %02d", i), artist: "Artist")
+        create(:event, band: band, title: format("Event %02d", i))
+      end
+
+      added_music = Music.find_by!(title: "Song 08")
+
+      post band_setlist_setlist_items_path(band, setlist),
+           params: {
+             item_type: "Music",
+             item_id: added_music.id,
+             music_page: 2,
+             music_query: "Song 08",
+             event_page: 2,
+             event_query: "Event 08"
+           },
+           headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Event 08")
+      expect(response.body).to include(%(value="Song 08"))
+      expect(response.body).to include(%(value="Event 08"))
     end
   end
 
