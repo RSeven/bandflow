@@ -221,6 +221,7 @@ pt-BR:
   presentation:
     exit: "Sair"
     mode: "Modo Apresentação"
+    next_stop: "Próxima parada"
     no_content: "Nenhuma cifra ou letra foi adicionada."
     scroll_down: "Rolar Para Baixo"
     scroll_up: "Rolar Para Cima"

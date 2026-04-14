@@ -221,6 +221,7 @@ en:
   presentation:
     exit: "Exit"
     mode: "Presentation Mode"
+    next_stop: "Next stop"
     no_content: "No chords or lyrics added."
     scroll_down: "Scroll Down"
     scroll_up: "Scroll Up"

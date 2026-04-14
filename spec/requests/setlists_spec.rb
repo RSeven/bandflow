@@ -68,6 +68,19 @@ RSpec.describe "Setlists", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Scroll Up")
       expect(response.body).to include("Scroll Down")
+      expect(response.body).to include("Next stop")
+    end
+
+    it "shows a chords and lyrics switch when both are available" do
+      music = create(:music, band: band, title: "Dual Content", artist: "Artist", chords: "Am F C G", lyrics: "Hello lyrics")
+      setlist.setlist_items.create!(item: music)
+
+      get present_band_setlist_path(band, setlist)
+
+      expect(response.body).to include("Chords")
+      expect(response.body).to include("Lyrics")
+      expect(response.body).to include(%(data-presentation-content="chords"))
+      expect(response.body).to include(%(data-presentation-content="lyrics"))
     end
   end
 

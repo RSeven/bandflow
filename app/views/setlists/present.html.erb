@@ -65,9 +65,30 @@
               <% end %>
             </div>
           </div>
-          <% content = si.item.display_content %>
-          <% if content.present? %>
-            <pre class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= content %></pre>
+          <% if si.item.has_chords? && si.item.lyrics.present? %>
+            <div class="mb-4 flex gap-2">
+              <button type="button"
+                      data-action="click->presentation#showChords"
+                      data-presentation-view="chords"
+                      class="flex-1 rounded-lg border border-amber-500/40 bg-amber-500/20 px-3 py-2.5 text-sm font-semibold text-amber-300 transition-colors">
+                <%= t("musics.show.chords") %>
+              </button>
+              <button type="button"
+                      data-action="click->presentation#showLyrics"
+                      data-presentation-view="lyrics"
+                      class="flex-1 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm font-semibold text-zinc-300 transition-colors">
+                <%= t("musics.show.lyrics") %>
+              </button>
+            </div>
+
+            <pre data-presentation-content="chords"
+                 class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.chords %></pre>
+            <pre data-presentation-content="lyrics"
+                 class="hidden text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.lyrics %></pre>
+          <% elsif si.item.has_chords? %>
+            <pre class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.chords %></pre>
+          <% elsif si.item.lyrics.present? %>
+            <pre class="text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.lyrics %></pre>
           <% else %>
             <p class="text-zinc-500 text-sm italic"><%= t("presentation.no_content") %></p>
           <% end %>
@@ -84,11 +105,25 @@
   <% end %>
 
   <%# ——— Scrollable content area ——— %>
-  <div data-presentation-target="contentArea"
-       class="flex-1 overflow-y-auto scroll-smooth"
-       style="scroll-behavior: smooth;">
-    <div data-presentation-target="content" class="min-h-full">
-      <%# Filled dynamically by Stimulus %>
+  <div class="relative flex-1 overflow-hidden">
+    <div data-presentation-target="scrollMarker"
+         class="pointer-events-none absolute left-0 right-0 z-20 hidden px-4"
+         style="top: 0;">
+      <div class="flex items-center gap-2">
+        <div class="h-0.5 flex-1 rounded-full bg-amber-400"></div>
+        <span class="rounded-full border border-amber-500/40 bg-zinc-950/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-300">
+          <%= t("presentation.next_stop") %>
+        </span>
+        <div class="h-0.5 flex-1 rounded-full bg-amber-400"></div>
+      </div>
+    </div>
+
+    <div data-presentation-target="contentArea"
+         class="h-full overflow-y-auto scroll-smooth"
+         style="scroll-behavior: smooth;">
+      <div data-presentation-target="content" class="min-h-full">
+        <%# Filled dynamically by Stimulus %>
+      </div>
     </div>
   </div>
 
