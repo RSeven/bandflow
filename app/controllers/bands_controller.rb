@@ -1,4 +1,6 @@
 class BandsController < ApplicationController
+  PAGE_SIZE = 10
+
   before_action :set_band, only: [ :show, :edit, :update, :destroy ]
   before_action :require_membership, only: [ :show ]
   before_action :require_admin, only: [ :edit, :update, :destroy ]
@@ -8,8 +10,23 @@ class BandsController < ApplicationController
   end
 
   def show
-    @musics   = @band.musics.order(:title)
-    @setlists = @band.setlists.order(performance_date: :desc, created_at: :desc)
+    @music_page = page_param(:music_page)
+    @setlist_page = page_param(:setlist_page)
+    @active_tab = active_tab_param
+    @music_query = params[:music_query].to_s.strip
+
+    musics_scope = @band.musics.order(:title)
+    if @music_query.present?
+      escaped_query = ActiveRecord::Base.sanitize_sql_like(@music_query)
+      musics_scope = musics_scope.where("title LIKE :query OR artist LIKE :query", query: "%#{escaped_query}%")
+    end
+    setlists_scope = @band.setlists.order(performance_date: :desc, created_at: :desc)
+
+    @musics_total_pages = total_pages_for(musics_scope)
+    @setlists_total_pages = total_pages_for(setlists_scope)
+
+    @musics = musics_scope.offset((@music_page - 1) * PAGE_SIZE).limit(PAGE_SIZE)
+    @setlists = setlists_scope.offset((@setlist_page - 1) * PAGE_SIZE).limit(PAGE_SIZE)
   end
 
   def new
@@ -57,5 +74,19 @@ class BandsController < ApplicationController
 
   def band_params
     params.expect(band: [ :name, :description ])
+  end
+
+  def page_param(key)
+    value = params[key].to_i
+    value.positive? ? value : 1
+  end
+
+  def total_pages_for(scope)
+    [(scope.count.to_f / PAGE_SIZE).ceil, 1].max
+  end
+
+  def active_tab_param
+    value = params[:tab].to_s
+    %w[musics setlists].include?(value) ? value : "musics"
   end
 end

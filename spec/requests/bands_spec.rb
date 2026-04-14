@@ -24,6 +24,64 @@ RSpec.describe "Bands", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    it "shows tab navigation for musics and setlists" do
+      get band_path(band)
+
+      expect(response.body).to include("Repertoire")
+      expect(response.body).to include("Setlists")
+      expect(response.body).to include("Search by title or artist")
+    end
+
+    it "paginates musics separately from setlists" do
+      11.times do |i|
+        create(:music, band: band, title: format("Song %02d", i), artist: "Artist")
+      end
+      11.times do |i|
+        create(:setlist, band: band, title: format("Setlist %02d", i))
+      end
+
+      get band_path(band), params: { music_page: 2 }
+
+      expect(response.body).to include("Song 10")
+      expect(response.body).not_to include("Song 00")
+      expect(response.body).to include("Page 2 of 2")
+      expect(response.body).not_to include("Setlist 00")
+    end
+
+    it "preserves the other page param in pagination links" do
+      11.times do |i|
+        create(:music, band: band, title: format("Song %02d", i), artist: "Artist")
+      end
+      11.times do |i|
+        create(:setlist, band: band, title: format("Setlist %02d", i))
+      end
+
+      get band_path(band), params: { music_page: 2, setlist_page: 2 }
+
+      expect(response.body).to include(%(setlist_page=2))
+      expect(response.body).to include(%(music_page=2))
+    end
+
+    it "shows the requested tab" do
+      create(:setlist, band: band, title: "Festival Night")
+      create(:music, band: band, title: "Hidden Song", artist: "Artist")
+
+      get band_path(band), params: { tab: "setlists" }
+
+      expect(response.body).to include("Festival Night")
+      expect(response.body).not_to include("Hidden Song")
+    end
+
+    it "filters musics by title or artist" do
+      create(:music, band: band, title: "Bohemian Rhapsody", artist: "Queen")
+      create(:music, band: band, title: "Paranoid Android", artist: "Radiohead")
+
+      get band_path(band), params: { tab: "musics", music_query: "queen" }
+
+      expect(response.body).to include("Bohemian Rhapsody")
+      expect(response.body).not_to include("Paranoid Android")
+    end
+
     it "redirects to bands index for non-members" do
       other_band = create(:band)
       get band_path(other_band)
