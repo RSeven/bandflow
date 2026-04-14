@@ -83,34 +83,64 @@ RSpec.describe "Musics", type: :request do
   end
 
   describe "POST /bands/:band_id/musics/fetch_metadata" do
-    it "returns metadata JSON including chords" do
-      allow(MusicMetadataService).to receive(:fetch).and_return(
-        MusicMetadataService::Result.new(
+    it "returns Spotify data when source=spotify" do
+      allow(MusicMetadataService).to receive(:fetch)
+        .with(source: "spotify", title: "Bohemian Rhapsody", artist: "Queen")
+        .and_return(
           spotify_track_id: "abc123",
-          spotify_url: "https://open.spotify.com/track/abc123",
-          youtube_url: "https://youtube.com/watch?v=xyz",
-          lyrics: "Some lyrics",
-          chords: "Am G C F",
-          bpm: 120.0,
-          key_name: "G",
-          key_mode: "major"
+          spotify_url:      "https://open.spotify.com/track/abc123",
+          bpm:              120.0,
+          key_name:         "G",
+          key_mode:         "major"
         )
-      )
 
       post fetch_metadata_band_musics_path(band),
-           params: { title: "Bohemian Rhapsody", artist: "Queen" },
+           params: { source: "spotify", title: "Bohemian Rhapsody", artist: "Queen" },
            headers: { "Accept" => "application/json" }
 
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
-      expect(body["bpm"]).to    eq(120.0)
+      expect(body["bpm"]).to eq(120.0)
       expect(body["key_name"]).to eq("G")
-      expect(body["chords"]).to  eq("Am G C F")
+      expect(body["spotify_url"]).to eq("https://open.spotify.com/track/abc123")
+    end
+
+    it "returns chords when source=chords" do
+      allow(MusicMetadataService).to receive(:fetch)
+        .with(source: "chords", title: "Bohemian Rhapsody", artist: "Queen")
+        .and_return(chords: "Am G C F")
+
+      post fetch_metadata_band_musics_path(band),
+           params: { source: "chords", title: "Bohemian Rhapsody", artist: "Queen" },
+           headers: { "Accept" => "application/json" }
+
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)["chords"]).to eq("Am G C F")
+    end
+
+    it "returns an error payload when the source reports a failure" do
+      allow(MusicMetadataService).to receive(:fetch)
+        .with(source: "lyrics", title: "Bohemian Rhapsody", artist: "Queen")
+        .and_return(error: "Lyrics not found on Genius")
+
+      post fetch_metadata_band_musics_path(band),
+           params: { source: "lyrics", title: "Bohemian Rhapsody", artist: "Queen" },
+           headers: { "Accept" => "application/json" }
+
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)["error"]).to eq("Lyrics not found on Genius")
     end
 
     it "returns 422 when title or artist is missing" do
       post fetch_metadata_band_musics_path(band),
-           params: { title: "", artist: "" },
+           params: { source: "spotify", title: "", artist: "" },
+           headers: { "Accept" => "application/json" }
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it "returns 422 when source is unknown" do
+      post fetch_metadata_band_musics_path(band),
+           params: { source: "bogus", title: "x", artist: "y" },
            headers: { "Accept" => "application/json" }
       expect(response).to have_http_status(:unprocessable_entity)
     end

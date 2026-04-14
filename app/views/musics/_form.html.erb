@@ -56,27 +56,30 @@
     </div>
   </div>
 
-  <%# ——— BPM & KEY ——— %>
-  <div class="grid sm:grid-cols-3 gap-4">
-    <div>
-      <%= f.label :bpm, "BPM", class: "block text-sm font-medium text-zinc-300 mb-1" %>
-      <%= f.number_field :bpm, step: 0.1, data: { music_form_target: "bpm" },
-          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
-          placeholder: "e.g. 120" %>
+  <%# ——— BPM & KEY (from Spotify) ——— %>
+  <div>
+    <div class="grid sm:grid-cols-3 gap-4">
+      <div>
+        <%= f.label :bpm, "BPM", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+        <%= f.number_field :bpm, step: 0.1, data: { music_form_target: "bpm" },
+            class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed",
+            placeholder: "e.g. 120" %>
+      </div>
+      <div>
+        <%= f.label :key_name, "Key", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+        <%= f.text_field :key_name, data: { music_form_target: "keyName" },
+            class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed",
+            placeholder: "e.g. G" %>
+      </div>
+      <div>
+        <%= f.label :key_mode, "Mode", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+        <%= f.select :key_mode, [ [ "— none —", "" ], [ "Major", "major" ], [ "Minor", "minor" ] ],
+            { selected: music.key_mode },
+            data: { music_form_target: "keyMode" },
+            class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed" %>
+      </div>
     </div>
-    <div>
-      <%= f.label :key_name, "Key", class: "block text-sm font-medium text-zinc-300 mb-1" %>
-      <%= f.text_field :key_name, data: { music_form_target: "keyName" },
-          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
-          placeholder: "e.g. G" %>
-    </div>
-    <div>
-      <%= f.label :key_mode, "Mode", class: "block text-sm font-medium text-zinc-300 mb-1" %>
-      <%= f.select :key_mode, [ [ "— none —", "" ], [ "Major", "major" ], [ "Minor", "minor" ] ],
-          { selected: music.key_mode },
-          data: { music_form_target: "keyMode" },
-          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" %>
-    </div>
+    <p data-music-form-target="spotifyStatus" class="hidden mt-2 text-xs"></p>
   </div>
 
   <%# ——— URLS ——— %>
@@ -84,15 +87,17 @@
     <div>
       <%= f.label :spotify_url, "Spotify URL", class: "block text-sm font-medium text-zinc-300 mb-1" %>
       <%= f.url_field :spotify_url, data: { music_form_target: "spotifyUrl" },
-          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed",
           placeholder: "https://open.spotify.com/..." %>
       <%= f.hidden_field :spotify_track_id, data: { music_form_target: "spotifyTrackId" } %>
+      <p data-music-form-target="spotifyStatus" class="hidden mt-1 text-xs"></p>
     </div>
     <div>
       <%= f.label :youtube_url, "YouTube URL", class: "block text-sm font-medium text-zinc-300 mb-1" %>
       <%= f.url_field :youtube_url, data: { music_form_target: "youtubeUrl" },
-          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed",
           placeholder: "https://youtube.com/..." %>
+      <p data-music-form-target="youtubeStatus" class="hidden mt-1 text-xs"></p>
     </div>
   </div>
 
@@ -102,8 +107,9 @@
     <p class="text-xs text-zinc-500 mb-2">Use plain text chord notation, one section per line. e.g. [Verse] Am G C F</p>
     <%= f.text_area :chords, rows: 10,
         data: { music_form_target: "chords" },
-        class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent font-mono resize-y",
+        class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent font-mono resize-y disabled:opacity-50 disabled:cursor-not-allowed",
         placeholder: "[Intro]\nAm  G  C  F\n\n[Verse 1]\nAm        G\nSome lyrics here..." %>
+    <p data-music-form-target="chordsStatus" class="hidden mt-1 text-xs"></p>
   </div>
 
   <%# ——— LYRICS ——— %>
@@ -111,11 +117,13 @@
     <%= f.label :lyrics, class: "block text-sm font-medium text-zinc-300 mb-1" %>
     <p class="text-xs text-zinc-500 mb-2">Auto-fetched from Genius when available. You can edit freely.</p>
     <%= f.text_area :lyrics, rows: 12, data: { music_form_target: "lyrics" },
-        class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-y" %>
+        class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-y disabled:opacity-50 disabled:cursor-not-allowed" %>
+    <p data-music-form-target="lyricsStatus" class="hidden mt-1 text-xs"></p>
   </div>
 
   <div class="flex gap-3">
-    <%= f.submit class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-6 rounded-lg transition-colors cursor-pointer text-sm" %>
+    <%= f.submit data: { music_form_target: "submit" },
+        class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-6 rounded-lg transition-colors cursor-pointer text-sm disabled:opacity-50 disabled:cursor-not-allowed" %>
     <%= link_to "Cancel", music.persisted? ? band_music_path(band, music) : band_path(band), class: "text-sm text-zinc-400 hover:text-zinc-200 py-2 px-4" %>
   </div>
 <% end %>

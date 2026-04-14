@@ -43,27 +43,23 @@ class MusicsController < ApplicationController
   end
 
   # POST /bands/:band_id/musics/fetch_metadata
+  # Parameters: title, artist, source (one of MusicMetadataService::SOURCES)
   def fetch_metadata
     title  = params[:title].to_s.strip
     artist = params[:artist].to_s.strip
+    source = params[:source].to_s
 
     if title.blank? || artist.blank?
       render json: { error: "Title and artist are required" }, status: :unprocessable_entity
       return
     end
 
-    result = MusicMetadataService.fetch(title: title, artist: artist)
+    unless MusicMetadataService::SOURCES.include?(source)
+      render json: { error: "Unknown source" }, status: :unprocessable_entity
+      return
+    end
 
-    render json: {
-      spotify_url:      result.spotify_url,
-      youtube_url:      result.youtube_url,
-      lyrics:           result.lyrics,
-      chords:           result.chords,
-      bpm:              result.bpm,
-      key_name:         result.key_name,
-      key_mode:         result.key_mode,
-      spotify_track_id: result.spotify_track_id
-    }
+    render json: MusicMetadataService.fetch(source: source, title: title, artist: artist)
   end
 
   private

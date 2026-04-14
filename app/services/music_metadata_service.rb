@@ -1,30 +1,61 @@
-# Orchestrates all external API calls for a music record.
-# Returns a hash of fetched fields; caller decides what to persist.
+# Per-source metadata lookups for the music form.
+# Each method returns a hash containing either fetched fields or an :error string.
 class MusicMetadataService
-  Result = Struct.new(
-    :spotify_track_id, :spotify_url,
-    :youtube_url,
-    :lyrics, :chords,
-    :bpm, :key_name, :key_mode,
-    keyword_init: true
-  )
+  SOURCES = %w[spotify youtube lyrics chords].freeze
 
-  def self.fetch(title:, artist:)
-    # Run all external fetches; each returns nil on failure so nothing blocks.
-    spotify_result = SpotifyService.new.fetch(title, artist)
-    lyrics         = GeniusService.fetch_lyrics(title, artist)
-    chords         = ChordsScraperService.fetch(title, artist)
-    youtube_url    = YoutubeService.fetch_url(title, artist)
+  def self.fetch(source:, title:, artist:)
+    case source
+    when "spotify" then fetch_spotify(title, artist)
+    when "youtube" then fetch_youtube(title, artist)
+    when "lyrics"  then fetch_lyrics(title, artist)
+    when "chords"  then fetch_chords(title, artist)
+    else { error: "Unknown source" }
+    end
+  end
 
-    Result.new(
-      spotify_track_id: spotify_result&.track_id,
-      spotify_url:      spotify_result&.track_url,
-      youtube_url:      youtube_url,
-      lyrics:           lyrics,
-      chords:           chords,
-      bpm:              spotify_result&.bpm,
-      key_name:         spotify_result&.key_name,
-      key_mode:         spotify_result&.key_mode
-    )
+  def self.fetch_spotify(title, artist)
+    result = SpotifyService.new.fetch(title, artist)
+    return { error: "No Spotify match found" } unless result
+
+    {
+      spotify_url:      result.track_url,
+      spotify_track_id: result.track_id,
+      bpm:              result.bpm,
+      key_name:         result.key_name,
+      key_mode:         result.key_mode
+    }
+  rescue => e
+    Rails.logger.error("Spotify fetch error: #{e.message}")
+    { error: "Spotify lookup failed" }
+  end
+
+  def self.fetch_youtube(title, artist)
+    url = YoutubeService.fetch_url(title, artist)
+    return { error: "No YouTube match found" } if url.blank?
+
+    { youtube_url: url }
+  rescue => e
+    Rails.logger.error("YouTube fetch error: #{e.message}")
+    { error: "YouTube lookup failed" }
+  end
+
+  def self.fetch_lyrics(title, artist)
+    lyrics = GeniusService.fetch_lyrics(title, artist)
+    return { error: "Lyrics not found on Genius" } if lyrics.blank?
+
+    { lyrics: lyrics }
+  rescue => e
+    Rails.logger.error("Lyrics fetch error: #{e.message}")
+    { error: "Lyrics lookup failed" }
+  end
+
+  def self.fetch_chords(title, artist)
+    chords = ChordsScraperService.fetch(title, artist)
+    return { error: "Chords not found on Cifra Club" } if chords.blank?
+
+    { chords: chords }
+  rescue => e
+    Rails.logger.error("Chords fetch error: #{e.message}")
+    { error: "Chords lookup failed" }
   end
 end
