@@ -8,7 +8,7 @@ export default class extends Controller {
     "bpm", "keyName", "keyMode",
     "spotifyUrl", "youtubeUrl", "spotifyTrackId",
     "lyrics", "chords",
-    "fetchStatus", "submit",
+    "fetchStatus", "fetchButton", "submit",
     "spotifyStatus", "youtubeStatus", "lyricsStatus", "chordsStatus"
   ]
 
@@ -95,6 +95,13 @@ export default class extends Controller {
 
   _handleOutsideClick(e) {
     if (!this.element.contains(e.target)) this._hideSuggestions()
+  }
+
+  // Show the fetch button whenever the user manually edits title or artist.
+  // Programmatic .value = ... (used by autocomplete) does not fire `input`, so
+  // the button stays hidden during the auto-fill → auto-fetch flow.
+  onManualInput() {
+    this.fetchButtonTarget.classList.remove("hidden")
   }
 
   // ——— Metadata fetch ———

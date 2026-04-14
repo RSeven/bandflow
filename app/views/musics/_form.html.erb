@@ -32,8 +32,9 @@
 
     <div class="flex gap-3">
       <button type="button"
+              data-music-form-target="fetchButton"
               data-action="click->music-form#fetchMetadata"
-              class="text-sm bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 px-4 py-2 rounded-lg transition-colors">
+              class="hidden text-sm bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 px-4 py-2 rounded-lg transition-colors">
         Fetch metadata (Spotify, lyrics, BPM, key)
       </button>
       <span data-music-form-target="fetchStatus" class="text-sm text-zinc-400 self-center"></span>
@@ -44,13 +45,15 @@
   <div class="grid sm:grid-cols-2 gap-4">
     <div>
       <%= f.label :title, class: "block text-sm font-medium text-zinc-300 mb-1" %>
-      <%= f.text_field :title, data: { music_form_target: "title" },
+      <%= f.text_field :title,
+          data: { music_form_target: "title", action: "input->music-form#onManualInput" },
           class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
           placeholder: "Song title" %>
     </div>
     <div>
       <%= f.label :artist, class: "block text-sm font-medium text-zinc-300 mb-1" %>
-      <%= f.text_field :artist, data: { music_form_target: "artist" },
+      <%= f.text_field :artist,
+          data: { music_form_target: "artist", action: "input->music-form#onManualInput" },
           class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
           placeholder: "Artist / band name" %>
     </div>
