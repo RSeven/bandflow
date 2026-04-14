@@ -62,8 +62,11 @@ gem "httparty", "~> 0.24.2"
 
 gem "ostruct", "~> 0.6.3"
 
+gem "prawn", "~> 2.5"
+
 gem "dotenv-rails", "~> 3.2", groups: [:development, :test]
 
 gem "rspec-rails", "~> 8.0", groups: [:development, :test]
 gem "factory_bot_rails", "~> 6.5", groups: [:development, :test]
 gem "faker", "~> 3.6", groups: [:development, :test]
+gem "pdf-inspector", "~> 1.3", group: :test, require: false

@@ -6,8 +6,19 @@ class SetlistsController < ApplicationController
   before_action :set_setlist, only: [ :show, :edit, :update, :destroy, :present ]
 
   def show
-    @setlist_items = @setlist.ordered_items
-    load_sidebar_collections
+    respond_to do |format|
+      format.html do
+        @setlist_items = @setlist.ordered_items
+        load_sidebar_collections
+      end
+      format.pdf do
+        pdf_data = SetlistPdfService.render(@setlist)
+        send_data pdf_data,
+          filename: "#{@setlist.title.parameterize}.pdf",
+          type: "application/pdf",
+          disposition: "inline"
+      end
+    end
   end
 
   def new
