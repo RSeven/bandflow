@@ -30,68 +30,14 @@
   <div class="grid lg:grid-cols-3 gap-6">
     <%# ——— Setlist Items ——— %>
     <div class="lg:col-span-2">
-      <h2 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-3">
-        Order (<%= @setlist.music_count %> songs)
-      </h2>
-
-      <% if @setlist_items.empty? %>
-        <div class="bg-zinc-900 border border-dashed border-zinc-700 rounded-xl p-8 text-center text-zinc-500 text-sm">
-          No items yet. Add musics or events from the panel on the right.
-        </div>
-      <% else %>
-        <div id="setlist-items" data-controller="sortable" data-sortable-url-value="<%= band_setlist_setlist_items_path(@band, @setlist) %>" class="space-y-2">
-          <% music_counter = 0 %>
-          <% @setlist_items.each_with_index do |si, idx| %>
-            <% music_counter += 1 if si.music? %>
-            <div id="setlist-item-<%= si.id %>" data-id="<%= si.id %>" class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2.5 group">
-              <span class="text-zinc-600 cursor-grab select-none text-sm">⠿</span>
-              <span class="text-xs font-mono text-zinc-600 w-5 text-right"><%= idx + 1 %></span>
-
-              <% if si.music? %>
-                <div class="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></div>
-                <div class="flex-1 min-w-0">
-                  <div class="font-medium text-sm truncate"><%= si.item.title %></div>
-                  <div class="text-zinc-400 text-xs truncate"><%= si.item.artist %></div>
-                </div>
-                <span class="text-xs text-zinc-500 flex-shrink-0">#<%= music_counter %></span>
-              <% else %>
-                <div class="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0"></div>
-                <div class="flex-1 min-w-0">
-                  <div class="font-medium text-sm truncate text-blue-300"><%= si.item.title %></div>
-                  <% if si.item.description.present? %>
-                    <div class="text-zinc-400 text-xs truncate"><%= si.item.description %></div>
-                  <% end %>
-                </div>
-                <span class="text-xs text-zinc-500 flex-shrink-0">event</span>
-              <% end %>
-
-              <%= button_to "×", band_setlist_setlist_item_path(@band, @setlist, si), method: :delete,
-                  class: "text-zinc-600 hover:text-red-400 transition-colors text-lg leading-none flex-shrink-0",
-                  data: { turbo_stream: true } %>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
+      <div id="setlist-items-panel">
+        <%= render "setlist_items", band: @band, setlist: @setlist, setlist_items: @setlist_items %>
+      </div>
     </div>
 
     <%# ——— Add Items Panel ——— %>
     <div class="space-y-4">
-      <% if @musics.any? %>
-        <div>
-          <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-2">Add Music</h3>
-          <div class="space-y-1 max-h-64 overflow-y-auto">
-            <% @musics.each do |music| %>
-              <%= button_to band_setlist_setlist_items_path(@band, @setlist),
-                  params: { item_type: "Music", item_id: music.id },
-                  data: { turbo_stream: true },
-                  class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg px-3 py-2 text-sm transition-colors" do %>
-                <div class="font-medium truncate"><%= music.title %></div>
-                <div class="text-zinc-400 text-xs truncate"><%= music.artist %></div>
-              <% end %>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
+      <%= render "available_musics", band: @band, setlist: @setlist, musics: @musics %>
 
       <% if @events.any? %>
         <div>

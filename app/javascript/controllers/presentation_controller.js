@@ -23,12 +23,18 @@ export default class extends Controller {
     this._releaseWakeLock()
   }
 
-  // ——— Roll: smooth-scroll down by ~70% of visible area, keeping some context ———
+  // ——— Scroll controls ———
+
+  scrollUp() {
+    this._scrollByViewport(-1)
+  }
+
+  scrollDown() {
+    this._scrollByViewport(1)
+  }
 
   roll() {
-    const area   = this.contentAreaTarget
-    const amount = Math.floor(area.clientHeight * 0.70)
-    area.scrollBy({ top: amount, behavior: "smooth" })
+    this.scrollDown()
   }
 
   // ——— Next item ———
@@ -99,6 +105,12 @@ export default class extends Controller {
     if (btn) btn.textContent = this._timerRunning ? "tap to pause" : "tap to resume"
     this.timerTarget.classList.toggle("text-zinc-500", !this._timerRunning)
     this.timerTarget.classList.toggle("text-amber-400",  this._timerRunning)
+  }
+
+  _scrollByViewport(direction) {
+    const area = this.contentAreaTarget
+    const amount = Math.floor(area.clientHeight * 0.65) * direction
+    area.scrollBy({ top: amount, behavior: "smooth" })
   }
 
   // ——— Wake Lock ———

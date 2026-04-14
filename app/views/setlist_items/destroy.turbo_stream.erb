@@ -1,2 +1,13 @@
-<turbo-stream action="remove" target="setlist-item-<%= @setlist_item.id %>">
+<turbo-stream action="replace" target="setlist-items-panel">
+  <template>
+    <div id="setlist-items-panel">
+      <%= render partial: "setlists/setlist_items", formats: [ :html ], locals: { band: @band, setlist: @setlist, setlist_items: @setlist_items } %>
+    </div>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="replace" target="available-musics-panel">
+  <template>
+    <%= render partial: "setlists/available_musics", formats: [ :html ], locals: { band: @band, setlist: @setlist, musics: @musics } %>
+  </template>
 </turbo-stream>

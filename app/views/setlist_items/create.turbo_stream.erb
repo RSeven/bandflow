@@ -1,33 +1,13 @@
-<% si = @item %>
-<% music_counter = @setlist.setlist_items.where(item_type: "Music").where("position <= ?", si.position).count %>
-
-<turbo-stream action="append" target="setlist-items">
+<turbo-stream action="replace" target="setlist-items-panel">
   <template>
-    <div id="setlist-item-<%= si.id %>" data-id="<%= si.id %>" class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2.5 group">
-      <span class="text-zinc-600 cursor-grab select-none text-sm">⠿</span>
-      <span class="text-xs font-mono text-zinc-600 w-5 text-right"><%= @setlist.setlist_items.count %></span>
-
-      <% if si.music? %>
-        <div class="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></div>
-        <div class="flex-1 min-w-0">
-          <div class="font-medium text-sm truncate"><%= si.item.title %></div>
-          <div class="text-zinc-400 text-xs truncate"><%= si.item.artist %></div>
-        </div>
-        <span class="text-xs text-zinc-500 flex-shrink-0">#<%= music_counter %></span>
-      <% else %>
-        <div class="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0"></div>
-        <div class="flex-1 min-w-0">
-          <div class="font-medium text-sm truncate text-blue-300"><%= si.item.title %></div>
-          <% if si.item.description.present? %>
-            <div class="text-zinc-400 text-xs truncate"><%= si.item.description %></div>
-          <% end %>
-        </div>
-        <span class="text-xs text-zinc-500 flex-shrink-0">event</span>
-      <% end %>
-
-      <%= button_to "×", band_setlist_setlist_item_path(@band, @setlist, si), method: :delete,
-          class: "text-zinc-600 hover:text-red-400 transition-colors text-lg leading-none flex-shrink-0",
-          data: { turbo_stream: true } %>
+    <div id="setlist-items-panel">
+      <%= render partial: "setlists/setlist_items", formats: [ :html ], locals: { band: @band, setlist: @setlist, setlist_items: @setlist_items } %>
     </div>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="replace" target="available-musics-panel">
+  <template>
+    <%= render partial: "setlists/available_musics", formats: [ :html ], locals: { band: @band, setlist: @setlist, musics: @musics } %>
   </template>
 </turbo-stream>

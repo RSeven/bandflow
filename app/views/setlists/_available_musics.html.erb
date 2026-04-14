@@ -1,0 +1,25 @@
+<div id="available-musics-panel">
+  <% if musics.any? %>
+    <div>
+      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-2">Add Music</h3>
+      <div class="space-y-1 max-h-64 overflow-y-auto">
+        <% musics.each do |music| %>
+          <%= button_to band_setlist_setlist_items_path(band, setlist),
+              params: { item_type: "Music", item_id: music.id },
+              data: { turbo_stream: true },
+              class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg px-3 py-2 text-sm transition-colors" do %>
+            <div class="font-medium truncate"><%= music.title %></div>
+            <div class="text-zinc-400 text-xs truncate"><%= music.artist %></div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div>
+      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-2">Add Music</h3>
+      <div class="bg-zinc-900 border border-dashed border-zinc-800 rounded-xl px-4 py-5 text-sm text-zinc-500">
+        All repertoire songs are already in this setlist.
+      </div>
+    </div>
+  <% end %>
+</div>

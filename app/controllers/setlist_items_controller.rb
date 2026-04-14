@@ -14,6 +14,7 @@ class SetlistItemsController < ApplicationController
 
     item = item_class == Music ? @band.musics.find(params[:item_id]) : @band.events.find(params[:item_id])
     @item = @setlist.setlist_items.create!(item: item)
+    load_sidebar_collections
 
     respond_to do |format|
       format.turbo_stream
@@ -24,6 +25,7 @@ class SetlistItemsController < ApplicationController
   def destroy
     @setlist_item = @setlist.setlist_items.find(params[:id])
     @setlist_item.destroy
+    load_sidebar_collections
 
     respond_to do |format|
       format.turbo_stream
@@ -62,5 +64,12 @@ class SetlistItemsController < ApplicationController
     items.each_with_index do |item, idx|
       item.update_column(:position, idx)
     end
+  end
+
+  def load_sidebar_collections
+    @setlist_items = @setlist.ordered_items
+    @musics = @band.musics
+      .where.not(id: @setlist.setlist_items.where(item_type: "Music").select(:item_id))
+      .order(:title)
   end
 end

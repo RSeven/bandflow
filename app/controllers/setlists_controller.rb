@@ -5,7 +5,7 @@ class SetlistsController < ApplicationController
 
   def show
     @setlist_items = @setlist.ordered_items
-    @musics        = @band.musics.order(:title)
+    @musics        = available_musics
     @events        = @band.events.order(:title)
   end
 
@@ -58,5 +58,11 @@ class SetlistsController < ApplicationController
 
   def setlist_params
     params.expect(setlist: [ :title, :performance_date, :notes ])
+  end
+
+  def available_musics
+    @band.musics
+      .where.not(id: @setlist.setlist_items.where(item_type: "Music").select(:item_id))
+      .order(:title)
   end
 end

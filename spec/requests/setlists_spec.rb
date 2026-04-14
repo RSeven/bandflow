@@ -19,6 +19,17 @@ RSpec.describe "Setlists", type: :request do
       get band_setlist_path(band, setlist)
       expect(response).to have_http_status(:ok)
     end
+
+    it "shows only musics that are not already in the setlist" do
+      included_music = create(:music, band: band, title: "Available Song")
+      excluded_music = create(:music, band: band, title: "Already Added")
+      setlist.setlist_items.create!(item: excluded_music)
+
+      get band_setlist_path(band, setlist)
+
+      expect(response.body).to include("Available Song")
+      expect(response.body).not_to include(%(params[item_id]" value="#{excluded_music.id}"))
+    end
   end
 
   describe "POST /bands/:band_id/setlists" do
@@ -34,6 +45,24 @@ RSpec.describe "Setlists", type: :request do
     it "renders with presentation layout" do
       get present_band_setlist_path(band, setlist)
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Scroll Up")
+      expect(response.body).to include("Scroll Down")
+    end
+  end
+
+  describe "POST /bands/:band_id/setlists/:setlist_id/setlist_items" do
+    it "removes an added music from the add-music list in the turbo response" do
+      added_music = create(:music, band: band, title: "Song To Add")
+      other_music = create(:music, band: band, title: "Still Available")
+
+      post band_setlist_setlist_items_path(band, setlist),
+           params: { item_type: "Music", item_id: added_music.id },
+           headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).not_to include(%(value="#{added_music.id}" autocomplete="off"))
+      expect(response.body).to include("Still Available")
     end
   end
 

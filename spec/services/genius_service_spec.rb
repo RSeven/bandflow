@@ -32,6 +32,34 @@ RSpec.describe GeniusService do
     "<html><body>#{sections_html}</body></html>"
   end
 
+  def genius_preloaded_state_html(lyrics_html:, fallback_body: "")
+    state = {
+      "songPage" => {
+        "lyricsData" => {
+          "body" => {
+            "html" => lyrics_html
+          }
+        }
+      }
+    }.to_json
+
+    encoded_state = state
+      .gsub("\\", "\\\\\\")
+      .gsub("'", "\\\\'")
+      .gsub("\n", "\\n")
+
+    <<~HTML
+      <html>
+        <body>
+          #{fallback_body}
+          <script>
+            window.__PRELOADED_STATE__ = JSON.parse('#{encoded_state}');
+          </script>
+        </body>
+      </html>
+    HTML
+  end
+
   # ——— Tests ————————————————————————————————————————————————————————————————
 
   before do
@@ -132,6 +160,36 @@ RSpec.describe GeniusService do
                                         .and_return(genius_page_response(html))
 
         expect(described_class.fetch_lyrics("X", "Y")).to be_nil
+      end
+
+      it "prefers lyrics from the preloaded state over noisy lyric containers" do
+        fallback_html = genius_html("123 ContributorsTranslations",
+          "Bohemian Rhapsody Lyrics",
+          "About\n[Intro]\nWrong fallback text")
+        html = genius_preloaded_state_html(
+          lyrics_html: "[Verse 1]<br/>Is this the real life?<br/>Is this just fantasy?",
+          fallback_body: fallback_html
+        )
+        allow(HTTParty).to receive(:get).with(song_url, anything)
+                                        .and_return(genius_page_response(html))
+
+        result = described_class.fetch_lyrics("Bohemian Rhapsody", "Queen")
+
+        expect(result).to eq("[Verse 1]\nIs this the real life?\nIs this just fantasy?")
+        expect(result).not_to include("Contributors")
+        expect(result).not_to include("Wrong fallback text")
+      end
+
+      it "strips the contributor and About preamble from fallback lyric containers" do
+        html = genius_html("123 ContributorsTranslationsBohemian Rhapsody LyricsAbout[Verse 1]<br/>Mama, just killed a man")
+        allow(HTTParty).to receive(:get).with(song_url, anything)
+                                        .and_return(genius_page_response(html))
+
+        result = described_class.fetch_lyrics("Bohemian Rhapsody", "Queen")
+
+        expect(result).to eq("[Verse 1]\nMama, just killed a man")
+        expect(result).not_to include("Contributors")
+        expect(result).not_to include("About")
       end
     end
 
