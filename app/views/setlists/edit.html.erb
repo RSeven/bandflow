@@ -4,8 +4,8 @@
     <span>/</span>
     <%= link_to @setlist.title, band_setlist_path(@band, @setlist), class: "hover:text-zinc-200" %>
     <span>/</span>
-    <span>Edit</span>
+    <span><%= t("common.edit") %></span>
   </div>
-  <h1 class="text-2xl font-bold mb-6">Edit setlist</h1>
+  <h1 class="text-2xl font-bold mb-6"><%= t("setlists.edit.title") %></h1>
   <%= render "form", setlist: @setlist, band: @band %>
 </div>

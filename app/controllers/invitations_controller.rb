@@ -7,13 +7,13 @@ class InvitationsController < ApplicationController
 
   def create
     @invitation = @band.invitations.create!(invited_by: Current.user)
-    redirect_to link_band_invitation_path(@band, @invitation), notice: "Invitation created."
+    redirect_to link_band_invitation_path(@band, @invitation), notice: t("flash.invitations.created")
   end
 
   def destroy
     @invitation = @band.invitations.find(params[:id])
     @invitation.destroy
-    redirect_to @band, notice: "Invitation revoked."
+    redirect_to @band, notice: t("flash.invitations.revoked")
   end
 
   def link
@@ -24,7 +24,7 @@ class InvitationsController < ApplicationController
   # Public — anyone with the link can view
   def show
     if @invitation.used?
-      redirect_to root_path, alert: "This invitation has already been used."
+      redirect_to root_path, alert: t("flash.invitations.used")
       return
     end
 
@@ -33,33 +33,33 @@ class InvitationsController < ApplicationController
     else
       # Not logged in: redirect to sign up / log in with token stored in session
       session[:pending_invitation_token] = @invitation.token
-      redirect_to new_registration_path, notice: "Create an account to join #{@invitation.band.name}."
+      redirect_to new_registration_path, notice: t("flash.invitations.create_account", band: @invitation.band.name)
     end
   end
 
   # POST — accept the invitation
   def accept
     if @invitation.used?
-      redirect_to root_path, alert: "This invitation has already been used."
+      redirect_to root_path, alert: t("flash.invitations.used")
       return
     end
 
     unless user_signed_in?
       session[:pending_invitation_token] = @invitation.token
-      redirect_to new_session_path, alert: "Please sign in first."
+      redirect_to new_session_path, alert: t("flash.invitations.sign_in_first")
       return
     end
 
     band = @invitation.band
     if Current.user.member_of?(band)
-      redirect_to band, notice: "You are already a member of #{band.name}."
+      redirect_to band, notice: t("flash.invitations.already_member", band: band.name)
       return
     end
 
     band.band_memberships.create!(user: Current.user, role: "member")
     @invitation.mark_used!
 
-    redirect_to band, notice: "Welcome to #{band.name}!"
+    redirect_to band, notice: t("flash.invitations.welcome", band: band.name)
   end
 
   private
@@ -69,13 +69,13 @@ class InvitationsController < ApplicationController
   end
 
   def require_membership
-    redirect_to bands_path, alert: "Access denied." unless Current.user.member_of?(@band)
+    redirect_to bands_path, alert: t("flash.shared.access_denied") unless Current.user.member_of?(@band)
   end
 
   def set_invitation_by_token
     @invitation = Invitation.find_by!(token: params[:token])
   rescue ActiveRecord::RecordNotFound
-    redirect_to root_path, alert: "Invalid invitation link."
+    redirect_to root_path, alert: t("flash.invitations.invalid_link")
   end
 
   def user_signed_in?

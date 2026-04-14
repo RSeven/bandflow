@@ -1,12 +1,12 @@
 <div id="available-musics-panel">
   <div>
     <div class="flex items-center justify-between gap-3 mb-2">
-      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide">Add Music</h3>
+      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide"><%= t("setlists.available_musics.title") %></h3>
       <% if musics_total_pages > 1 %>
         <div class="flex items-center gap-2 text-xs text-zinc-500">
-          <span>Page <%= music_page %> of <%= musics_total_pages %></span>
+          <span><%= t("common.page_of", page: music_page, total: musics_total_pages) %></span>
           <% if music_page > 1 %>
-            <%= link_to "Previous", band_setlist_path(band, setlist,
+            <%= link_to t("common.previous"), band_setlist_path(band, setlist,
                 music_page: music_page - 1,
                 music_query: music_query,
                 event_page: event_page,
@@ -14,7 +14,7 @@
                 class: "text-zinc-400 hover:text-zinc-200 transition-colors" %>
           <% end %>
           <% if music_page < musics_total_pages %>
-            <%= link_to "Next", band_setlist_path(band, setlist,
+            <%= link_to t("common.next"), band_setlist_path(band, setlist,
                 music_page: music_page + 1,
                 music_query: music_query,
                 event_page: event_page,
@@ -32,10 +32,10 @@
         <%= form.hidden_field :event_page, value: event_page %>
         <%= form.hidden_field :event_query, value: event_query %>
         <%= form.hidden_field :music_page, value: 1 %>
-        <%= form.label :music_query, "Search musics", class: "sr-only" %>
+        <%= form.label :music_query, t("setlists.available_musics.search_label"), class: "sr-only" %>
         <%= form.text_field :music_query,
             value: music_query,
-            placeholder: "Search by title or artist",
+            placeholder: t("setlists.available_musics.search_placeholder"),
             data: { action: "input->auto-submit#submit" },
             class: "w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
       <% end %>
@@ -62,7 +62,7 @@
       </div>
     <% else %>
       <div class="bg-zinc-900 border border-dashed border-zinc-800 rounded-xl px-4 py-5 text-sm text-zinc-500">
-        <%= music_query.present? ? "No songs match your search." : "All repertoire songs are already in this setlist." %>
+        <%= music_query.present? ? t("setlists.available_musics.no_results") : t("setlists.available_musics.all_added") %>
       </div>
     <% end %>
   </div>

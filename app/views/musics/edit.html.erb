@@ -4,8 +4,8 @@
     <span>/</span>
     <%= link_to @music.title, band_music_path(@band, @music), class: "hover:text-zinc-200" %>
     <span>/</span>
-    <span>Edit</span>
+    <span><%= t("common.edit") %></span>
   </div>
-  <h1 class="text-2xl font-bold mb-6">Edit music</h1>
+  <h1 class="text-2xl font-bold mb-6"><%= t("musics.edit.title") %></h1>
   <%= render "form", music: @music, band: @band %>
 </div>

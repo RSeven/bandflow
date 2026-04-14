@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Handles the music form: iTunes autocomplete + parallel metadata fetch from Spotify / YouTube / Genius / Cifra Club.
+// Handles the music form: iTunes autocomplete + parallel metadata fetches.
 export default class extends Controller {
   static targets = [
     "searchInput", "suggestions",
@@ -14,7 +14,8 @@ export default class extends Controller {
 
   static values = {
     searchUrl: String,
-    fetchUrl: String
+    fetchUrl: String,
+    messages: String
   }
 
   connect() {
@@ -107,10 +108,11 @@ export default class extends Controller {
   // ——— Metadata fetch ———
 
   get _sources() {
+    const messages = this._messages().sources
+
     return {
       spotify: {
-        label: "Spotify (BPM, key, URL)",
-        shortLabel: "Spotify",
+        messages: messages.spotify,
         statusTargets: () => this.spotifyStatusTargets,
         fields: () => [this.bpmTarget, this.keyNameTarget, this.keyModeTarget, this.spotifyUrlTarget],
         apply: (data) => {
@@ -122,8 +124,7 @@ export default class extends Controller {
         }
       },
       youtube: {
-        label: "YouTube",
-        shortLabel: "YouTube",
+        messages: messages.youtube,
         statusTargets: () => this.youtubeStatusTargets,
         fields: () => [this.youtubeUrlTarget],
         apply: (data) => {
@@ -131,8 +132,7 @@ export default class extends Controller {
         }
       },
       lyrics: {
-        label: "Lyrics (Genius)",
-        shortLabel: "Lyrics",
+        messages: messages.lyrics,
         statusTargets: () => this.lyricsStatusTargets,
         fields: () => [this.lyricsTarget],
         apply: (data) => {
@@ -140,8 +140,7 @@ export default class extends Controller {
         }
       },
       chords: {
-        label: "Chords (Cifra Club)",
-        shortLabel: "Chords",
+        messages: messages.chords,
         statusTargets: () => this.chordsStatusTargets,
         fields: () => [this.chordsTarget],
         apply: (data) => {
@@ -156,7 +155,7 @@ export default class extends Controller {
     const artist = this.artistTarget.value.trim()
 
     if (!title || !artist) {
-      this.fetchStatusTarget.textContent = "Enter title and artist first."
+      this.fetchStatusTarget.textContent = this._messages().title_artist_required
       return
     }
 
@@ -180,7 +179,7 @@ export default class extends Controller {
   async _fetchSource(sourceName, title, artist) {
     const source = this._sources[sourceName]
     this._setFieldsDisabled(source, true)
-    this._renderStatus(source, "fetching", `Fetching ${source.label}…`)
+    this._renderStatus(source, "fetching", source.messages.fetching)
 
     try {
       const resp = await fetch(this.fetchUrlValue, {
@@ -196,13 +195,13 @@ export default class extends Controller {
       const data = resp.ok ? await resp.json() : { error: `request failed (HTTP ${resp.status})` }
 
       if (data.error) {
-        this._renderStatus(source, "error", `${source.shortLabel}: ${data.error}`)
+        this._renderStatus(source, "error", source.messages.error)
       } else {
         source.apply(data)
-        this._renderStatus(source, "success", `${source.shortLabel} loaded.`)
+        this._renderStatus(source, "success", source.messages.success)
       }
     } catch (e) {
-      this._renderStatus(source, "error", `${source.shortLabel}: ${e.message}`)
+      this._renderStatus(source, "error", source.messages.error)
     } finally {
       this._setFieldsDisabled(source, false)
     }
@@ -232,6 +231,11 @@ export default class extends Controller {
         el.textContent = message
       }
     })
+  }
+
+  _messages() {
+    if (!this._parsedMessages) this._parsedMessages = JSON.parse(this.messagesValue || "{}")
+    return this._parsedMessages
   }
 
   _csrfToken() {

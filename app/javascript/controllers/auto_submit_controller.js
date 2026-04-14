@@ -21,10 +21,13 @@ export default class extends Controller {
   }
 
   _storeFocus() {
-    const input = this.element.querySelector('input[name="music_query"]')
-    if (!input || document.activeElement !== input) return
+    const input = document.activeElement
+    if (!input || !this.element.contains(input)) return
+    if (!(input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement || input instanceof HTMLSelectElement)) return
+    if (!input.name || input.type === "hidden") return
 
     sessionStorage.setItem(this._storageKey(), JSON.stringify({
+      name: input.name,
       start: input.selectionStart,
       end: input.selectionEnd
     }))
@@ -36,14 +39,16 @@ export default class extends Controller {
 
     sessionStorage.removeItem(this._storageKey())
 
-    const input = this.element.querySelector('input[name="music_query"]')
+    const { name, start, end } = JSON.parse(saved)
+    if (!name) return
+
+    const input = this.element.querySelector(`[name="${CSS.escape(name)}"]`)
     if (!input) return
 
     requestAnimationFrame(() => {
       input.focus()
 
       try {
-        const { start, end } = JSON.parse(saved)
         if (start != null && end != null) input.setSelectionRange(start, end)
       } catch (_) {}
     })

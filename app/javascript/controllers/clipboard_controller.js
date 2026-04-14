@@ -1,14 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static values  = { content: String }
+  static values  = { content: String, defaultLabel: String, copiedLabel: String }
   static targets = ["button"]
 
   async copy() {
     try {
       await navigator.clipboard.writeText(this.contentValue)
-      this.buttonTarget.textContent = "Copied!"
-      setTimeout(() => { this.buttonTarget.textContent = "Copy" }, 2000)
+      this._setCopiedState()
     } catch (_) {
       // Fallback for non-HTTPS / older browsers
       const el = document.createElement("textarea")
@@ -19,8 +18,12 @@ export default class extends Controller {
       el.select()
       document.execCommand("copy")
       document.body.removeChild(el)
-      this.buttonTarget.textContent = "Copied!"
-      setTimeout(() => { this.buttonTarget.textContent = "Copy" }, 2000)
+      this._setCopiedState()
     }
+  }
+
+  _setCopiedState() {
+    this.buttonTarget.textContent = this.copiedLabelValue || "Copied!"
+    setTimeout(() => { this.buttonTarget.textContent = this.defaultLabelValue || "Copy" }, 2000)
   }
 }

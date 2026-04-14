@@ -10,7 +10,7 @@ class SetlistItemsController < ApplicationController
     item_class = %w[Music Event].include?(item_class) ? item_class.constantize : nil
 
     unless item_class
-      redirect_to band_setlist_path(@band, @setlist), alert: "Invalid item type."
+      redirect_to band_setlist_path(@band, @setlist), alert: t("flash.setlist_items.invalid_type")
       return
     end
 
@@ -51,7 +51,7 @@ class SetlistItemsController < ApplicationController
   end
 
   def require_membership
-    redirect_to bands_path, alert: "Access denied." unless Current.user.member_of?(@band)
+    redirect_to bands_path, alert: t("flash.shared.access_denied") unless Current.user.member_of?(@band)
   end
 
   def set_setlist

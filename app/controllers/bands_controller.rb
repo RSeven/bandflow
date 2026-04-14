@@ -37,7 +37,7 @@ class BandsController < ApplicationController
     @band = Band.new(band_params)
     if @band.save
       @band.band_memberships.create!(user: Current.user, role: "admin")
-      redirect_to @band, notice: "Band created successfully."
+      redirect_to @band, notice: t("flash.bands.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -47,7 +47,7 @@ class BandsController < ApplicationController
 
   def update
     if @band.update(band_params)
-      redirect_to @band, notice: "Band updated."
+      redirect_to @band, notice: t("flash.bands.updated")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -55,7 +55,7 @@ class BandsController < ApplicationController
 
   def destroy
     @band.destroy
-    redirect_to bands_path, notice: "Band deleted."
+    redirect_to bands_path, notice: t("flash.bands.deleted")
   end
 
   private
@@ -65,11 +65,11 @@ class BandsController < ApplicationController
   end
 
   def require_membership
-    redirect_to bands_path, alert: "You are not a member of this band." unless Current.user.member_of?(@band)
+    redirect_to bands_path, alert: t("flash.shared.not_band_member") unless Current.user.member_of?(@band)
   end
 
   def require_admin
-    redirect_to @band, alert: "Only admins can do that." unless Current.user.admin_of?(@band)
+    redirect_to @band, alert: t("flash.shared.admin_only") unless Current.user.admin_of?(@band)
   end
 
   def band_params

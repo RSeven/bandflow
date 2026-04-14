@@ -11,9 +11,9 @@
       <p class="text-zinc-400"><%= @music.artist %></p>
     </div>
     <div class="flex gap-2">
-      <%= link_to "Edit", edit_band_music_path(@band, @music), class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-1.5 rounded-lg transition-colors" %>
-      <%= button_to "Delete", band_music_path(@band, @music), method: :delete,
-          data: { turbo_confirm: "Remove #{@music.title} from the repertoire?" },
+      <%= link_to t("common.edit"), edit_band_music_path(@band, @music), class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-1.5 rounded-lg transition-colors" %>
+      <%= button_to t("common.delete"), band_music_path(@band, @music), method: :delete,
+          data: { turbo_confirm: t("musics.show.delete_confirm", title: @music.title) },
           class: "text-sm border border-red-800 text-red-400 hover:border-red-600 px-3 py-1.5 rounded-lg transition-colors" %>
     </div>
   </div>
@@ -22,13 +22,13 @@
   <div class="flex flex-wrap gap-3 mb-6">
     <% if @music.bpm.present? %>
       <div class="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm">
-        <span class="text-zinc-400 mr-1">BPM</span>
+        <span class="text-zinc-400 mr-1"><%= t("musics.show.bpm") %></span>
         <span class="font-semibold"><%= @music.bpm_display %></span>
       </div>
     <% end %>
     <% if @music.key_name.present? %>
       <div class="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm">
-        <span class="text-zinc-400 mr-1">Key</span>
+        <span class="text-zinc-400 mr-1"><%= t("musics.show.key") %></span>
         <span class="font-semibold"><%= @music.musical_key %></span>
       </div>
     <% end %>
@@ -36,14 +36,14 @@
       <%= link_to @music.spotify_url, target: "_blank", rel: "noopener",
           class: "bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-lg px-3 py-2 text-sm flex items-center gap-1.5 transition-colors" do %>
         <svg class="w-4 h-4 text-green-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-        Spotify
+        <%= t("musics.show.spotify") %>
       <% end %>
     <% end %>
     <% if @music.youtube_url.present? %>
       <%= link_to @music.youtube_url, target: "_blank", rel: "noopener",
           class: "bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-lg px-3 py-2 text-sm flex items-center gap-1.5 transition-colors" do %>
         <svg class="w-4 h-4 text-red-400" viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
-        YouTube
+        <%= t("musics.show.youtube") %>
       <% end %>
     <% end %>
   </div>
@@ -52,21 +52,21 @@
   <div class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
     <% if @music.has_chords? %>
       <div class="border-b border-zinc-800 px-5 py-3 flex gap-4 text-sm font-medium">
-        <span class="text-amber-400 border-b-2 border-amber-400 pb-2 -mb-3">Chords</span>
+          <span class="text-amber-400 border-b-2 border-amber-400 pb-2 -mb-3"><%= t("musics.show.chords") %></span>
         <% if @music.lyrics.present? %>
-          <span class="text-zinc-400">Lyrics</span>
+          <span class="text-zinc-400"><%= t("musics.show.lyrics") %></span>
         <% end %>
       </div>
       <pre class="px-5 py-4 text-sm font-mono whitespace-pre-wrap text-zinc-200 leading-relaxed overflow-x-auto"><%= @music.chords %></pre>
     <% elsif @music.lyrics.present? %>
       <div class="border-b border-zinc-800 px-5 py-3 text-sm font-medium">
-        <span class="text-amber-400 border-b-2 border-amber-400 pb-2 -mb-3">Lyrics</span>
+        <span class="text-amber-400 border-b-2 border-amber-400 pb-2 -mb-3"><%= t("musics.show.lyrics") %></span>
       </div>
       <pre class="px-5 py-4 text-sm whitespace-pre-wrap text-zinc-200 leading-relaxed"><%= @music.lyrics %></pre>
     <% else %>
       <div class="px-5 py-8 text-center text-zinc-500 text-sm">
-        No chords or lyrics added yet.
-        <%= link_to "Add them now", edit_band_music_path(@band, @music), class: "text-amber-400 hover:text-amber-300 ml-1" %>
+        <%= t("musics.show.no_content") %>
+        <%= link_to t("musics.show.add_now"), edit_band_music_path(@band, @music), class: "text-amber-400 hover:text-amber-300 ml-1" %>
       </div>
     <% end %>
   </div>

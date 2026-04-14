@@ -12,7 +12,7 @@ class MusicsController < ApplicationController
   def create
     @music = @band.musics.new(music_params)
     if @music.save
-      flash[:notice] = "Music added."
+      flash[:notice] = t("flash.musics.created")
       flash[:new_music_link] = new_band_music_path(@band)
       redirect_to band_music_path(@band, @music)
     else
@@ -24,7 +24,7 @@ class MusicsController < ApplicationController
 
   def update
     if @music.update(music_params)
-      redirect_to band_music_path(@band, @music), notice: "Music updated."
+      redirect_to band_music_path(@band, @music), notice: t("flash.musics.updated")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -32,7 +32,7 @@ class MusicsController < ApplicationController
 
   def destroy
     @music.destroy
-    redirect_to @band, notice: "Music removed."
+    redirect_to @band, notice: t("flash.musics.deleted")
   end
 
   # GET /bands/:band_id/musics/search?q=...  (iTunes autocomplete)
@@ -52,12 +52,12 @@ class MusicsController < ApplicationController
     source = params[:source].to_s
 
     if title.blank? || artist.blank?
-      render json: { error: "Title and artist are required" }, status: :unprocessable_entity
+      render json: { error: t("flash.musics.title_and_artist_required") }, status: :unprocessable_entity
       return
     end
 
     unless MusicMetadataService::SOURCES.include?(source)
-      render json: { error: "Unknown source" }, status: :unprocessable_entity
+      render json: { error: t("flash.musics.unknown_source") }, status: :unprocessable_entity
       return
     end
 
@@ -71,7 +71,7 @@ class MusicsController < ApplicationController
   end
 
   def require_membership
-    redirect_to bands_path, alert: "Access denied." unless Current.user.member_of?(@band)
+    redirect_to bands_path, alert: t("flash.shared.access_denied") unless Current.user.member_of?(@band)
   end
 
   def set_music

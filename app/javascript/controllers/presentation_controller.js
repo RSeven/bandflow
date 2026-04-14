@@ -4,7 +4,7 @@ import { Controller } from "@hotwired/stimulus"
 // Features: smooth roll scroll, next item navigation, elapsed timer, music counter.
 export default class extends Controller {
   static targets = ["item", "content", "contentArea", "timer", "timerBtn", "counter", "nextBtn"]
-  static values  = { musicCount: Number }
+  static values  = { musicCount: Number, tapToPause: String, tapToResume: String }
 
   connect() {
     this._currentIndex  = 0
@@ -102,7 +102,7 @@ export default class extends Controller {
   toggleTimer() {
     this._timerRunning = !this._timerRunning
     const btn = this.timerBtnTarget.querySelector("span:last-child")
-    if (btn) btn.textContent = this._timerRunning ? "tap to pause" : "tap to resume"
+    if (btn) btn.textContent = this._timerRunning ? this.tapToPauseValue : this.tapToResumeValue
     this.timerTarget.classList.toggle("text-zinc-500", !this._timerRunning)
     this.timerTarget.classList.toggle("text-amber-400",  this._timerRunning)
   }

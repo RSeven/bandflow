@@ -10,7 +10,7 @@ class EventsController < ApplicationController
   def create
     @event = @band.events.new(event_params)
     if @event.save
-      redirect_to @band, notice: "Event created."
+      redirect_to @band, notice: t("flash.events.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -20,7 +20,7 @@ class EventsController < ApplicationController
 
   def update
     if @event.update(event_params)
-      redirect_to @band, notice: "Event updated."
+      redirect_to @band, notice: t("flash.events.updated")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -28,7 +28,7 @@ class EventsController < ApplicationController
 
   def destroy
     @event.destroy
-    redirect_to @band, notice: "Event deleted."
+    redirect_to @band, notice: t("flash.events.deleted")
   end
 
   private
@@ -38,7 +38,7 @@ class EventsController < ApplicationController
   end
 
   def require_membership
-    redirect_to bands_path, alert: "Access denied." unless Current.user.member_of?(@band)
+    redirect_to bands_path, alert: t("flash.shared.access_denied") unless Current.user.member_of?(@band)
   end
 
   def set_event

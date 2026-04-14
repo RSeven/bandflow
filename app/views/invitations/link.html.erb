@@ -2,23 +2,25 @@
   <div class="flex items-center gap-2 text-sm text-zinc-400 mb-4">
     <%= link_to @band.name, band_path(@band), class: "hover:text-zinc-200" %>
     <span>/</span>
-    <span>Invite link</span>
+    <span><%= t("invitations.link.breadcrumb") %></span>
   </div>
-  <h1 class="text-2xl font-bold mb-2">Invitation link</h1>
-  <p class="text-zinc-400 text-sm mb-6">Share this link with the person you want to invite to <strong class="text-zinc-200"><%= @band.name %></strong>. It can only be used once.</p>
+  <h1 class="text-2xl font-bold mb-2"><%= t("invitations.link.title") %></h1>
+  <p class="text-zinc-400 text-sm mb-6"><%= t("invitations.link.description_html", band: @band.name) %></p>
 
   <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center gap-3"
        data-controller="clipboard"
-       data-clipboard-content-value="<%= @invite_url %>">
+       data-clipboard-content-value="<%= @invite_url %>"
+       data-clipboard-default-label-value="<%= t("invitations.link.copy") %>"
+       data-clipboard-copied-label-value="<%= t("invitations.link.copied") %>">
     <code class="flex-1 text-sm text-amber-300 break-all font-mono"><%= @invite_url %></code>
     <button data-action="click->clipboard#copy"
             data-clipboard-target="button"
             class="flex-none text-sm bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">
-      Copy
+      <%= t("invitations.link.copy") %>
     </button>
   </div>
 
   <div class="mt-6">
-    <%= link_to "← Back to #{@band.name}", band_path(@band), class: "text-sm text-zinc-400 hover:text-zinc-200" %>
+    <%= link_to t("invitations.link.back", band: @band.name), band_path(@band), class: "text-sm text-zinc-400 hover:text-zinc-200" %>
   </div>
 </div>

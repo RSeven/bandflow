@@ -28,7 +28,7 @@ class SetlistsController < ApplicationController
   def create
     @setlist = @band.setlists.new(setlist_params)
     if @setlist.save
-      redirect_to band_setlist_path(@band, @setlist), notice: "Setlist created."
+      redirect_to band_setlist_path(@band, @setlist), notice: t("flash.setlists.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -38,7 +38,7 @@ class SetlistsController < ApplicationController
 
   def update
     if @setlist.update(setlist_params)
-      redirect_to band_setlist_path(@band, @setlist), notice: "Setlist updated."
+      redirect_to band_setlist_path(@band, @setlist), notice: t("flash.setlists.updated")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -46,7 +46,7 @@ class SetlistsController < ApplicationController
 
   def destroy
     @setlist.destroy
-    redirect_to @band, notice: "Setlist deleted."
+    redirect_to @band, notice: t("flash.setlists.deleted")
   end
 
   def present
@@ -61,7 +61,7 @@ class SetlistsController < ApplicationController
   end
 
   def require_membership
-    redirect_to bands_path, alert: "Access denied." unless Current.user.member_of?(@band)
+    redirect_to bands_path, alert: t("flash.shared.access_denied") unless Current.user.member_of?(@band)
   end
 
   def set_setlist

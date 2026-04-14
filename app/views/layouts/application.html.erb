@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= I18n.locale %>">
   <head>
-    <title><%= content_for(:title) || "Bandflow" %></title>
+    <title><%= content_for(:title) || t("app.name") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -24,15 +24,35 @@
 
   <body class="bg-zinc-950 text-zinc-100 min-h-screen">
     <nav class="bg-zinc-900 border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
-      <%= link_to "Bandflow", root_path, class: "text-xl font-bold text-amber-400 tracking-tight" %>
+      <%= link_to t("app.name"), root_path, class: "text-xl font-bold text-amber-400 tracking-tight" %>
       <div class="flex items-center gap-4 text-sm">
         <% if Current.user %>
-          <span class="text-zinc-400"><%= Current.user.name %></span>
-          <%= button_to "Sign out", session_path, method: :delete,
-              class: "text-zinc-400 hover:text-zinc-100 transition-colors" %>
+          <details class="relative">
+            <summary class="list-none cursor-pointer text-zinc-400 hover:text-zinc-100 transition-colors">
+              <span><%= Current.user.name %></span>
+            </summary>
+            <div class="absolute right-0 mt-2 w-56 rounded-xl border border-zinc-700 bg-zinc-900 p-3 shadow-xl z-20">
+              <div class="text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-2"><%= t("layout.language") %></div>
+              <%= form_with url: locale_path, method: :patch, local: true,
+                  data: { controller: "auto-submit" },
+                  class: "mb-3" do |form| %>
+                <%= form.hidden_field :redirect_path, value: request.fullpath %>
+                <%= form.select :locale,
+                    options_for_select(locale_options, I18n.locale),
+                    {},
+                    data: { action: "change->auto-submit#submit" },
+                    class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" %>
+              <% end %>
+
+              <div class="border-t border-zinc-800 pt-3">
+                <%= button_to t("layout.sign_out"), session_path, method: :delete,
+                    class: "w-full text-left text-zinc-300 hover:text-zinc-100 transition-colors" %>
+              </div>
+            </div>
+          </details>
         <% else %>
-          <%= link_to "Sign in", new_session_path, class: "text-zinc-400 hover:text-zinc-100" %>
-          <%= link_to "Sign up", new_registration_path, class: "bg-amber-500 hover:bg-amber-400 text-black font-medium px-3 py-1 rounded transition-colors" %>
+          <%= link_to t("layout.sign_in"), new_session_path, class: "text-zinc-400 hover:text-zinc-100" %>
+          <%= link_to t("layout.sign_up"), new_registration_path, class: "bg-amber-500 hover:bg-amber-400 text-black font-medium px-3 py-1 rounded transition-colors" %>
         <% end %>
       </div>
     </nav>
@@ -41,7 +61,7 @@
         <div class="mb-4 bg-emerald-900/50 border border-emerald-700 text-emerald-300 px-4 py-3 rounded-lg text-sm flex items-center justify-between">
           <span><%= notice %></span>
           <% if flash[:new_music_link] %>
-            <%= link_to "Add a new one", flash[:new_music_link], class: "text-emerald-400 hover:text-emerald-200 font-medium ml-4" %>
+            <%= link_to t("layout.add_new_music"), flash[:new_music_link], class: "text-emerald-400 hover:text-emerald-200 font-medium ml-4" %>
           <% end %>
         </div>
       <% end %>

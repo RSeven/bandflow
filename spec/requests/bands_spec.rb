@@ -87,6 +87,17 @@ RSpec.describe "Bands", type: :request do
       get band_path(other_band)
       expect(response).to redirect_to(bands_path)
     end
+
+    it "switches the interface to brazilian portuguese" do
+      patch locale_path, params: { locale: "pt-BR", redirect_path: band_path(band) }
+
+      expect(response).to redirect_to(band_path(band))
+
+      follow_redirect!
+
+      expect(response.body).to include("Repertório")
+      expect(response.body).to include("Idioma")
+    end
   end
 
   describe "POST /bands" do

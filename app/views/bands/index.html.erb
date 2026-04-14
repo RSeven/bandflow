@@ -1,14 +1,14 @@
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-bold">Your Bands</h1>
-  <%= link_to "New Band", new_band_path, class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold px-4 py-2 rounded-lg text-sm transition-colors" %>
+  <h1 class="text-2xl font-bold"><%= t("bands.index.title") %></h1>
+  <%= link_to t("bands.index.new_band"), new_band_path, class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold px-4 py-2 rounded-lg text-sm transition-colors" %>
 </div>
 
 <% if @bands.empty? %>
   <div class="text-center py-20 text-zinc-500">
     <div class="text-5xl mb-4">🎸</div>
-    <p class="text-lg font-medium mb-2">No bands yet</p>
-    <p class="text-sm mb-6">Create your first band or ask a band member for an invitation link.</p>
-    <%= link_to "Create a band", new_band_path, class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold px-5 py-2 rounded-lg text-sm transition-colors" %>
+    <p class="text-lg font-medium mb-2"><%= t("bands.index.empty_title") %></p>
+    <p class="text-sm mb-6"><%= t("bands.index.empty_body") %></p>
+    <%= link_to t("bands.index.create_band"), new_band_path, class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold px-5 py-2 rounded-lg text-sm transition-colors" %>
   </div>
 <% else %>
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -18,14 +18,14 @@
           <h2 class="text-lg font-semibold group-hover:text-amber-400 transition-colors"><%= band.name %></h2>
           <% membership = band.band_memberships.find { |m| m.user_id == Current.user.id } %>
           <% if membership&.role == "admin" %>
-            <span class="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full">Admin</span>
+            <span class="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full"><%= t("bands.index.admin_badge") %></span>
           <% end %>
         </div>
         <% if band.description.present? %>
           <p class="text-zinc-400 text-sm line-clamp-2 mb-3"><%= band.description %></p>
         <% end %>
         <div class="flex items-center gap-3 text-xs text-zinc-500">
-          <span><%= band.band_memberships.size %> member<%= "s" if band.band_memberships.size != 1 %></span>
+          <span><%= t("bands.index.members_count", count: band.band_memberships.size) %></span>
         </div>
       <% end %>
     <% end %>

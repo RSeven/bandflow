@@ -9,7 +9,7 @@
     <div>
       <h1 class="text-2xl font-bold"><%= @setlist.title %></h1>
       <% if @setlist.performance_date.present? %>
-        <p class="text-zinc-400 text-sm mt-1"><%= @setlist.performance_date.strftime("%B %-d, %Y") %></p>
+        <p class="text-zinc-400 text-sm mt-1"><%= l(@setlist.performance_date, format: :long) %></p>
       <% end %>
       <% if @setlist.notes.present? %>
         <p class="text-zinc-400 text-sm mt-1"><%= @setlist.notes %></p>
@@ -17,15 +17,15 @@
     </div>
     <div class="flex gap-2 flex-shrink-0">
       <% unless @setlist_items.empty? %>
-        <%= link_to "Present", present_band_setlist_path(@band, @setlist),
+        <%= link_to t("setlists.show.present"), present_band_setlist_path(@band, @setlist),
             class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold px-4 py-2 rounded-lg text-sm transition-colors" %>
-        <%= link_to "PDF", band_setlist_path(@band, @setlist, format: :pdf),
+        <%= link_to t("common.pdf"), band_setlist_path(@band, @setlist, format: :pdf),
             target: "_blank", rel: "noopener",
             class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-2 rounded-lg transition-colors" %>
       <% end %>
-      <%= link_to "Edit", edit_band_setlist_path(@band, @setlist), class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-2 rounded-lg transition-colors" %>
-      <%= button_to "Delete", band_setlist_path(@band, @setlist), method: :delete,
-          data: { turbo_confirm: "Delete this setlist?" },
+      <%= link_to t("common.edit"), edit_band_setlist_path(@band, @setlist), class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-2 rounded-lg transition-colors" %>
+      <%= button_to t("common.delete"), band_setlist_path(@band, @setlist), method: :delete,
+          data: { turbo_confirm: t("setlists.show.delete_confirm") },
           class: "text-sm border border-red-800 text-red-400 hover:border-red-600 px-3 py-2 rounded-lg transition-colors" %>
     </div>
   </div>
@@ -61,8 +61,8 @@
           music_query: @music_query %>
 
       <div class="pt-2 space-y-2 border-t border-zinc-800">
-        <%= link_to "+ Add music to repertoire", new_band_music_path(@band), class: "block text-sm text-amber-400 hover:text-amber-300" %>
-        <%= link_to "+ Create event", new_band_event_path(@band), class: "block text-sm text-blue-400 hover:text-blue-300" %>
+        <%= link_to t("setlists.show.add_music_to_repertoire"), new_band_music_path(@band), class: "block text-sm text-amber-400 hover:text-amber-300" %>
+        <%= link_to t("setlists.show.create_event"), new_band_event_path(@band), class: "block text-sm text-blue-400 hover:text-blue-300" %>
       </div>
     </div>
   </div>

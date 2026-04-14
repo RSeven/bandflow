@@ -1,31 +1,349 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  app:
+    name: "BandFlow"
+
+  locales:
+    names:
+      en: "English"
+      pt_BR: "Português (Brasil)"
+
+  common:
+    cancel: "Cancel"
+    clear: "Clear"
+    delete: "Delete"
+    edit: "Edit"
+    email: "Email"
+    email_placeholder: "you@example.com"
+    key: "Key"
+    next: "Next"
+    or: "or"
+    page_of: "Page %{page} of %{total}"
+    pdf: "PDF"
+    previous: "Previous"
+    save: "Save"
+
+  layout:
+    add_new_music: "Add a new one"
+    language: "Language"
+    sign_in: "Sign in"
+    sign_out: "Sign out"
+    sign_up: "Sign up"
+
+  flash:
+    shared:
+      access_denied: "Access denied."
+      admin_only: "Only admins can do that."
+      not_band_member: "You are not a member of this band."
+    bands:
+      created: "Band created successfully."
+      deleted: "Band deleted."
+      updated: "Band updated."
+    events:
+      created: "Event created."
+      deleted: "Event deleted."
+      updated: "Event updated."
+    invitations:
+      already_member: "You are already a member of %{band}."
+      create_account: "Create an account to join %{band}."
+      created: "Invitation created."
+      invalid_link: "Invalid invitation link."
+      revoked: "Invitation revoked."
+      sign_in_first: "Please sign in first."
+      used: "This invitation has already been used."
+      welcome: "Welcome to %{band}!"
+    musics:
+      created: "Music added."
+      deleted: "Music removed."
+      title_and_artist_required: "Title and artist are required."
+      unknown_source: "Unknown source."
+      updated: "Music updated."
+    passwords:
+      instructions_sent: "Password reset instructions sent, if that email exists."
+      invalid_link: "That password reset link is invalid or has expired."
+      mismatch: "Password confirmation doesn't match."
+      reset: "Password updated."
+    registrations:
+      welcome: "Welcome!"
+    sessions:
+      invalid_credentials: "Try another email address or password."
+      try_later: "Try again later."
+    setlist_items:
+      invalid_type: "Invalid item type."
+    setlists:
+      created: "Setlist created."
+      deleted: "Setlist deleted."
+      updated: "Setlist updated."
+
+  bands:
+    index:
+      admin_badge: "Admin"
+      create_band: "Create your first band"
+      empty_body: "Start by creating a band and inviting your bandmates."
+      empty_title: "You don't have any bands yet"
+      members_count:
+        one: "1 member"
+        other: "%{count} members"
+      new_band: "New Band"
+      title: "Your Bands"
+    new:
+      title: "Create a New Band"
+    edit:
+      title: "Edit %{name}"
+    form:
+      description_placeholder: "What kind of group is this?"
+      name_placeholder: "Band name"
+    show:
+      add_music: "Add Music"
+      admin_badge: "admin"
+      delete_confirm: "Delete %{name}? This cannot be undone."
+      generate_invite: "Generate Invite Link"
+      members_title: "Members"
+      new_setlist: "New Setlist"
+      no_music_search_results: "No songs matched your search."
+      no_music_yet: "No songs in the repertoire yet."
+      no_setlists_yet: "No setlists yet."
+      repertoire_title: "Repertoire"
+      search_musics_label: "Search songs"
+      search_musics_placeholder: "Search by title or artist"
+      setlists_title: "Setlists"
+      songs_count:
+        one: "1 song"
+        other: "%{count} songs"
+      tabs:
+        repertoire: "Repertoire"
+        setlists: "Setlists"
+
+  events:
+    new:
+      breadcrumb: "New event"
+      description: "Add a cue or spoken moment you can place inside a setlist."
+      title: "Create Event"
+    edit:
+      breadcrumb: "Edit event"
+      title: "Edit Event"
+    form:
+      description: "Description"
+      description_placeholder: "Optional details for this event"
+      title_placeholder: "Event title"
+
+  invitations:
+    link:
+      back: "Back to %{band}"
+      breadcrumb: "Invite link"
+      copied: "Copied!"
+      copy: "Copy"
+      description_html: "Share this link with the person you want to invite to <strong>%{band}</strong>."
+      title: "Invitation Link"
+    show:
+      accept: "Accept Invitation"
+      body_html: "%{inviter} invited you to join %{band} on %{app}."
+      create_account: "Create account"
+      joining_as: "Joining as %{email}"
+      sign_in_prompt: "Sign in or create an account to accept this invitation."
+      title: "You're invited"
+
+  mailers:
+    passwords:
+      reset:
+        body_html: "To reset your password, click %{link}."
+        body_text: "To reset your password, open this link:"
+        link: "here"
+        subject: "Reset your password"
+
+  musics:
+    new:
+      breadcrumb: "New music"
+      title: "Add Music"
+    edit:
+      title: "Edit Music"
+    form:
+      artist_placeholder: "Artist name"
+      bpm: "BPM"
+      bpm_placeholder: "e.g. 120"
+      chords: "Chords"
+      chords_help: "Paste the chord chart exactly as you want to display it in presentation mode."
+      chords_placeholder: "Paste chords here"
+      fetch_details: "Fetch details"
+      key: "Key"
+      key_placeholder: "e.g. G"
+      lyrics_help: "Lyrics will be shown when no chords are available."
+      major: "Major"
+      minor: "Minor"
+      mode: "Mode"
+      none: "None"
+      search_autofill: "Search & Autofill"
+      search_placeholder: "Search for a song"
+      search_song: "Search song"
+      spotify_url: "Spotify URL"
+      spotify_url_placeholder: "https://open.spotify.com/..."
+      title_artist_required: "Enter title and artist first."
+      title_placeholder: "Song title"
+      youtube_url: "YouTube URL"
+      youtube_url_placeholder: "https://youtube.com/..."
+      status:
+        spotify:
+          fetching: "Fetching song details..."
+          success: "Song details loaded."
+          error: "Could not load song details."
+        youtube:
+          fetching: "Fetching video link..."
+          success: "Video link loaded."
+          error: "Could not load video link."
+        lyrics:
+          fetching: "Fetching lyrics..."
+          success: "Lyrics loaded."
+          error: "Could not load lyrics."
+        chords:
+          fetching: "Fetching chords..."
+          success: "Chords loaded."
+          error: "Could not load chords."
+    show:
+      add_now: "Add it now"
+      bpm: "BPM"
+      chords: "Chords"
+      delete_confirm: "Delete %{title}?"
+      key: "Key"
+      lyrics: "Lyrics"
+      no_content: "No chords or lyrics added."
+      spotify: "Spotify"
+      youtube: "YouTube"
+
+  passwords:
+    new:
+      email_placeholder: "you@example.com"
+      submit: "Send reset instructions"
+      title: "Forgot your password?"
+    edit:
+      confirmation_placeholder: "Confirm your new password"
+      password_placeholder: "New password"
+      title: "Choose a new password"
+
+  presentation:
+    exit: "Exit"
+    mode: "Presentation Mode"
+    no_content: "No chords or lyrics added."
+    scroll_down: "Scroll Down"
+    scroll_up: "Scroll Up"
+    song: "song"
+    tap_to_pause: "tap to pause"
+    tap_to_resume: "tap to resume"
+    title: "Presentation"
+
+  registrations:
+    new:
+      have_account: "Already have an account?"
+      name_placeholder: "Your name"
+      password_confirmation: "Password confirmation"
+      submit: "Create account"
+      subtitle: "Create an account to manage bands and setlists."
+      title: "Create your account"
+
+  sessions:
+    new:
+      forgot_password: "Forgot password?"
+      no_account: "Don't have an account?"
+      subtitle: "Sign in to manage your band's music and setlists."
+      title: "Sign in"
+
+  setlists:
+    new:
+      breadcrumb: "New setlist"
+      title: "Create Setlist"
+    edit:
+      title: "Edit Setlist"
+    form:
+      notes: "Notes"
+      performance_date: "Performance date"
+      title_placeholder: "Setlist title"
+    items:
+      empty: "Add songs and events to start building this setlist."
+      event: "Event"
+      order:
+        one: "Setlist Order · 1 Song"
+        other: "Setlist Order · %{count} Songs"
+      remove: "Remove item"
+    available_musics:
+      all_added: "All repertoire songs are already in this setlist."
+      no_results: "No songs matched your search."
+      search_label: "Search available songs"
+      search_placeholder: "Search by title or artist"
+      title: "Add Music"
+    available_events:
+      no_results: "No events matched your search."
+      none_available: "No events available."
+      search_label: "Search available events"
+      search_placeholder: "Search by title or description"
+      title: "Add Event"
+    show:
+      add_music_to_repertoire: "Add music to repertoire"
+      create_event: "Create event"
+      delete_confirm: "Delete this setlist?"
+      present: "Present"
+
+  helpers:
+    submit:
+      band:
+        create: "Create band"
+        update: "Save changes"
+      event:
+        create: "Create event"
+        update: "Save changes"
+      music:
+        create: "Save music"
+        update: "Save changes"
+      setlist:
+        create: "Create setlist"
+        update: "Save changes"
+
+  activerecord:
+    models:
+      band: "Band"
+      event: "Event"
+      music: "Music"
+      setlist: "Setlist"
+      user: "User"
+    attributes:
+      band:
+        description: "Description"
+        name: "Name"
+      event:
+        description: "Description"
+        title: "Title"
+      music:
+        artist: "Artist"
+        bpm: "BPM"
+        chords: "Chords"
+        key_mode: "Mode"
+        key_name: "Key"
+        lyrics: "Lyrics"
+        spotify_url: "Spotify URL"
+        title: "Title"
+        youtube_url: "YouTube URL"
+      setlist:
+        notes: "Notes"
+        performance_date: "Performance date"
+        title: "Title"
+      user:
+        email_address: "Email"
+        name: "Name"
+        password: "Password"
+        password_confirmation: "Password confirmation"
+
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "can't be blank"
+      confirmation: "doesn't match %{attribute}"
+      invalid: "is invalid"
+      required: "is required"
+      taken: "has already been taken"
+      too_long:
+        one: "is too long (maximum is 1 character)"
+        other: "is too long (maximum is %{count} characters)"
+      too_short:
+        one: "is too short (minimum is 1 character)"
+        other: "is too short (minimum is %{count} characters)"
+
+  date:
+    formats:
+      long: "%B %-d, %Y"

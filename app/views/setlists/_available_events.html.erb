@@ -1,12 +1,12 @@
 <div id="available-events-panel">
   <div>
     <div class="flex items-center justify-between gap-3 mb-2">
-      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide">Add Event</h3>
+      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide"><%= t("setlists.available_events.title") %></h3>
       <% if events_total_pages > 1 %>
         <div class="flex items-center gap-2 text-xs text-zinc-500">
-          <span>Page <%= event_page %> of <%= events_total_pages %></span>
+          <span><%= t("common.page_of", page: event_page, total: events_total_pages) %></span>
           <% if event_page > 1 %>
-            <%= link_to "Previous", band_setlist_path(band, setlist,
+            <%= link_to t("common.previous"), band_setlist_path(band, setlist,
                 event_page: event_page - 1,
                 event_query: event_query,
                 music_page: music_page,
@@ -14,7 +14,7 @@
                 class: "text-zinc-400 hover:text-zinc-200 transition-colors" %>
           <% end %>
           <% if event_page < events_total_pages %>
-            <%= link_to "Next", band_setlist_path(band, setlist,
+            <%= link_to t("common.next"), band_setlist_path(band, setlist,
                 event_page: event_page + 1,
                 event_query: event_query,
                 music_page: music_page,
@@ -32,10 +32,10 @@
         <%= form.hidden_field :music_page, value: music_page %>
         <%= form.hidden_field :music_query, value: music_query %>
         <%= form.hidden_field :event_page, value: 1 %>
-        <%= form.label :event_query, "Search events", class: "sr-only" %>
+        <%= form.label :event_query, t("setlists.available_events.search_label"), class: "sr-only" %>
         <%= form.text_field :event_query,
             value: event_query,
-            placeholder: "Search by title or description",
+            placeholder: t("setlists.available_events.search_placeholder"),
             data: { action: "input->auto-submit#submit" },
             class: "w-full bg-zinc-900 border border-zinc-800 focus:border-blue-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
       <% end %>
@@ -64,7 +64,7 @@
       </div>
     <% else %>
       <div class="bg-zinc-900 border border-dashed border-zinc-800 rounded-xl px-4 py-5 text-sm text-zinc-500">
-        <%= event_query.present? ? "No events match your search." : "No events available yet." %>
+        <%= event_query.present? ? t("setlists.available_events.no_results") : t("setlists.available_events.none_available") %>
       </div>
     <% end %>
   </div>

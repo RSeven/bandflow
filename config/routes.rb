@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   root "bands#index"
 
+  resource :locale, only: :update
+
   resources :bands do
     resources :musics, except: [ :index ] do
       collection do

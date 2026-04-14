@@ -1,0 +1,349 @@
+pt-BR:
+  app:
+    name: "BandFlow"
+
+  locales:
+    names:
+      en: "English"
+      pt_BR: "Português (Brasil)"
+
+  common:
+    cancel: "Cancelar"
+    clear: "Limpar"
+    delete: "Excluir"
+    edit: "Editar"
+    email: "E-mail"
+    email_placeholder: "voce@exemplo.com"
+    key: "Tom"
+    next: "Próxima"
+    or: "ou"
+    page_of: "Página %{page} de %{total}"
+    pdf: "PDF"
+    previous: "Anterior"
+    save: "Salvar"
+
+  layout:
+    add_new_music: "Adicionar outra"
+    language: "Idioma"
+    sign_in: "Entrar"
+    sign_out: "Sair"
+    sign_up: "Cadastrar"
+
+  flash:
+    shared:
+      access_denied: "Acesso negado."
+      admin_only: "Somente administradores podem fazer isso."
+      not_band_member: "Você não faz parte desta banda."
+    bands:
+      created: "Banda criada com sucesso."
+      deleted: "Banda excluída."
+      updated: "Banda atualizada."
+    events:
+      created: "Evento criado."
+      deleted: "Evento excluído."
+      updated: "Evento atualizado."
+    invitations:
+      already_member: "Você já faz parte de %{band}."
+      create_account: "Crie uma conta para entrar em %{band}."
+      created: "Convite criado."
+      invalid_link: "Link de convite inválido."
+      revoked: "Convite revogado."
+      sign_in_first: "Entre primeiro."
+      used: "Este convite já foi usado."
+      welcome: "Bem-vindo(a) a %{band}!"
+    musics:
+      created: "Música adicionada."
+      deleted: "Música removida."
+      title_and_artist_required: "Título e artista são obrigatórios."
+      unknown_source: "Fonte desconhecida."
+      updated: "Música atualizada."
+    passwords:
+      instructions_sent: "As instruções de redefinição foram enviadas, se esse e-mail existir."
+      invalid_link: "Este link de redefinição é inválido ou expirou."
+      mismatch: "A confirmação de senha não confere."
+      reset: "Senha atualizada."
+    registrations:
+      welcome: "Bem-vindo(a)!"
+    sessions:
+      invalid_credentials: "Tente outro e-mail ou senha."
+      try_later: "Tente novamente mais tarde."
+    setlist_items:
+      invalid_type: "Tipo de item inválido."
+    setlists:
+      created: "Setlist criada."
+      deleted: "Setlist excluída."
+      updated: "Setlist atualizada."
+
+  bands:
+    index:
+      admin_badge: "Admin"
+      create_band: "Criar sua primeira banda"
+      empty_body: "Comece criando uma banda e convidando seus colegas."
+      empty_title: "Você ainda não tem bandas"
+      members_count:
+        one: "1 membro"
+        other: "%{count} membros"
+      new_band: "Nova Banda"
+      title: "Suas Bandas"
+    new:
+      title: "Criar Nova Banda"
+    edit:
+      title: "Editar %{name}"
+    form:
+      description_placeholder: "Que tipo de grupo é esse?"
+      name_placeholder: "Nome da banda"
+    show:
+      add_music: "Adicionar Música"
+      admin_badge: "admin"
+      delete_confirm: "Excluir %{name}? Isso não pode ser desfeito."
+      generate_invite: "Gerar Link de Convite"
+      members_title: "Membros"
+      new_setlist: "Nova Setlist"
+      no_music_search_results: "Nenhuma música correspondeu à busca."
+      no_music_yet: "Ainda não há músicas no repertório."
+      no_setlists_yet: "Ainda não há setlists."
+      repertoire_title: "Repertório"
+      search_musics_label: "Buscar músicas"
+      search_musics_placeholder: "Buscar por título ou artista"
+      setlists_title: "Setlists"
+      songs_count:
+        one: "1 música"
+        other: "%{count} músicas"
+      tabs:
+        repertoire: "Repertório"
+        setlists: "Setlists"
+
+  events:
+    new:
+      breadcrumb: "Novo evento"
+      description: "Adicione uma deixa ou momento falado para usar dentro da setlist."
+      title: "Criar Evento"
+    edit:
+      breadcrumb: "Editar evento"
+      title: "Editar Evento"
+    form:
+      description: "Descrição"
+      description_placeholder: "Detalhes opcionais para este evento"
+      title_placeholder: "Título do evento"
+
+  invitations:
+    link:
+      back: "Voltar para %{band}"
+      breadcrumb: "Link de convite"
+      copied: "Copiado!"
+      copy: "Copiar"
+      description_html: "Compartilhe este link com a pessoa que você quer convidar para <strong>%{band}</strong>."
+      title: "Link de Convite"
+    show:
+      accept: "Aceitar Convite"
+      body_html: "%{inviter} convidou você para entrar em %{band} no %{app}."
+      create_account: "Criar conta"
+      joining_as: "Entrando como %{email}"
+      sign_in_prompt: "Entre ou crie uma conta para aceitar este convite."
+      title: "Você foi convidado"
+
+  mailers:
+    passwords:
+      reset:
+        body_html: "Para redefinir sua senha, clique %{link}."
+        body_text: "Para redefinir sua senha, abra este link:"
+        link: "aqui"
+        subject: "Redefina sua senha"
+
+  musics:
+    new:
+      breadcrumb: "Nova música"
+      title: "Adicionar Música"
+    edit:
+      title: "Editar Música"
+    form:
+      artist_placeholder: "Nome do artista"
+      bpm: "BPM"
+      bpm_placeholder: "ex.: 120"
+      chords: "Cifras"
+      chords_help: "Cole a cifra exatamente como ela deve aparecer no modo de apresentação."
+      chords_placeholder: "Cole a cifra aqui"
+      fetch_details: "Buscar detalhes"
+      key: "Tom"
+      key_placeholder: "ex.: G"
+      lyrics_help: "A letra será exibida quando não houver cifras."
+      major: "Maior"
+      minor: "Menor"
+      mode: "Modo"
+      none: "Nenhum"
+      search_autofill: "Buscar e Preencher"
+      search_placeholder: "Busque uma música"
+      search_song: "Buscar música"
+      spotify_url: "URL do Spotify"
+      spotify_url_placeholder: "https://open.spotify.com/..."
+      title_artist_required: "Informe o título e o artista primeiro."
+      title_placeholder: "Título da música"
+      youtube_url: "URL do YouTube"
+      youtube_url_placeholder: "https://youtube.com/..."
+      status:
+        spotify:
+          fetching: "Buscando detalhes da música..."
+          success: "Detalhes da música carregados."
+          error: "Não foi possível carregar os detalhes da música."
+        youtube:
+          fetching: "Buscando link do vídeo..."
+          success: "Link do vídeo carregado."
+          error: "Não foi possível carregar o link do vídeo."
+        lyrics:
+          fetching: "Buscando letra..."
+          success: "Letra carregada."
+          error: "Não foi possível carregar a letra."
+        chords:
+          fetching: "Buscando cifras..."
+          success: "Cifras carregadas."
+          error: "Não foi possível carregar as cifras."
+    show:
+      add_now: "Adicionar agora"
+      bpm: "BPM"
+      chords: "Cifras"
+      delete_confirm: "Excluir %{title}?"
+      key: "Tom"
+      lyrics: "Letra"
+      no_content: "Nenhuma cifra ou letra foi adicionada."
+      spotify: "Spotify"
+      youtube: "YouTube"
+
+  passwords:
+    new:
+      email_placeholder: "voce@exemplo.com"
+      submit: "Enviar instruções"
+      title: "Esqueceu sua senha?"
+    edit:
+      confirmation_placeholder: "Confirme sua nova senha"
+      password_placeholder: "Nova senha"
+      title: "Escolha uma nova senha"
+
+  presentation:
+    exit: "Sair"
+    mode: "Modo Apresentação"
+    no_content: "Nenhuma cifra ou letra foi adicionada."
+    scroll_down: "Rolar Para Baixo"
+    scroll_up: "Rolar Para Cima"
+    song: "música"
+    tap_to_pause: "toque para pausar"
+    tap_to_resume: "toque para continuar"
+    title: "Apresentação"
+
+  registrations:
+    new:
+      have_account: "Já tem uma conta?"
+      name_placeholder: "Seu nome"
+      password_confirmation: "Confirmação de senha"
+      submit: "Criar conta"
+      subtitle: "Crie uma conta para gerenciar bandas e setlists."
+      title: "Crie sua conta"
+
+  sessions:
+    new:
+      forgot_password: "Esqueceu a senha?"
+      no_account: "Não tem uma conta?"
+      subtitle: "Entre para gerenciar as músicas e setlists da sua banda."
+      title: "Entrar"
+
+  setlists:
+    new:
+      breadcrumb: "Nova setlist"
+      title: "Criar Setlist"
+    edit:
+      title: "Editar Setlist"
+    form:
+      notes: "Observações"
+      performance_date: "Data da apresentação"
+      title_placeholder: "Título da setlist"
+    items:
+      empty: "Adicione músicas e eventos para começar a montar esta setlist."
+      event: "Evento"
+      order:
+        one: "Ordem da Setlist · 1 Música"
+        other: "Ordem da Setlist · %{count} Músicas"
+      remove: "Remover item"
+    available_musics:
+      all_added: "Todas as músicas do repertório já estão nesta setlist."
+      no_results: "Nenhuma música correspondeu à busca."
+      search_label: "Buscar músicas disponíveis"
+      search_placeholder: "Buscar por título ou artista"
+      title: "Adicionar Música"
+    available_events:
+      no_results: "Nenhum evento correspondeu à busca."
+      none_available: "Nenhum evento disponível."
+      search_label: "Buscar eventos disponíveis"
+      search_placeholder: "Buscar por título ou descrição"
+      title: "Adicionar Evento"
+    show:
+      add_music_to_repertoire: "Adicionar música ao repertório"
+      create_event: "Criar evento"
+      delete_confirm: "Excluir esta setlist?"
+      present: "Apresentar"
+
+  helpers:
+    submit:
+      band:
+        create: "Criar banda"
+        update: "Salvar alterações"
+      event:
+        create: "Criar evento"
+        update: "Salvar alterações"
+      music:
+        create: "Salvar música"
+        update: "Salvar alterações"
+      setlist:
+        create: "Criar setlist"
+        update: "Salvar alterações"
+
+  activerecord:
+    models:
+      band: "Banda"
+      event: "Evento"
+      music: "Música"
+      setlist: "Setlist"
+      user: "Usuário"
+    attributes:
+      band:
+        description: "Descrição"
+        name: "Nome"
+      event:
+        description: "Descrição"
+        title: "Título"
+      music:
+        artist: "Artista"
+        bpm: "BPM"
+        chords: "Cifras"
+        key_mode: "Modo"
+        key_name: "Tom"
+        lyrics: "Letra"
+        spotify_url: "URL do Spotify"
+        title: "Título"
+        youtube_url: "URL do YouTube"
+      setlist:
+        notes: "Observações"
+        performance_date: "Data da apresentação"
+        title: "Título"
+      user:
+        email_address: "E-mail"
+        name: "Nome"
+        password: "Senha"
+        password_confirmation: "Confirmação de senha"
+
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "não pode ficar em branco"
+      confirmation: "não confere com %{attribute}"
+      invalid: "não é válido"
+      required: "é obrigatório"
+      taken: "já está em uso"
+      too_long:
+        one: "é muito longo (máximo de 1 caractere)"
+        other: "é muito longo (máximo de %{count} caracteres)"
+      too_short:
+        one: "é muito curto (mínimo de 1 caractere)"
+        other: "é muito curto (mínimo de %{count} caracteres)"
+
+  date:
+    formats:
+      long: "%d/%m/%Y"
