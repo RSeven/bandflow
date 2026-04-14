@@ -1,0 +1,24 @@
+<div class="max-w-lg">
+  <div class="flex items-center gap-2 text-sm text-zinc-400 mb-4">
+    <%= link_to @band.name, band_path(@band), class: "hover:text-zinc-200" %>
+    <span>/</span>
+    <span>Invite link</span>
+  </div>
+  <h1 class="text-2xl font-bold mb-2">Invitation link</h1>
+  <p class="text-zinc-400 text-sm mb-6">Share this link with the person you want to invite to <strong class="text-zinc-200"><%= @band.name %></strong>. It can only be used once.</p>
+
+  <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center gap-3"
+       data-controller="clipboard"
+       data-clipboard-content-value="<%= @invite_url %>">
+    <code class="flex-1 text-sm text-amber-300 break-all font-mono"><%= @invite_url %></code>
+    <button data-action="click->clipboard#copy"
+            data-clipboard-target="button"
+            class="flex-none text-sm bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">
+      Copy
+    </button>
+  </div>
+
+  <div class="mt-6">
+    <%= link_to "← Back to #{@band.name}", band_path(@band), class: "text-sm text-zinc-400 hover:text-zinc-200" %>
+  </div>
+</div>

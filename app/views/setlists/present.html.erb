@@ -1,0 +1,100 @@
+<% content_for :title, "#{@setlist.title} — #{@band.name}" %>
+
+<div data-controller="presentation"
+     data-presentation-music-count-value="<%= @setlist.music_count %>"
+     class="flex flex-col h-screen overflow-hidden bg-zinc-950">
+
+  <%# ——— Items data (hidden) ——— %>
+  <% @setlist_items.each_with_index do |si, idx| %>
+    <template data-presentation-target="item"
+              data-type="<%= si.music? ? 'music' : 'event' %>"
+              data-music-index="<%= si.music? ? si.music_index : '' %>">
+      <% if si.music? %>
+        <div class="px-6 py-4">
+          <div class="flex items-center gap-3 mb-4 pb-3 border-b border-zinc-800">
+            <div>
+              <h2 class="text-lg font-bold leading-tight"><%= si.item.title %></h2>
+              <p class="text-zinc-400 text-sm"><%= si.item.artist %></p>
+            </div>
+            <div class="ml-auto flex gap-2 text-xs">
+              <% if si.item.bpm.present? %>
+                <span class="bg-zinc-800 px-2 py-1 rounded"><%= si.item.bpm_display %> BPM</span>
+              <% end %>
+              <% if si.item.key_name.present? %>
+                <span class="bg-zinc-800 px-2 py-1 rounded"><%= si.item.musical_key %></span>
+              <% end %>
+            </div>
+          </div>
+          <% content = si.item.display_content %>
+          <% if content.present? %>
+            <pre class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= content %></pre>
+          <% else %>
+            <p class="text-zinc-500 text-sm italic">No chords or lyrics added.</p>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="flex flex-col items-center justify-center h-full px-8 text-center">
+          <div class="text-4xl font-bold text-blue-300 mb-4"><%= si.item.title %></div>
+          <% if si.item.description.present? %>
+            <p class="text-zinc-300 text-lg"><%= si.item.description %></p>
+          <% end %>
+        </div>
+      <% end %>
+    </template>
+  <% end %>
+
+  <%# ——— Scrollable content area ——— %>
+  <div data-presentation-target="contentArea"
+       class="flex-1 overflow-y-auto scroll-smooth"
+       style="scroll-behavior: smooth;">
+    <div data-presentation-target="content" class="min-h-full">
+      <%# Filled dynamically by Stimulus %>
+    </div>
+  </div>
+
+  <%# ——— Bottom control bar ——— %>
+  <div class="flex-none bg-zinc-900 border-t border-zinc-800 px-4 py-3 flex items-center gap-3">
+    <%# Timer %>
+    <div class="flex-none">
+      <button data-action="click->presentation#toggleTimer"
+              data-presentation-target="timerBtn"
+              class="flex flex-col items-center">
+        <span data-presentation-target="timer"
+              class="text-xl font-mono font-bold text-amber-400 tabular-nums">00:00</span>
+        <span class="text-zinc-600 text-xs">tap to pause</span>
+      </button>
+    </div>
+
+    <%# Spacer %>
+    <div class="flex-1"></div>
+
+    <%# Roll button %>
+    <button data-action="click->presentation#roll"
+            class="flex-none bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 border border-zinc-700 rounded-xl px-5 py-3 text-sm font-semibold transition-colors select-none">
+      Roll ↓
+    </button>
+
+    <%# Next button %>
+    <button data-action="click->presentation#next"
+            data-presentation-target="nextBtn"
+            class="flex-none bg-amber-500 hover:bg-amber-400 active:bg-amber-300 text-black rounded-xl px-5 py-3 text-sm font-bold transition-colors select-none">
+      Next →
+    </button>
+
+    <%# Spacer %>
+    <div class="flex-1"></div>
+
+    <%# Music counter %>
+    <div class="flex-none text-right">
+      <span data-presentation-target="counter"
+            class="text-lg font-bold tabular-nums text-zinc-300">1/<%= @setlist.music_count %></span>
+      <div class="text-zinc-600 text-xs">song</div>
+    </div>
+  </div>
+
+  <%# ——— Exit button (top right overlay) ——— %>
+  <%= link_to band_setlist_path(@band, @setlist),
+      class: "absolute top-3 right-3 z-10 bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-200 transition-colors backdrop-blur-sm" do %>
+    ✕ Exit
+  <% end %>
+</div>

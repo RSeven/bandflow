@@ -1,0 +1,101 @@
+<div class="flex items-start justify-between mb-6">
+  <div>
+    <h1 class="text-3xl font-bold"><%= @band.name %></h1>
+    <% if @band.description.present? %>
+      <p class="text-zinc-400 mt-1"><%= @band.description %></p>
+    <% end %>
+  </div>
+  <% if Current.user.admin_of?(@band) %>
+    <div class="flex gap-2">
+      <%= link_to "Edit", edit_band_path(@band), class: "text-sm text-zinc-400 hover:text-zinc-200 border border-zinc-700 px-3 py-1.5 rounded-lg transition-colors" %>
+      <%= button_to "Delete", band_path(@band), method: :delete,
+          data: { turbo_confirm: "Are you sure you want to delete #{@band.name}?" },
+          class: "text-sm text-red-400 hover:text-red-300 border border-red-800 px-3 py-1.5 rounded-lg transition-colors" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-8">
+
+  <%# ——— MUSICS ——— %>
+  <section>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold">Repertoire</h2>
+      <%= link_to "+ Add music", new_band_music_path(@band), class: "text-sm text-amber-400 hover:text-amber-300" %>
+    </div>
+
+    <% if @musics.empty? %>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center text-zinc-500 text-sm">
+        No songs yet. Add your first one!
+      </div>
+    <% else %>
+      <div class="space-y-2">
+        <% @musics.each do |music| %>
+          <%= link_to band_music_path(@band, music), class: "flex items-center justify-between bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-lg px-4 py-3 transition-colors group" do %>
+            <div>
+              <div class="font-medium group-hover:text-amber-400 transition-colors"><%= music.title %></div>
+              <div class="text-zinc-400 text-sm"><%= music.artist %></div>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-zinc-500">
+              <% if music.bpm.present? %>
+                <span class="bg-zinc-800 px-2 py-0.5 rounded"><%= music.bpm_display %> BPM</span>
+              <% end %>
+              <% if music.key_name.present? %>
+                <span class="bg-zinc-800 px-2 py-0.5 rounded"><%= music.musical_key %></span>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
+
+  <%# ——— SETLISTS ——— %>
+  <section>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold">Setlists</h2>
+      <%= link_to "+ New setlist", new_band_setlist_path(@band), class: "text-sm text-amber-400 hover:text-amber-300" %>
+    </div>
+
+    <% if @setlists.empty? %>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center text-zinc-500 text-sm">
+        No setlists yet.
+      </div>
+    <% else %>
+      <div class="space-y-2">
+        <% @setlists.each do |setlist| %>
+          <%= link_to band_setlist_path(@band, setlist), class: "flex items-center justify-between bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-lg px-4 py-3 transition-colors group" do %>
+            <div>
+              <div class="font-medium group-hover:text-amber-400 transition-colors"><%= setlist.title %></div>
+              <% if setlist.performance_date.present? %>
+                <div class="text-zinc-400 text-sm"><%= setlist.performance_date.strftime("%B %-d, %Y") %></div>
+              <% end %>
+            </div>
+            <span class="text-xs text-zinc-500"><%= setlist.music_count %> songs</span>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
+</div>
+
+<%# ——— MEMBERS & INVITE ——— %>
+<section class="mt-8 border-t border-zinc-800 pt-6">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-lg font-semibold">Members</h2>
+    <% if Current.user.admin_of?(@band) %>
+      <%= button_to "Generate invite link", band_invitations_path(@band), method: :post,
+          class: "text-sm bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-1.5 rounded-lg transition-colors" %>
+    <% end %>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <% @band.band_memberships.includes(:user).each do |membership| %>
+      <div class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm">
+        <span><%= membership.user.name %></span>
+        <% if membership.role == "admin" %>
+          <span class="text-xs text-amber-400">admin</span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</section>

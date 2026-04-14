@@ -1,0 +1,121 @@
+<div class="max-w-3xl">
+  <div class="flex items-center gap-2 text-sm text-zinc-400 mb-4">
+    <%= link_to @band.name, band_path(@band), class: "hover:text-zinc-200" %>
+    <span>/</span>
+    <span class="text-zinc-200"><%= @setlist.title %></span>
+  </div>
+
+  <div class="flex items-start justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold"><%= @setlist.title %></h1>
+      <% if @setlist.performance_date.present? %>
+        <p class="text-zinc-400 text-sm mt-1"><%= @setlist.performance_date.strftime("%B %-d, %Y") %></p>
+      <% end %>
+      <% if @setlist.notes.present? %>
+        <p class="text-zinc-400 text-sm mt-1"><%= @setlist.notes %></p>
+      <% end %>
+    </div>
+    <div class="flex gap-2 flex-shrink-0">
+      <% unless @setlist_items.empty? %>
+        <%= link_to "Present", present_band_setlist_path(@band, @setlist),
+            class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold px-4 py-2 rounded-lg text-sm transition-colors" %>
+      <% end %>
+      <%= link_to "Edit", edit_band_setlist_path(@band, @setlist), class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-2 rounded-lg transition-colors" %>
+      <%= button_to "Delete", band_setlist_path(@band, @setlist), method: :delete,
+          data: { turbo_confirm: "Delete this setlist?" },
+          class: "text-sm border border-red-800 text-red-400 hover:border-red-600 px-3 py-2 rounded-lg transition-colors" %>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-6">
+    <%# ——— Setlist Items ——— %>
+    <div class="lg:col-span-2">
+      <h2 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-3">
+        Order (<%= @setlist.music_count %> songs)
+      </h2>
+
+      <% if @setlist_items.empty? %>
+        <div class="bg-zinc-900 border border-dashed border-zinc-700 rounded-xl p-8 text-center text-zinc-500 text-sm">
+          No items yet. Add musics or events from the panel on the right.
+        </div>
+      <% else %>
+        <div id="setlist-items" data-controller="sortable" data-sortable-url-value="<%= band_setlist_setlist_items_path(@band, @setlist) %>" class="space-y-2">
+          <% music_counter = 0 %>
+          <% @setlist_items.each_with_index do |si, idx| %>
+            <% music_counter += 1 if si.music? %>
+            <div id="setlist-item-<%= si.id %>" data-id="<%= si.id %>" class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2.5 group">
+              <span class="text-zinc-600 cursor-grab select-none text-sm">⠿</span>
+              <span class="text-xs font-mono text-zinc-600 w-5 text-right"><%= idx + 1 %></span>
+
+              <% if si.music? %>
+                <div class="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-medium text-sm truncate"><%= si.item.title %></div>
+                  <div class="text-zinc-400 text-xs truncate"><%= si.item.artist %></div>
+                </div>
+                <span class="text-xs text-zinc-500 flex-shrink-0">#<%= music_counter %></span>
+              <% else %>
+                <div class="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-medium text-sm truncate text-blue-300"><%= si.item.title %></div>
+                  <% if si.item.description.present? %>
+                    <div class="text-zinc-400 text-xs truncate"><%= si.item.description %></div>
+                  <% end %>
+                </div>
+                <span class="text-xs text-zinc-500 flex-shrink-0">event</span>
+              <% end %>
+
+              <%= button_to "×", band_setlist_setlist_item_path(@band, @setlist, si), method: :delete,
+                  class: "text-zinc-600 hover:text-red-400 transition-colors text-lg leading-none flex-shrink-0",
+                  data: { turbo_stream: true } %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <%# ——— Add Items Panel ——— %>
+    <div class="space-y-4">
+      <% if @musics.any? %>
+        <div>
+          <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-2">Add Music</h3>
+          <div class="space-y-1 max-h-64 overflow-y-auto">
+            <% @musics.each do |music| %>
+              <%= button_to band_setlist_setlist_items_path(@band, @setlist),
+                  params: { item_type: "Music", item_id: music.id },
+                  data: { turbo_stream: true },
+                  class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg px-3 py-2 text-sm transition-colors" do %>
+                <div class="font-medium truncate"><%= music.title %></div>
+                <div class="text-zinc-400 text-xs truncate"><%= music.artist %></div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @events.any? %>
+        <div>
+          <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-2">Add Event</h3>
+          <div class="space-y-1 max-h-48 overflow-y-auto">
+            <% @events.each do |event| %>
+              <%= button_to band_setlist_setlist_items_path(@band, @setlist),
+                  params: { item_type: "Event", item_id: event.id },
+                  data: { turbo_stream: true },
+                  class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 border-blue-900/40 rounded-lg px-3 py-2 text-sm transition-colors" do %>
+                <div class="font-medium text-blue-300 truncate"><%= event.title %></div>
+                <% if event.description.present? %>
+                  <div class="text-zinc-400 text-xs truncate"><%= event.description %></div>
+                <% end %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="pt-2 space-y-2 border-t border-zinc-800">
+        <%= link_to "+ Add music to repertoire", new_band_music_path(@band), class: "block text-sm text-amber-400 hover:text-amber-300" %>
+        <%= link_to "+ Create event", new_band_event_path(@band), class: "block text-sm text-blue-400 hover:text-blue-300" %>
+      </div>
+    </div>
+  </div>
+</div>

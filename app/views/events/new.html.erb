@@ -1,0 +1,10 @@
+<div class="max-w-lg">
+  <div class="flex items-center gap-2 text-sm text-zinc-400 mb-4">
+    <%= link_to @band.name, band_path(@band), class: "hover:text-zinc-200" %>
+    <span>/</span>
+    <span>New event</span>
+  </div>
+  <h1 class="text-2xl font-bold mb-2">Create an event</h1>
+  <p class="text-zinc-400 text-sm mb-6">Events are non-music items in a setlist, like "Interact with the crowd" or "Ask people to follow Instagram".</p>
+  <%= render "form", event: @event, band: @band %>
+</div>

@@ -1,0 +1,26 @@
+<%= form_with model: band, class: "space-y-4" do |f| %>
+  <% if band.errors.any? %>
+    <div class="bg-red-900/40 border border-red-700 text-red-300 rounded-lg px-4 py-3 text-sm">
+      <ul class="list-disc list-inside space-y-1">
+        <% band.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, class: "block text-sm font-medium text-zinc-300 mb-1" %>
+    <%= f.text_field :name, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent", placeholder: "Your band name" %>
+  </div>
+
+  <div>
+    <%= f.label :description, class: "block text-sm font-medium text-zinc-300 mb-1" %>
+    <%= f.text_area :description, rows: 3, class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none", placeholder: "A short description (optional)" %>
+  </div>
+
+  <div class="flex gap-3 pt-2">
+    <%= f.submit class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-6 rounded-lg transition-colors cursor-pointer text-sm" %>
+    <%= link_to "Cancel", band.persisted? ? band_path(band) : bands_path, class: "text-sm text-zinc-400 hover:text-zinc-200 py-2 px-4" %>
+  </div>
+<% end %>

@@ -1,0 +1,121 @@
+<%= form_with model: [ band, music ],
+    data: { controller: "music-form",
+            music_form_search_url_value: search_band_musics_path(band),
+            music_form_fetch_url_value:  fetch_metadata_band_musics_path(band) },
+    class: "space-y-6" do |f| %>
+
+  <% if music.errors.any? %>
+    <div class="bg-red-900/40 border border-red-700 text-red-300 rounded-lg px-4 py-3 text-sm">
+      <ul class="list-disc list-inside space-y-1">
+        <% music.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# ——— AUTOCOMPLETE SEARCH ——— %>
+  <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
+    <h3 class="font-semibold text-sm text-zinc-300 uppercase tracking-wide">Search &amp; Auto-fill</h3>
+
+    <div class="relative" data-music-form-target="searchWrapper">
+      <label class="block text-sm font-medium text-zinc-300 mb-1">Search song</label>
+      <input type="text"
+             data-music-form-target="searchInput"
+             data-action="input->music-form#search"
+             placeholder="Type a song name or artist..."
+             class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" />
+      <ul data-music-form-target="suggestions"
+          class="hidden absolute z-20 left-0 right-0 mt-1 bg-zinc-800 border border-zinc-700 rounded-lg overflow-hidden shadow-xl max-h-64 overflow-y-auto">
+      </ul>
+    </div>
+
+    <div class="flex gap-3">
+      <button type="button"
+              data-action="click->music-form#fetchMetadata"
+              class="text-sm bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 px-4 py-2 rounded-lg transition-colors">
+        Fetch metadata (Spotify, lyrics, BPM, key)
+      </button>
+      <span data-music-form-target="fetchStatus" class="text-sm text-zinc-400 self-center"></span>
+    </div>
+  </div>
+
+  <%# ——— TITLE & ARTIST ——— %>
+  <div class="grid sm:grid-cols-2 gap-4">
+    <div>
+      <%= f.label :title, class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <%= f.text_field :title, data: { music_form_target: "title" },
+          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+          placeholder: "Song title" %>
+    </div>
+    <div>
+      <%= f.label :artist, class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <%= f.text_field :artist, data: { music_form_target: "artist" },
+          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+          placeholder: "Artist / band name" %>
+    </div>
+  </div>
+
+  <%# ——— BPM & KEY ——— %>
+  <div class="grid sm:grid-cols-3 gap-4">
+    <div>
+      <%= f.label :bpm, "BPM", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <%= f.number_field :bpm, step: 0.1, data: { music_form_target: "bpm" },
+          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+          placeholder: "e.g. 120" %>
+    </div>
+    <div>
+      <%= f.label :key_name, "Key", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <%= f.text_field :key_name, data: { music_form_target: "keyName" },
+          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+          placeholder: "e.g. G" %>
+    </div>
+    <div>
+      <%= f.label :key_mode, "Mode", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <%= f.select :key_mode, [ [ "— none —", "" ], [ "Major", "major" ], [ "Minor", "minor" ] ],
+          { selected: music.key_mode },
+          data: { music_form_target: "keyMode" },
+          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" %>
+    </div>
+  </div>
+
+  <%# ——— URLS ——— %>
+  <div class="grid sm:grid-cols-2 gap-4">
+    <div>
+      <%= f.label :spotify_url, "Spotify URL", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <%= f.url_field :spotify_url, data: { music_form_target: "spotifyUrl" },
+          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+          placeholder: "https://open.spotify.com/..." %>
+      <%= f.hidden_field :spotify_track_id, data: { music_form_target: "spotifyTrackId" } %>
+    </div>
+    <div>
+      <%= f.label :youtube_url, "YouTube URL", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+      <%= f.url_field :youtube_url, data: { music_form_target: "youtubeUrl" },
+          class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+          placeholder: "https://youtube.com/..." %>
+    </div>
+  </div>
+
+  <%# ——— CHORDS ——— %>
+  <div>
+    <%= f.label :chords, "Chords / Chart", class: "block text-sm font-medium text-zinc-300 mb-1" %>
+    <p class="text-xs text-zinc-500 mb-2">Use plain text chord notation, one section per line. e.g. [Verse] Am G C F</p>
+    <%= f.text_area :chords, rows: 10,
+        data: { music_form_target: "chords" },
+        class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent font-mono resize-y",
+        placeholder: "[Intro]\nAm  G  C  F\n\n[Verse 1]\nAm        G\nSome lyrics here..." %>
+  </div>
+
+  <%# ——— LYRICS ——— %>
+  <div>
+    <%= f.label :lyrics, class: "block text-sm font-medium text-zinc-300 mb-1" %>
+    <p class="text-xs text-zinc-500 mb-2">Auto-fetched from Genius when available. You can edit freely.</p>
+    <%= f.text_area :lyrics, rows: 12, data: { music_form_target: "lyrics" },
+        class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-y" %>
+  </div>
+
+  <div class="flex gap-3">
+    <%= f.submit class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-6 rounded-lg transition-colors cursor-pointer text-sm" %>
+    <%= link_to "Cancel", music.persisted? ? band_music_path(band, music) : band_path(band), class: "text-sm text-zinc-400 hover:text-zinc-200 py-2 px-4" %>
+  </div>
+<% end %>
