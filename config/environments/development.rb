@@ -37,8 +37,15 @@ Rails.application.configure do
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
 
-  # Set localhost to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  app_host = ENV["APP_HOST"].presence || "horribly-suited-garfish.ngrok-free.app"
+  app_protocol = ENV.fetch("APP_PROTOCOL", "https")
+
+  # Use the public tunnel host for generated URLs while developing through ngrok.
+  config.action_mailer.default_url_options = { host: app_host, protocol: app_protocol }
+  Rails.application.routes.default_url_options[:host] = app_host
+  Rails.application.routes.default_url_options[:protocol] = app_protocol
+  config.hosts << app_host
+  config.hosts << ".ngrok-free.app"
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
