@@ -104,6 +104,6 @@ class SetlistItemsController < ApplicationController
   end
 
   def total_pages_for(scope)
-    [(scope.count.to_f / SIDEBAR_PAGE_SIZE).ceil, 1].max
+    [ (scope.count.to_f / SIDEBAR_PAGE_SIZE).ceil, 1 ].max
   end
 end

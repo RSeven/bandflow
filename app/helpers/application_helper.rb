@@ -15,6 +15,13 @@ module ApplicationHelper
     app_locales.map { |locale| [ locale_label(locale), locale ] }
   end
 
+  def safe_url(url)
+    uri = URI.parse(url.to_s)
+    uri.scheme.in?(%w[http https]) ? url : nil
+  rescue URI::InvalidURIError
+    nil
+  end
+
   private
 
   def app_locales

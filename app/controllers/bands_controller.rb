@@ -82,7 +82,7 @@ class BandsController < ApplicationController
   end
 
   def total_pages_for(scope)
-    [(scope.count.to_f / PAGE_SIZE).ceil, 1].max
+    [ (scope.count.to_f / PAGE_SIZE).ceil, 1 ].max
   end
 
   def active_tab_param

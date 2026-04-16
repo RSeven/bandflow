@@ -101,7 +101,7 @@ class GeniusService
           hex = value[(index + 1), 4]
           return nil unless hex&.match?(/\A\h{4}\z/)
 
-          decoded << [hex.to_i(16)].pack("U")
+          decoded << [ hex.to_i(16) ].pack("U")
           index += 4
         else
           decoded << value[index]
