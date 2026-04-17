@@ -8,3 +8,15 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+html {
+  scroll-padding-bottom: calc(var(--keyboard-guard-offset, 0px) + 2rem);
+}
+
+body.keyboard-guard-active {
+  padding-bottom: calc(var(--keyboard-guard-offset, 0px) + 2rem);
+}
+
+body.keyboard-guard-active main {
+  padding-bottom: 3rem;
+}

@@ -22,7 +22,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-zinc-950 text-zinc-100 min-h-screen">
+  <body class="bg-zinc-950 text-zinc-100 min-h-dvh" data-controller="keyboard-guard">
     <nav class="bg-zinc-900 border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
       <%= link_to t("app.name"), root_path, class: "text-xl font-bold text-amber-400 tracking-tight" %>
       <div class="flex items-center gap-4 text-sm">
