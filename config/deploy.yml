@@ -14,10 +14,8 @@ proxy:
   ssl: true
   host: bandflow.ruanlps.com
 
-healthcheck:
-  timeout: 90
-  interval: 2s
-  path: /up
+# Overall app boot timeout for Kamal during deploys.
+deploy_timeout: 90
 
 # Credentials for your image host.
 registry:
@@ -39,6 +37,7 @@ env:
     - YOUTUBE_API_KEY
   clear:
     APP_HOST: bandflow.ruanlps.com
+    BINDING: localhost
     SOLID_QUEUE_IN_PUMA: true
 
     # Set number of processes dedicated to Solid Queue (default: 1)
