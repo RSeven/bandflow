@@ -46,6 +46,9 @@
 # Ignore development files
 /.devcontainer
 
+# Ignore Android app (separate build pipeline, not part of Rails image)
+/android/
+
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*

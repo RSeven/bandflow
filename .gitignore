@@ -37,3 +37,6 @@
 !/app/assets/builds/.keep
 .env
 .codex
+
+# Android app lives in its own repo at /android/
+/android/
