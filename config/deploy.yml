@@ -14,6 +14,11 @@ proxy:
   ssl: true
   host: bandflow.ruanlps.com
 
+healthcheck:
+  timeout: 90
+  interval: 2s
+  path: /up
+
 # Credentials for your image host.
 registry:
   username: ruanlps
