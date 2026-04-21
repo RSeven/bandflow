@@ -102,6 +102,7 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     diff-lcs (1.6.2)
+    docile (1.4.1)
     dotenv (3.2.0)
     dotenv-rails (3.2.0)
       dotenv (= 3.2.0)
@@ -190,6 +191,17 @@ GEM
     msgpack (1.8.0)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
+    mutant (0.16.0)
+      diff-lcs (>= 1.6, < 3)
+      irb (~> 1.15)
+      parser (~> 3.3.10)
+      regexp_parser (~> 2.10)
+      securerandom (>= 0.3)
+      sorbet-runtime (~> 0.6.0)
+      unparser (>= 0.8.2, < 0.10)
+    mutant-rspec (0.16.0)
+      mutant (= 0.16.0)
+      rspec-core (>= 3.8.0, < 5.0.0)
     net-imap (0.6.3)
       date
       net-protocol
@@ -352,6 +364,12 @@ GEM
       ffi (~> 1.12)
       logger
     securerandom (0.4.1)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.13.2)
+    simplecov_json_formatter (0.1.4)
     solid_cable (3.0.12)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -368,6 +386,7 @@ GEM
       fugit (~> 1.11)
       railties (>= 7.1)
       thor (>= 1.3.1)
+    sorbet-runtime (0.6.13145)
     sqlite3 (2.9.3-aarch64-linux-gnu)
     sqlite3 (2.9.3-aarch64-linux-musl)
     sqlite3 (2.9.3-arm-linux-gnu)
@@ -414,6 +433,10 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.2.0)
+    unparser (0.9.0)
+      diff-lcs (>= 1.6, < 3)
+      parser (>= 3.3.0)
+      prism (>= 1.5.1)
     uri (1.1.1)
     useragent (0.16.11)
     web-console (4.3.0)
@@ -452,6 +475,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   kamal
+  mutant-rspec
   ostruct (~> 0.6.3)
   pdf-inspector (~> 1.3)
   prawn (~> 2.5)
@@ -460,6 +484,7 @@ DEPENDENCIES
   rails (~> 8.1.3)
   rspec-rails (~> 8.0)
   rubocop-rails-omakase
+  simplecov (~> 0.22.0)
   solid_cable
   solid_cache
   solid_queue

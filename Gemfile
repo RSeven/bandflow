@@ -72,4 +72,6 @@ gem "dotenv-rails", "~> 3.2", groups: [ :development, :test ]
 gem "rspec-rails", "~> 8.0", groups: [ :development, :test ]
 gem "factory_bot_rails", "~> 6.5", groups: [ :development, :test ]
 gem "faker", "~> 3.8", groups: [ :development, :test ]
+gem "mutant-rspec", groups: [ :development, :test ], require: false
 gem "pdf-inspector", "~> 1.3", group: :test, require: false
+gem "simplecov", "~> 0.22.0", group: :test, require: false

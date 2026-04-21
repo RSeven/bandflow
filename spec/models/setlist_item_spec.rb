@@ -14,6 +14,26 @@ RSpec.describe SetlistItem, type: :model do
       expect(si1.position).to eq(0)
       expect(si2.position).to eq(1)
     end
+
+    it "preserves an explicitly provided non-zero position" do
+      setlist = create(:setlist)
+      music   = create(:music, band: setlist.band)
+
+      si = setlist.setlist_items.create!(item: music, position: 42)
+
+      expect(si.position).to eq(42)
+    end
+
+    it "overrides an explicit position of 0 with the next auto position" do
+      setlist = create(:setlist)
+      band    = setlist.band
+      existing = setlist.setlist_items.create!(item: create(:music, band: band))
+
+      si = setlist.setlist_items.create!(item: create(:music, band: band), position: 0)
+
+      expect(existing.position).to eq(0)
+      expect(si.position).to eq(1)
+    end
   end
 
   describe "#music_index" do
