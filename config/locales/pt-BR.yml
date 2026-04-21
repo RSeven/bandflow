@@ -224,6 +224,7 @@ pt-BR:
     next_stop: "Próxima parada"
     no_content: "Nenhuma cifra ou letra foi adicionada."
     scroll_down: "Rolar Para Baixo"
+    controls: "Controles"
     scroll_up: "Rolar Para Cima"
     song: "música"
     tap_to_pause: "toque para pausar"

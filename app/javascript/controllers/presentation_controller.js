@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 // Controls the full-screen setlist presentation mode.
 // Features: smooth roll scroll, next item navigation, elapsed timer, music counter.
 export default class extends Controller {
-  static targets = ["item", "content", "contentArea", "scrollMarker", "timer", "timerBtn", "counter", "nextBtn"]
+  static targets = ["item", "content", "contentArea", "scrollMarker", "timer", "timerBtn", "counter", "nextBtn", "headerPanel", "headerToggle", "headerChevron"]
   static values  = { musicCount: Number, tapToPause: String, tapToResume: String }
 
   connect() {
@@ -16,16 +16,21 @@ export default class extends Controller {
     this.contentAreaTarget.addEventListener("scroll", this._boundUpdateScrollMarker)
     window.addEventListener("resize", this._boundUpdateScrollMarker)
 
+    this._headerExpanded = false
+    this._boundExitFullscreen = this._exitFullscreen.bind(this)
+    document.addEventListener("turbo:before-visit", this._boundExitFullscreen)
+
     this._loadItem(0)
     this._startTimer()
-    // Keep screen awake if Wake Lock API is available
     this._requestWakeLock()
+    this._requestFullscreen()
   }
 
   disconnect() {
     clearInterval(this._interval)
     this.contentAreaTarget.removeEventListener("scroll", this._boundUpdateScrollMarker)
     window.removeEventListener("resize", this._boundUpdateScrollMarker)
+    document.removeEventListener("turbo:before-visit", this._boundExitFullscreen)
     this._releaseWakeLock()
   }
 
@@ -170,6 +175,42 @@ export default class extends Controller {
     const previewOffset = Math.min(Math.floor(area.clientHeight * 0.65), remainingDown)
     this.scrollMarkerTarget.style.top = `${previewOffset}px`
     this.scrollMarkerTarget.classList.remove("hidden")
+  }
+
+  // ——— Header toggle ———
+
+  toggleHeader() {
+    this._headerExpanded = !this._headerExpanded
+    const panel   = this.headerPanelTarget
+    const chevron = this.headerChevronTarget
+
+    if (this._headerExpanded) {
+      panel.style.maxHeight = `${panel.scrollHeight}px`
+      chevron.style.transform = "rotate(180deg)"
+    } else {
+      panel.style.maxHeight = "0"
+      chevron.style.transform = ""
+    }
+  }
+
+  // ——— Fullscreen ———
+
+  async _requestFullscreen() {
+    try {
+      const el = document.documentElement
+      if (el.requestFullscreen) await el.requestFullscreen()
+      else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen()
+    } catch (_) {}
+  }
+
+  _exitFullscreen() {
+    try {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen()
+      } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+        document.webkitExitFullscreen()
+      }
+    } catch (_) {}
   }
 
   // ——— Wake Lock ———

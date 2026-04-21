@@ -224,6 +224,7 @@ en:
     next_stop: "Next stop"
     no_content: "No chords or lyrics added."
     scroll_down: "Scroll Down"
+    controls: "Controls"
     scroll_up: "Scroll Up"
     song: "song"
     tap_to_pause: "tap to pause"
