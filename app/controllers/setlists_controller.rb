@@ -3,7 +3,7 @@ class SetlistsController < ApplicationController
 
   before_action :set_band
   before_action :require_membership
-  before_action :set_setlist, only: [ :show, :edit, :update, :destroy, :present ]
+  before_action :set_setlist, only: [ :show, :edit, :update, :destroy, :present, :export ]
 
   def show
     respond_to do |format|
@@ -52,6 +52,16 @@ class SetlistsController < ApplicationController
   def present
     @setlist_items = @setlist.ordered_items
     render layout: "presentation"
+  end
+
+  def export
+    @setlist_items = @setlist.ordered_items
+    css = Rails.root.join("app/assets/builds/tailwind.css").read
+    html = render_to_string(template: "setlists/export", layout: false, locals: { embedded_css: css })
+    send_data html,
+      filename: "#{@setlist.title.parameterize}-#{@band.name.parameterize}.html",
+      type: "text/html",
+      disposition: "attachment"
   end
 
   private

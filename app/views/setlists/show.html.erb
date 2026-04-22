@@ -22,6 +22,8 @@
         <%= link_to t("common.pdf"), band_setlist_path(@band, @setlist, format: :pdf),
             target: "_blank", rel: "noopener",
             class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-2 rounded-lg transition-colors" %>
+        <%= link_to t("setlists.show.export_offline"), export_band_setlist_path(@band, @setlist),
+            class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-2 rounded-lg transition-colors" %>
       <% end %>
       <%= link_to t("common.edit"), edit_band_setlist_path(@band, @setlist), class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-2 rounded-lg transition-colors" %>
       <%= button_to t("common.delete"), band_setlist_path(@band, @setlist), method: :delete,

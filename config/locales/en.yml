@@ -280,6 +280,7 @@ en:
       add_music_to_repertoire: "Add music to repertoire"
       create_event: "Create event"
       delete_confirm: "Delete this setlist?"
+      export_offline: "Download offline"
       present: "Present"
 
   helpers:

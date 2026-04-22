@@ -280,6 +280,7 @@ pt-BR:
       add_music_to_repertoire: "Adicionar música ao repertório"
       create_event: "Criar evento"
       delete_confirm: "Excluir esta setlist?"
+      export_offline: "Baixar offline"
       present: "Apresentar"
 
   helpers:

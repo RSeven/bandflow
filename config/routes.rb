@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       resources :setlist_items, only: [ :create, :destroy, :update ]
       member do
         get :present         # Presentation mode
+        get :export          # Offline HTML export
       end
     end
     resources :events, except: [ :index, :show ]

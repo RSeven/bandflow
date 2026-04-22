@@ -1,0 +1,278 @@
+<%# Rendered with layout: false — this IS the complete HTML document for offline use %>
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title><%= @setlist.title %> — <%= @band.name %></title>
+  <style><%= raw embedded_css %></style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 h-[100dvh] overflow-hidden flex flex-col">
+
+<div class="flex flex-col h-[100dvh] overflow-hidden bg-zinc-950">
+
+  <%# ——— Top header ——— %>
+  <div class="flex-none bg-zinc-900 border-b border-zinc-800 px-4 py-2 flex items-center gap-3">
+    <button id="ps-timer-btn" class="flex items-baseline gap-1.5">
+      <span id="ps-timer" class="text-xl font-mono font-bold text-amber-400 tabular-nums">00:00</span>
+      <span class="text-zinc-600 text-xs"><%= t("presentation.tap_to_pause") %></span>
+    </button>
+
+    <div class="flex-1"></div>
+
+    <div class="text-right">
+      <span id="ps-counter" class="text-lg font-bold tabular-nums text-zinc-300">1/<%= @setlist.music_count %></span>
+      <div class="text-zinc-600 text-xs"><%= t("presentation.song") %></div>
+    </div>
+
+    <button id="ps-header-toggle"
+            class="flex-none flex flex-col items-center gap-0.5 text-zinc-400 hover:text-zinc-100 active:text-zinc-100 transition-colors p-1 -mr-1 select-none"
+            aria-label="<%= t('presentation.controls') %>">
+      <svg id="ps-header-chevron"
+           xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+           class="w-4 h-4 transition-transform duration-200">
+        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+      </svg>
+      <span class="text-[10px] uppercase tracking-wide font-semibold leading-none"><%= t("presentation.controls") %></span>
+    </button>
+  </div>
+
+  <%# ——— Collapsible controls panel ——— %>
+  <div id="ps-header-panel"
+       class="flex-none bg-zinc-900 border-b border-zinc-800 overflow-hidden"
+       style="max-height: 0; transition: max-height 0.2s ease;">
+    <div class="px-4 pt-3 pb-1">
+      <div class="text-zinc-500 text-xs uppercase tracking-wide"><%= t("presentation.mode") %></div>
+      <div class="text-lg font-bold truncate"><%= @setlist.title %></div>
+      <div class="text-zinc-400 text-sm truncate"><%= @band.name %></div>
+    </div>
+    <div class="flex items-center gap-3 px-4 pb-3 pt-2">
+      <button onclick="window.close()"
+              class="flex-none bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl px-4 py-3 text-sm font-semibold text-zinc-300 hover:text-zinc-100 transition-colors">
+        <%= t("presentation.exit") %>
+      </button>
+      <button id="ps-next-btn"
+              class="flex-1 bg-amber-500 hover:bg-amber-400 active:bg-amber-300 text-black rounded-xl px-5 py-3 text-sm font-bold transition-colors select-none">
+        <%= t("common.next") %> →
+      </button>
+    </div>
+  </div>
+
+  <%# ——— Item data (hidden templates) ——— %>
+  <% @setlist_items.each_with_index do |si, idx| %>
+    <template data-ps-item
+              data-type="<%= si.music? ? 'music' : 'event' %>"
+              data-music-index="<%= si.music? ? si.music_index : '' %>">
+      <% if si.music? %>
+        <div class="px-6 py-4">
+          <div class="flex items-center gap-3 mb-4 pb-3 border-b border-zinc-800">
+            <div>
+              <h2 class="text-lg font-bold leading-tight"><%= si.item.title %></h2>
+              <p class="text-zinc-400 text-sm"><%= si.item.artist %></p>
+            </div>
+            <div class="ml-auto flex gap-2 text-xs">
+              <% if si.item.bpm.present? %>
+                <span class="bg-zinc-800 px-2 py-1 rounded"><%= si.item.bpm_display %> BPM</span>
+              <% end %>
+              <% if si.item.key_name.present? %>
+                <span class="bg-zinc-800 px-2 py-1 rounded"><%= si.item.musical_key %></span>
+              <% end %>
+            </div>
+          </div>
+          <% if si.item.has_chords? && si.item.lyrics.present? %>
+            <div class="mb-4 flex gap-2">
+              <button type="button" data-ps-view-btn="chords"
+                      class="flex-1 rounded-lg border border-amber-500/40 bg-amber-500/20 px-3 py-2.5 text-sm font-semibold text-amber-300 transition-colors">
+                <%= t("musics.show.chords") %>
+              </button>
+              <button type="button" data-ps-view-btn="lyrics"
+                      class="flex-1 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm font-semibold text-zinc-300 transition-colors">
+                <%= t("musics.show.lyrics") %>
+              </button>
+            </div>
+            <pre data-ps-content="chords" class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.chords %></pre>
+            <pre data-ps-content="lyrics" class="hidden text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.lyrics %></pre>
+          <% elsif si.item.has_chords? %>
+            <pre class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.chords %></pre>
+          <% elsif si.item.lyrics.present? %>
+            <pre class="text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.lyrics %></pre>
+          <% else %>
+            <p class="text-zinc-500 text-sm italic"><%= t("presentation.no_content") %></p>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="flex flex-col items-center justify-center h-full px-8 text-center">
+          <div class="text-4xl font-bold text-blue-300 mb-4 mt-4"><%= si.item.title %></div>
+          <% if si.item.description.present? %>
+            <p class="text-zinc-300 text-lg"><%= si.item.description %></p>
+          <% end %>
+        </div>
+      <% end %>
+    </template>
+  <% end %>
+
+  <%# ——— Scrollable content area ——— %>
+  <div class="relative flex-1 overflow-hidden">
+    <div id="ps-scroll-marker"
+         class="pointer-events-none absolute left-0 right-0 z-20 hidden px-4"
+         style="top: 0;">
+      <div class="flex items-center gap-2">
+        <div class="h-0.5 flex-1 rounded-full bg-amber-400"></div>
+        <span class="rounded-full border border-amber-500/40 bg-zinc-950/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-300">
+          <%= t("presentation.next_stop") %>
+        </span>
+        <div class="h-0.5 flex-1 rounded-full bg-amber-400"></div>
+      </div>
+    </div>
+
+    <div id="ps-content-area" class="h-full overflow-y-auto" style="scroll-behavior: smooth;">
+      <div id="ps-content" class="min-h-full"></div>
+    </div>
+  </div>
+
+  <%# ——— Bottom scroll controls ——— %>
+  <div class="flex-none bg-zinc-900 border-t border-zinc-800 flex"
+       style="min-height: 12vh; padding-bottom: env(safe-area-inset-bottom);">
+    <button id="ps-scroll-up"
+            class="flex-1 bg-zinc-900 hover:bg-zinc-800 active:bg-zinc-600 text-zinc-100 transition-colors select-none"
+            style="border-right: 1px solid rgb(39 39 42);">
+      <div class="flex flex-col items-center justify-center h-full px-4 text-center">
+        <div class="text-xl font-bold leading-none">↑</div>
+        <div class="mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-300"><%= t("presentation.scroll_up") %></div>
+      </div>
+    </button>
+
+    <button id="ps-scroll-down"
+            class="flex-1 bg-amber-500 hover:bg-amber-400 active:bg-amber-300 text-black transition-colors select-none">
+      <div class="flex flex-col items-center justify-center h-full px-4 text-center">
+        <div class="text-xl font-bold leading-none">↓</div>
+        <div class="mt-1 text-xs font-semibold uppercase tracking-wide"><%= t("presentation.scroll_down") %></div>
+      </div>
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var MUSIC_COUNT  = <%= @setlist.music_count %>;
+  var TAP_TO_PAUSE  = "<%= j(t('presentation.tap_to_pause')) %>";
+  var TAP_TO_RESUME = "<%= j(t('presentation.tap_to_resume')) %>";
+
+  var items    = Array.from(document.querySelectorAll('[data-ps-item]'));
+  var content  = document.getElementById('ps-content');
+  var area     = document.getElementById('ps-content-area');
+  var marker   = document.getElementById('ps-scroll-marker');
+  var timer    = document.getElementById('ps-timer');
+  var timerBtn = document.getElementById('ps-timer-btn');
+  var counter  = document.getElementById('ps-counter');
+  var nextBtn  = document.getElementById('ps-next-btn');
+  var panel    = document.getElementById('ps-header-panel');
+  var chevron  = document.getElementById('ps-header-chevron');
+
+  var idx = 0, elapsed = 0, timerRunning = true, expanded = false;
+
+  function load(i) {
+    var tpl = items[i];
+    content.style.opacity = '0';
+    content.style.transition = 'opacity 0.25s ease';
+    setTimeout(function () {
+      content.innerHTML = tpl.innerHTML;
+      area.scrollTo({ top: 0, behavior: 'instant' });
+      content.style.opacity = '1';
+      content.querySelectorAll('[data-ps-view-btn]').forEach(function (btn) {
+        btn.addEventListener('click', function () { setView(btn.dataset.psViewBtn); });
+      });
+      updateMarker();
+    }, 250);
+    if (tpl.dataset.type === 'music') {
+      counter.textContent = (parseInt(tpl.dataset.musicIndex, 10) || 1) + '/' + MUSIC_COUNT;
+    } else {
+      counter.textContent = '— /' + MUSIC_COUNT;
+    }
+    var last = i >= items.length - 1;
+    nextBtn.disabled = last;
+    nextBtn.classList.toggle('opacity-40', last);
+  }
+
+  function scrollBy(dir) {
+    area.scrollBy({ top: Math.floor(area.clientHeight * 0.65) * dir, behavior: 'smooth' });
+  }
+
+  function updateMarker() {
+    var max = area.scrollHeight - area.clientHeight;
+    if (max <= 0) { marker.classList.add('hidden'); return; }
+    var rem = max - area.scrollTop;
+    if (rem <= 0) { marker.classList.add('hidden'); return; }
+    marker.style.top = Math.min(Math.floor(area.clientHeight * 0.65), rem) + 'px';
+    marker.classList.remove('hidden');
+  }
+
+  setInterval(function () {
+    if (!timerRunning) return;
+    elapsed++;
+    timer.textContent =
+      String(Math.floor(elapsed / 60)).padStart(2, '0') + ':' +
+      String(elapsed % 60).padStart(2, '0');
+  }, 1000);
+
+  function toggleTimer() {
+    timerRunning = !timerRunning;
+    var hint = timerBtn.querySelector('span:last-child');
+    if (hint) hint.textContent = timerRunning ? TAP_TO_PAUSE : TAP_TO_RESUME;
+    timer.classList.toggle('text-zinc-500', !timerRunning);
+    timer.classList.toggle('text-amber-400', timerRunning);
+  }
+
+  function toggleHeader() {
+    expanded = !expanded;
+    panel.style.maxHeight = expanded ? panel.scrollHeight + 'px' : '0';
+    chevron.style.transform = expanded ? 'rotate(180deg)' : '';
+  }
+
+  function setView(view) {
+    content.querySelectorAll('[data-ps-content]').forEach(function (el) {
+      el.classList.toggle('hidden', el.dataset.psContent !== view);
+    });
+    content.querySelectorAll('[data-ps-view-btn]').forEach(function (btn) {
+      var active = btn.dataset.psViewBtn === view;
+      btn.classList.toggle('border-amber-500/40', active);
+      btn.classList.toggle('bg-amber-500/20', active);
+      btn.classList.toggle('text-amber-300', active);
+      btn.classList.toggle('border-zinc-700', !active);
+      btn.classList.toggle('bg-zinc-900', !active);
+      btn.classList.toggle('text-zinc-300', !active);
+    });
+  }
+
+  async function requestFullscreen() {
+    try {
+      var el = document.documentElement;
+      if (el.requestFullscreen) await el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
+    } catch (_) {}
+  }
+
+  async function requestWakeLock() {
+    try {
+      if ('wakeLock' in navigator) await navigator.wakeLock.request('screen');
+    } catch (_) {}
+  }
+
+  timerBtn.addEventListener('click', toggleTimer);
+  document.getElementById('ps-header-toggle').addEventListener('click', toggleHeader);
+  nextBtn.addEventListener('click', function () { if (idx < items.length - 1) load(++idx); });
+  document.getElementById('ps-scroll-up').addEventListener('click', function () { scrollBy(-1); });
+  document.getElementById('ps-scroll-down').addEventListener('click', function () { scrollBy(1); });
+  area.addEventListener('scroll', updateMarker);
+  window.addEventListener('resize', updateMarker);
+
+  load(0);
+  requestWakeLock();
+  requestFullscreen();
+})();
+</script>
+
+</body>
+</html>
