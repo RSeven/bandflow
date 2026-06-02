@@ -41,3 +41,5 @@
 
 # Android app lives in its own repo at /android/
 /android/
+
+/.mutant

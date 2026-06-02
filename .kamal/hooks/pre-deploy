@@ -1,0 +1,4 @@
+#!/bin/bash
+# Stop the running container before starting the new one to free RAM on low-memory servers.
+# Accepts downtime in exchange for not needing enough RAM for two containers simultaneously.
+bin/kamal app stop --quiet 2>/dev/null || true
