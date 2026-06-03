@@ -15,11 +15,7 @@ class BandsController < ApplicationController
     @active_tab = active_tab_param
     @music_query = params[:music_query].to_s.strip
 
-    musics_scope = @band.musics.order(:title)
-    if @music_query.present?
-      escaped_query = ActiveRecord::Base.sanitize_sql_like(@music_query)
-      musics_scope = musics_scope.where("title LIKE :query OR artist LIKE :query", query: "%#{escaped_query}%")
-    end
+    musics_scope = @band.musics.matching(@music_query).order(:title)
     setlists_scope = @band.setlists.order(performance_date: :desc, created_at: :desc)
 
     @musics_total_pages = total_pages_for(musics_scope)

@@ -73,4 +73,30 @@ RSpec.describe Music, type: :model do
       expect(music.display_content).to eq("Some lyrics")
     end
   end
+
+  describe "#labels_text" do
+    it "returns comma-separated labels" do
+      music.labels = [ "rock", "acoustic" ]
+
+      expect(music.labels_text).to eq("rock, acoustic")
+    end
+  end
+
+  describe "#labels_text=" do
+    it "normalizes comma-separated labels" do
+      music.labels_text = " Rock, acoustic, rock, Punk "
+      music.validate
+
+      expect(music.labels).to eq([ "rock", "acoustic", "punk" ])
+    end
+  end
+
+  describe ".matching" do
+    it "matches labels" do
+      matching_music = create(:music, title: "Quiet Song", artist: "Artist", labels: [ "acoustic" ])
+      create(:music, title: "Loud Song", artist: "Artist", labels: [ "punk" ])
+
+      expect(Music.matching("acoustic")).to contain_exactly(matching_music)
+    end
+  end
 end

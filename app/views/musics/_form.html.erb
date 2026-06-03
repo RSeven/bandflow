@@ -90,9 +90,31 @@
     </div>
   </div>
 
+  <%# ——— LABELS ——— %>
+  <div data-controller="label-input"
+       data-label-input-suggestions-url-value="<%= labels_band_musics_path(band) %>">
+    <%= f.label :labels_text, t("musics.form.labels"), class: "block text-sm font-medium text-zinc-300 mb-1" %>
+    <p class="text-xs text-zinc-500 mb-2"><%= t("musics.form.labels_help") %></p>
+    <%= f.hidden_field :labels_text, data: { label_input_target: "hidden" } %>
+    <div class="relative">
+      <div class="w-full min-h-10 bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 text-sm focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+        <div data-label-input-target="tokens" class="inline-flex flex-wrap items-center gap-1 align-middle"></div>
+        <input type="text"
+               data-label-input-target="input"
+               data-action="input->label-input#search keydown->label-input#handleKeydown blur->label-input#commitOnBlur"
+               placeholder="<%= t("musics.form.labels_placeholder") %>"
+               class="flex-1 bg-transparent px-1 py-1 text-sm focus:outline-none placeholder:text-zinc-500"
+               style="min-width: 8rem" />
+      </div>
+      <ul data-label-input-target="suggestions"
+          class="hidden absolute z-20 left-0 right-0 mt-1 bg-zinc-800 border border-zinc-700 rounded-lg overflow-hidden shadow-xl max-h-56 overflow-y-auto">
+      </ul>
+    </div>
+  </div>
+
   <%# ——— BPM & KEY ——— %>
   <div>
-    <div class="grid sm:grid-cols-3 gap-4">
+    <div class="grid sm:grid-cols-2 gap-4">
       <div>
         <%= f.label :bpm, t("musics.form.bpm"), class: "block text-sm font-medium text-zinc-300 mb-1" %>
         <%= f.number_field :bpm, step: 0.1, data: { music_form_target: "bpm" },
@@ -111,6 +133,13 @@
             { selected: music.key_mode },
             data: { music_form_target: "keyMode" },
             class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed" %>
+      </div>
+      <div>
+        <%= f.label :rehearsal_priority, t("musics.form.rehearsal_priority"), class: "block text-sm font-medium text-zinc-300 mb-1" %>
+        <%= f.select :rehearsal_priority,
+            options_for_select([ [ t("musics.form.none"), "" ], *(1..10).map { |i| [ i.to_s, i.to_s ] } ], music.rehearsal_priority.to_s),
+            {},
+            class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" %>
       </div>
     </div>
     <p data-music-form-target="spotifyStatus" class="hidden mt-2 text-xs"></p>

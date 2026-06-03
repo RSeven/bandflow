@@ -52,6 +52,11 @@
             <%= link_to band_rehearsal_music_path(@band, music), class: "min-w-0 hover:opacity-80 transition-opacity" do %>
               <div class="font-medium text-zinc-100 truncate"><%= music.title %></div>
               <div class="text-zinc-400 text-sm truncate"><%= music.artist %></div>
+              <% if music.label_list.any? %>
+                <div class="mt-0.5">
+                  <%= music_label_badges(music.label_list) %>
+                </div>
+              <% end %>
             <% end %>
 
             <div class="flex flex-col gap-2 sm:items-end">

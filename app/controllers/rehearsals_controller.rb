@@ -40,11 +40,7 @@ class RehearsalsController < ApplicationController
   end
 
   def rehearsal_scope
-    scope = @band.musics
-    if @query.present?
-      escaped_query = ActiveRecord::Base.sanitize_sql_like(@query)
-      scope = scope.where("title LIKE :query OR artist LIKE :query", query: "%#{escaped_query}%")
-    end
+    scope = @band.musics.matching(@query)
 
     case @sort
     when "newest"

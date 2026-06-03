@@ -29,9 +29,11 @@ RSpec.describe "Musics", type: :request do
     it "creates a music and redirects" do
       expect {
         post band_musics_path(band), params: {
-          music: { title: "Stairway to Heaven", artist: "Led Zeppelin" }
+          music: { title: "Stairway to Heaven", artist: "Led Zeppelin", labels_text: "rock, acoustic", rehearsal_priority: "8" }
         }
       }.to change(Music, :count).by(1)
+      expect(Music.last.labels).to eq([ "rock", "acoustic" ])
+      expect(Music.last.rehearsal_priority).to eq(8)
       expect(response).to redirect_to(band_music_path(band, Music.last))
     end
 
@@ -43,8 +45,18 @@ RSpec.describe "Musics", type: :request do
 
   describe "PATCH /bands/:band_id/musics/:id" do
     it "updates the music" do
-      patch band_music_path(band, music), params: { music: { title: "New Title" } }
+      patch band_music_path(band, music), params: { music: { title: "New Title", labels_text: "pop, punk", rehearsal_priority: "6" } }
       expect(music.reload.title).to eq("New Title")
+      expect(music.labels).to eq([ "pop", "punk" ])
+      expect(music.rehearsal_priority).to eq(6)
+    end
+
+    it "clears the rehearsal priority" do
+      music.update!(rehearsal_priority: 5)
+
+      patch band_music_path(band, music), params: { music: { rehearsal_priority: "" } }
+
+      expect(music.reload.rehearsal_priority).to be_nil
     end
   end
 
@@ -79,6 +91,30 @@ RSpec.describe "Musics", type: :request do
       get search_band_musics_path(band), params: { q: "a" },
           headers: { "Accept" => "application/json" }
       expect(JSON.parse(response.body)).to eq([])
+    end
+  end
+
+  describe "GET /bands/:band_id/musics/labels" do
+    it "returns matching labels for the current band" do
+      create(:music, band: band, title: "Song 1", artist: "Artist", labels: [ "rock", "acoustic" ])
+      create(:music, band: band, title: "Song 2", artist: "Artist", labels: [ "pop" ])
+      other_band = create(:band)
+      create(:music, band: other_band, title: "Other Song", artist: "Artist", labels: [ "punk" ])
+
+      get labels_band_musics_path(band), params: { q: "o" },
+          headers: { "Accept" => "application/json" }
+
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)).to eq([ "acoustic", "pop", "rock" ])
+    end
+
+    it "deduplicates labels" do
+      create(:music, band: band, title: "Song 1", artist: "Artist", labels: [ "rock" ])
+      create(:music, band: band, title: "Song 2", artist: "Artist", labels: [ "rock" ])
+
+      get labels_band_musics_path(band), headers: { "Accept" => "application/json" }
+
+      expect(JSON.parse(response.body)).to eq([ "rock" ])
     end
   end
 

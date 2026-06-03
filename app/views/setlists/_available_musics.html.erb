@@ -58,6 +58,11 @@
               class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg px-3 py-2 text-sm transition-colors overflow-hidden" do %>
             <div class="font-medium truncate"><%= music.title %></div>
             <div class="text-zinc-400 text-xs truncate"><%= music.artist %></div>
+            <% if music.label_list.any? %>
+              <div class="mt-0.5">
+                <%= music_label_badges(music.label_list, compact: true) %>
+              </div>
+            <% end %>
           <% end %>
         <% end %>
       </div>

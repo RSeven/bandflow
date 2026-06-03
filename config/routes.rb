@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     resources :musics, except: [ :index ] do
       collection do
         get :search          # iTunes autocomplete
+        get :labels          # Existing label autocomplete
         post :fetch_metadata # Fetch Spotify/lyrics/chords
       end
     end

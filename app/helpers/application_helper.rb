@@ -22,9 +22,28 @@ module ApplicationHelper
     nil
   end
 
+  def music_label_badges(labels, compact: false)
+    safe_join(labels.to_a.map { |label| music_label_badge(label, compact: compact) })
+  end
+
+  def music_label_badge(label, compact: false)
+    tag.span(
+      label,
+      class: [
+        "music-label-badge",
+        ("music-label-badge--compact" if compact),
+        music_label_badge_palette(label)
+      ].join(" ")
+    )
+  end
+
   private
 
   def app_locales
     Rails.application.config.i18n.available_locales
+  end
+
+  def music_label_badge_palette(label)
+    "music-label-badge--#{label.to_s.bytes.sum % 5}"
   end
 end

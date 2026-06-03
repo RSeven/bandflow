@@ -82,6 +82,16 @@ RSpec.describe "Bands", type: :request do
       expect(response.body).not_to include("Paranoid Android")
     end
 
+    it "filters musics by label" do
+      create(:music, band: band, title: "Campfire Song", artist: "Artist", labels: [ "acoustic" ])
+      create(:music, band: band, title: "Club Song", artist: "Artist", labels: [ "pop" ])
+
+      get band_path(band), params: { tab: "musics", music_query: "acoustic" }
+
+      expect(response.body).to include("Campfire Song")
+      expect(response.body).not_to include("Club Song")
+    end
+
     it "redirects to bands index for non-members" do
       other_band = create(:band)
       get band_path(other_band)

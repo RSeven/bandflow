@@ -44,6 +44,19 @@ class MusicsController < ApplicationController
     }
   end
 
+  # GET /bands/:band_id/musics/labels?q=...
+  def labels
+    query = params[:q].to_s.strip.downcase
+    labels = @band.musics.find_each
+      .flat_map(&:label_list)
+      .uniq
+      .sort
+
+    labels = labels.select { |label| label.include?(query) } if query.present?
+
+    render json: labels.first(8)
+  end
+
   # POST /bands/:band_id/musics/fetch_metadata
   # Parameters: title, artist, source (one of MusicMetadataService::SOURCES)
   def fetch_metadata
@@ -82,7 +95,7 @@ class MusicsController < ApplicationController
     params.expect(music: [
       :title, :artist, :lyrics, :chords,
       :spotify_url, :youtube_url, :spotify_track_id,
-      :bpm, :key_name, :key_mode
+      :bpm, :key_name, :key_mode, :labels_text, :rehearsal_priority
     ])
   end
 end
