@@ -54,7 +54,8 @@
                 event_query: event_query
               },
               data: { turbo_stream: true },
-              class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg px-3 py-2 text-sm transition-colors" do %>
+              form_class: "w-full min-w-0",
+              class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg px-3 py-2 text-sm transition-colors overflow-hidden" do %>
             <div class="font-medium truncate"><%= music.title %></div>
             <div class="text-zinc-400 text-xs truncate"><%= music.artist %></div>
           <% end %>

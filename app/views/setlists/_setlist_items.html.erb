@@ -11,20 +11,20 @@
     <% music_counter = 0 %>
     <% setlist_items.each_with_index do |si, idx| %>
       <% music_counter += 1 if si.music? %>
-      <div id="setlist-item-<%= si.id %>" data-id="<%= si.id %>" data-item-type="<%= si.item_type %>" class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2.5 group">
+      <div id="setlist-item-<%= si.id %>" data-id="<%= si.id %>" data-item-type="<%= si.item_type %>" class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2.5 group overflow-hidden">
         <span class="text-zinc-600 cursor-grab select-none text-sm">⠿</span>
         <span data-sortable-role="position" class="text-xs font-mono text-zinc-600 w-5 text-right"><%= idx + 1 %></span>
 
         <% if si.music? %>
           <div class="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></div>
-          <%= link_to band_music_path(band, si.item), class: "flex-1 min-w-0 hover:opacity-80 transition-opacity" do %>
+          <%= link_to band_music_path(band, si.item), class: "flex-1 min-w-0 overflow-hidden hover:opacity-80 transition-opacity" do %>
             <div class="font-medium text-sm truncate"><%= si.item.title %></div>
             <div class="text-zinc-400 text-xs truncate"><%= si.item.artist %></div>
           <% end %>
           <span data-sortable-role="music-index" class="text-xs text-zinc-500 flex-shrink-0">#<%= music_counter %></span>
         <% else %>
           <div class="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0"></div>
-          <div class="flex-1 min-w-0">
+          <div class="flex-1 min-w-0 overflow-hidden">
             <div class="font-medium text-sm truncate text-blue-300"><%= si.item.title %></div>
             <% if si.item.description.present? %>
               <div class="text-zinc-400 text-xs truncate"><%= si.item.description %></div>
@@ -40,7 +40,8 @@
               event_page: local_assigns.fetch(:event_page, 1),
               event_query: local_assigns.fetch(:event_query, "")
             },
-            class: "text-zinc-600 hover:text-red-400 transition-colors text-lg leading-none flex-shrink-0",
+            form_class: "flex-shrink-0",
+            class: "text-zinc-600 hover:text-red-400 transition-colors text-lg leading-none",
             data: { turbo_stream: true },
             aria: { label: t("setlists.items.remove") } %>
       </div>
