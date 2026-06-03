@@ -26,6 +26,7 @@ registry:
 # Connect as the ubuntu user (Ubuntu image default) instead of root.
 ssh:
   user: ubuntu
+  keys: ["~/.ssh/id_ed25519_deploy"]
 
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:
