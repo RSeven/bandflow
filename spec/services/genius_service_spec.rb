@@ -18,6 +18,14 @@ RSpec.describe GeniusService do
     instance_double(HTTParty::Response, success?: true, body: html)
   end
 
+  def http_error(body: "")
+    instance_double(HTTParty::Response, success?: false, body: body)
+  end
+
+  def lrclib_search_response(*items)
+    instance_double(HTTParty::Response, success?: true, parsed_response: items)
+  end
+
   # Builds a minimal Genius-style HTML page with lyrics containers.
   def genius_html(*lyric_sections)
     sections_html = lyric_sections.map { |text|
@@ -158,6 +166,9 @@ RSpec.describe GeniusService do
         html = "<html><body><p>No lyrics here</p></body></html>"
         allow(HTTParty).to receive(:get).with(song_url, anything)
                                         .and_return(genius_page_response(html))
+        allow(HTTParty).to receive(:get)
+          .with(GeniusService::LRCLIB_SEARCH_URL, anything)
+          .and_return(lrclib_search_response)
 
         expect(described_class.fetch_lyrics("X", "Y")).to be_nil
       end
@@ -191,6 +202,51 @@ RSpec.describe GeniusService do
         expect(result).not_to include("Contributors")
         expect(result).not_to include("About")
       end
+
+      it "falls back to LRCLIB when Genius blocks the song page" do
+        allow(HTTParty).to receive(:get).with(song_url, anything)
+                                        .and_return(http_error(body: "<h1>Forbidden</h1>"))
+        allow(HTTParty).to receive(:get)
+          .with(GeniusService::LRCLIB_SEARCH_URL, anything)
+          .and_return(lrclib_search_response({
+            "trackName" => "Bohemian Rhapsody",
+            "artistName" => "Queen",
+            "instrumental" => false,
+            "plainLyrics" => "Is this the real life?\nIs this just fantasy?",
+            "syncedLyrics" => nil
+          }))
+
+        result = described_class.fetch_lyrics("Bohemian Rhapsody", "Queen")
+
+        expect(result).to eq("Is this the real life?\nIs this just fantasy?")
+      end
+
+      it "prefers clean LRCLIB plain lyrics over metadata-heavy results" do
+        allow(HTTParty).to receive(:get).with(song_url, anything)
+                                        .and_return(http_error(body: "<h1>Forbidden</h1>"))
+        allow(HTTParty).to receive(:get)
+          .with(GeniusService::LRCLIB_SEARCH_URL, anything)
+          .and_return(lrclib_search_response(
+            {
+              "trackName" => "Bohemian Rhapsody",
+              "artistName" => "Queen",
+              "instrumental" => false,
+              "plainLyrics" => "[ti:Bohemian Rhapsody]\n[ar:Queen]\nCredits line\nWrong version",
+              "syncedLyrics" => "[00:00.00]Wrong version"
+            },
+            {
+              "trackName" => "Bohemian Rhapsody",
+              "artistName" => "Queen",
+              "instrumental" => false,
+              "plainLyrics" => "Clean first line\nClean second line",
+              "syncedLyrics" => nil
+            }
+          ))
+
+        result = described_class.fetch_lyrics("Bohemian Rhapsody", "Queen")
+
+        expect(result).to eq("Clean first line\nClean second line")
+      end
     end
 
     context "when Genius search returns no hits" do
@@ -202,6 +258,9 @@ RSpec.describe GeniusService do
               success?: true,
               parsed_response: JSON.parse(body))
           )
+        allow(HTTParty).to receive(:get)
+          .with(GeniusService::LRCLIB_SEARCH_URL, anything)
+          .and_return(lrclib_search_response)
       end
 
       it "returns nil" do
@@ -212,9 +271,18 @@ RSpec.describe GeniusService do
     context "when the Genius API token is missing" do
       before { stub_const("ENV", ENV.to_hash.merge("GENIUS_ACCESS_TOKEN" => nil)) }
 
-      it "returns nil without making any HTTP requests" do
-        expect(HTTParty).not_to receive(:get)
-        expect(described_class.fetch_lyrics("X", "Y")).to be_nil
+      it "falls back to LRCLIB" do
+        allow(HTTParty).to receive(:get)
+          .with(GeniusService::LRCLIB_SEARCH_URL, anything)
+          .and_return(lrclib_search_response({
+            "trackName" => "X",
+            "artistName" => "Y",
+            "instrumental" => false,
+            "plainLyrics" => "[ti:X]\n[ar:Y]\nFallback line",
+            "syncedLyrics" => nil
+          }))
+
+        expect(described_class.fetch_lyrics("X", "Y")).to eq("Fallback line")
       end
     end
 

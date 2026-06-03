@@ -4,11 +4,26 @@ require "json"
 
 class GeniusService
   SEARCH_URL = "https://api.genius.com/search"
+  LRCLIB_SEARCH_URL = "https://lrclib.net/api/search"
+  LRCLIB_HEADERS = {
+    "User-Agent" => "Bandflow/1.0 (https://bandflow.ruanlps.com)"
+  }.freeze
 
   def self.fetch_lyrics(title, artist)
     token = ENV["GENIUS_ACCESS_TOKEN"]
-    return nil unless token.present?
 
+    if token.present?
+      lyrics = fetch_genius_lyrics(title, artist, token)
+      return lyrics if lyrics.present?
+    end
+
+    fetch_lrclib_lyrics(title, artist)
+  rescue => e
+    Rails.logger.error("Genius error: #{e.message}")
+    nil
+  end
+
+  private_class_method def self.fetch_genius_lyrics(title, artist, token)
     query = "#{title} #{artist}".strip
     response = HTTParty.get(SEARCH_URL,
       query: { q: query },
@@ -17,6 +32,7 @@ class GeniusService
     )
 
     return nil unless response.success?
+
     hits = response.parsed_response.dig("response", "hits") || []
     hit = hits.first
     return nil unless hit
@@ -25,9 +41,25 @@ class GeniusService
     return nil unless song_url
 
     scrape_lyrics(song_url)
-  rescue => e
-    Rails.logger.error("Genius error: #{e.message}")
-    nil
+  end
+
+  private_class_method def self.fetch_lrclib_lyrics(title, artist)
+    response = HTTParty.get(LRCLIB_SEARCH_URL,
+      query: { track_name: title, artist_name: artist },
+      headers: LRCLIB_HEADERS,
+      timeout: 10
+    )
+
+    return nil unless response.success?
+
+    results = response.parsed_response
+    return nil unless results.is_a?(Array)
+
+    result = results
+      .select { |item| item["plainLyrics"].present? && !item["instrumental"] }
+      .max_by { |item| lrclib_score(item, title, artist) }
+
+    normalize_lrclib_lyrics(result&.dig("plainLyrics")).presence
   end
 
   private_class_method def self.scrape_lyrics(url)
@@ -71,6 +103,26 @@ class GeniusService
     normalize_lyrics(extract_text(Nokogiri::HTML.fragment(lyrics_html)))
   rescue JSON::ParserError
     nil
+  end
+
+  private_class_method def self.lrclib_score(item, title, artist)
+    score = 0
+    score += 10 if normalized_match?(item["trackName"], title)
+    score += 10 if normalized_match?(item["artistName"], artist)
+    score += 5 unless item["plainLyrics"].to_s.match?(/\A\s*\[[a-z]+:/i)
+    score += 2 if item["syncedLyrics"].blank?
+    score
+  end
+
+  private_class_method def self.normalized_match?(actual, expected)
+    normalize_match_text(actual) == normalize_match_text(expected)
+  end
+
+  private_class_method def self.normalize_match_text(value)
+    I18n.transliterate(value.to_s)
+      .downcase
+      .gsub(/[^a-z0-9]+/, " ")
+      .squish
   end
 
   private_class_method def self.decode_javascript_string(value)
@@ -122,6 +174,18 @@ class GeniusService
 
     # CGI.unescapeHTML handles named, decimal, and hex entities.
     CGI.unescapeHTML(node.text)
+  end
+
+  private_class_method def self.normalize_lrclib_lyrics(text)
+    return nil if text.blank?
+
+    cleaned = text.to_s
+      .gsub(/\r\n?/, "\n")
+      .lines
+      .reject { |line| line.match?(/\A\s*\[(?:ti|ar|al|by|offset):/i) }
+      .join
+
+    normalize_lyrics(cleaned)
   end
 
   private_class_method def self.normalize_lyrics(text)
