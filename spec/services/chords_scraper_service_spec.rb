@@ -9,6 +9,10 @@ RSpec.describe ChordsScraperService do
     instance_double(HTTParty::Response, success?: false, body: "")
   end
 
+  def http_forbidden
+    instance_double(HTTParty::Response, success?: false, body: "<h1>Access Denied</h1>")
+  end
+
   def cifra_page(content)
     <<~HTML
       <html>
@@ -25,7 +29,7 @@ RSpec.describe ChordsScraperService do
     context "when Cifra Club has a matching chart page" do
       before do
         allow(HTTParty).to receive(:get)
-          .with("https://www.cifraclub.com/queen/bohemian-rhapsody/", anything)
+          .with("https://www.cifraclub.com.br/queen/bohemian-rhapsody/", anything)
           .and_return(http_ok(cifra_page("[Intro]\nF#m7  B7\nIs this the real life?")))
       end
 
@@ -40,17 +44,17 @@ RSpec.describe ChordsScraperService do
         described_class.fetch("Bohemian Rhapsody", "Queen")
 
         expect(HTTParty).to have_received(:get)
-          .with("https://www.cifraclub.com/queen/bohemian-rhapsody/", anything)
+          .with("https://www.cifraclub.com.br/queen/bohemian-rhapsody/", anything)
       end
     end
 
     context "when the title needs version suffix cleanup" do
       before do
         allow(HTTParty).to receive(:get)
-          .with("https://www.cifraclub.com/queen/bohemian-rhapsody-remastered-2011/", anything)
+          .with("https://www.cifraclub.com.br/queen/bohemian-rhapsody-remastered-2011/", anything)
           .and_return(http_error)
         allow(HTTParty).to receive(:get)
-          .with("https://www.cifraclub.com/queen/bohemian-rhapsody/", anything)
+          .with("https://www.cifraclub.com.br/queen/bohemian-rhapsody/", anything)
           .and_return(http_ok(cifra_page("C  G\nMama, just killed a man")))
       end
 
@@ -64,7 +68,7 @@ RSpec.describe ChordsScraperService do
     context "when the fetched page has no chart content" do
       before do
         allow(HTTParty).to receive(:get)
-          .with("https://www.cifraclub.com/queen/bohemian-rhapsody/", anything)
+          .with("https://www.cifraclub.com.br/queen/bohemian-rhapsody/", anything)
           .and_return(http_ok("<html><body>No pre here</body></html>"))
       end
 
@@ -76,8 +80,20 @@ RSpec.describe ChordsScraperService do
     context "when the Cifra Club request fails" do
       before do
         allow(HTTParty).to receive(:get)
-          .with("https://www.cifraclub.com/queen/bohemian-rhapsody/", anything)
+          .with("https://www.cifraclub.com.br/queen/bohemian-rhapsody/", anything)
           .and_return(http_error)
+      end
+
+      it "returns nil" do
+        expect(described_class.fetch("Bohemian Rhapsody", "Queen")).to be_nil
+      end
+    end
+
+    context "when Cifra Club denies the request" do
+      before do
+        allow(HTTParty).to receive(:get)
+          .with("https://www.cifraclub.com.br/queen/bohemian-rhapsody/", anything)
+          .and_return(http_forbidden)
       end
 
       it "returns nil" do

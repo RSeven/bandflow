@@ -55,11 +55,27 @@
             <% end %>
 
             <div class="flex flex-col gap-2 sm:items-end">
-              <div class="text-xs <%= music.rehearsed? ? "text-zinc-400" : "text-amber-400" %>">
-                <% if music.rehearsed? %>
-                  <%= t("rehearsals.index.last_rehearsed", time: l(music.last_rehearsed_at, format: :long)) %>
-                <% else %>
-                  <%= t("rehearsals.index.never_rehearsed") %>
+              <div class="flex items-center gap-3 flex-wrap justify-start sm:justify-end">
+                <div class="text-xs <%= music.rehearsed? ? "text-zinc-400" : "text-amber-400" %>">
+                  <% if music.rehearsed? %>
+                    <%= t("rehearsals.index.last_rehearsed", time: l(music.last_rehearsed_at, format: :long)) %>
+                  <% else %>
+                    <%= t("rehearsals.index.never_rehearsed") %>
+                  <% end %>
+                </div>
+
+                <%= form_with url: band_rehearsal_music_priority_path(@band, music), method: :patch, local: true,
+                    data: { controller: "auto-submit" },
+                    class: "flex items-center gap-1.5" do |form| %>
+                  <%= hidden_field_tag :q, @query %>
+                  <%= hidden_field_tag :sort, @sort %>
+                  <%= label_tag "rehearsal_priority_#{music.id}", t("rehearsals.index.priority_label"), class: "text-xs text-zinc-500 flex-shrink-0" %>
+                  <%= form.select :rehearsal_priority,
+                      options_for_select([["—", ""], *(1..10).map { |i| [i.to_s, i.to_s] }], music.rehearsal_priority.to_s),
+                      {},
+                      id: "rehearsal_priority_#{music.id}",
+                      data: { action: "change->auto-submit#submit" },
+                      class: "bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" %>
                 <% end %>
               </div>
 

@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     get "rehearse", to: "rehearsals#index", as: :rehearsal
     get "rehearse/musics/:music_id", to: "rehearsals#show", as: :rehearsal_music
     patch "rehearse/musics/:music_id", to: "rehearsals#update"
+    patch "rehearse/musics/:music_id/priority", to: "rehearsals#update_priority", as: :rehearsal_music_priority
 
     resources :musics, except: [ :index ] do
       collection do

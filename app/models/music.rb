@@ -4,6 +4,7 @@ class Music < ApplicationRecord
 
   validates :title, presence: true
   validates :artist, presence: true
+  validates :rehearsal_priority, numericality: { only_integer: true, in: 1..10 }, allow_nil: true
 
   PITCH_CLASSES = %w[C C# D D# E F F# G G# A A# B].freeze
   MODES = { "major" => "Major", "minor" => "Minor" }.freeze

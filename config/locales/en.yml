@@ -59,6 +59,7 @@ en:
       updated: "Music updated."
     rehearsals:
       updated: "%{title} rehearsal updated."
+      priority_updated: "%{title} priority updated."
     passwords:
       instructions_sent: "Password reset instructions sent, if that email exists."
       invalid_link: "That password reset link is invalid or has expired."
@@ -250,6 +251,7 @@ en:
       title: "Rehearse"
       update: "Update"
       update_label: "Last rehearsed at"
+      priority_label: "Priority"
     show:
       last_rehearsed: "Last rehearsed %{time}"
       mark_rehearsed: "Mark Rehearsed"

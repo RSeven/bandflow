@@ -59,6 +59,7 @@ pt-BR:
       updated: "Música atualizada."
     rehearsals:
       updated: "Ensaio de %{title} atualizado."
+      priority_updated: "Prioridade de %{title} atualizada."
     passwords:
       instructions_sent: "As instruções de redefinição foram enviadas, se esse e-mail existir."
       invalid_link: "Este link de redefinição é inválido ou expirou."
@@ -250,6 +251,7 @@ pt-BR:
       title: "Ensaiar"
       update: "Atualizar"
       update_label: "Último ensaio em"
+      priority_label: "Prioridade"
     show:
       last_rehearsed: "Último ensaio em %{time}"
       mark_rehearsed: "Marcar Como Ensaiada"
