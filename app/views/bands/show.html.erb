@@ -1,17 +1,28 @@
-<div class="flex items-start justify-between mb-6">
-  <div>
-    <h1 class="text-3xl font-bold"><%= @band.name %></h1>
+<div class="flex items-start justify-between gap-3 mb-6 min-w-0">
+  <div class="min-w-0">
+    <h1 class="text-3xl font-bold break-all"><%= @band.name %></h1>
     <% if @band.description.present? %>
-      <p class="text-zinc-400 mt-1"><%= @band.description %></p>
+      <p class="text-zinc-400 mt-1 break-all"><%= @band.description %></p>
     <% end %>
   </div>
   <% if Current.user.admin_of?(@band) %>
-    <div class="flex gap-2">
-      <%= link_to t("common.edit"), edit_band_path(@band), class: "text-sm text-zinc-400 hover:text-zinc-200 border border-zinc-700 px-3 py-1.5 rounded-lg transition-colors" %>
-      <%= button_to t("common.delete"), band_path(@band), method: :delete,
-          data: { turbo_confirm: t("bands.show.delete_confirm", name: @band.name) },
-          class: "text-sm text-red-400 hover:text-red-300 border border-red-800 px-3 py-1.5 rounded-lg transition-colors" %>
-    </div>
+    <details class="relative flex-shrink-0" data-controller="dropdown">
+      <summary class="list-none cursor-pointer flex items-center justify-center w-9 h-9 rounded-lg border border-zinc-700 hover:border-zinc-500 transition-colors text-zinc-300 hover:text-zinc-100 select-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="4"  r="1.5"/>
+          <circle cx="10" cy="10" r="1.5"/>
+          <circle cx="10" cy="16" r="1.5"/>
+        </svg>
+      </summary>
+      <div class="absolute right-0 mt-1 w-max bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl py-1 z-20">
+        <%= link_to t("common.edit"), edit_band_path(@band),
+            class: "flex items-center whitespace-nowrap px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 transition-colors" %>
+        <%= button_to t("common.delete"), band_path(@band), method: :delete,
+            data: { turbo_confirm: t("bands.show.delete_confirm", name: @band.name) },
+            form_class: "w-full",
+            class: "flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-zinc-800 transition-colors" %>
+      </div>
+    </details>
   <% end %>
 </div>
 
@@ -33,15 +44,15 @@
 
   <% if @active_tab == "musics" %>
     <section>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold"><%= t("bands.show.repertoire_title") %></h2>
-        <%= link_to t("bands.show.add_music"), new_band_music_path(@band), class: "text-sm text-amber-400 hover:text-amber-300" %>
+      <div class="flex items-center justify-between gap-3 mb-4 min-w-0">
+        <h2 class="text-lg font-semibold min-w-0"><%= t("bands.show.repertoire_title") %></h2>
+        <%= link_to t("bands.show.add_music"), new_band_music_path(@band), class: "text-sm text-amber-400 hover:text-amber-300 flex-shrink-0" %>
       </div>
 
       <div class="flex flex-col gap-3 mb-4 sm:grid sm:grid-cols-2">
         <%= form_with url: band_path(@band), method: :get, local: true,
             data: { controller: "auto-submit", auto_submit_delay_value: 350 },
-            class: "flex items-center gap-2" do |form| %>
+            class: "flex items-center gap-2 min-w-0" do |form| %>
           <%= form.hidden_field :tab, value: "musics" %>
           <%= form.hidden_field :setlist_page, value: @setlist_page %>
           <%= form.label :music_query, t("bands.show.search_musics_label"), class: "sr-only" %>
@@ -57,11 +68,11 @@
         <% end %>
 
         <% if @musics_total_pages > 1 %>
-          <div class="flex items-center justify-between text-sm sm:justify-end sm:gap-2">
-            <div class="text-zinc-500">
+          <div class="flex items-center justify-between gap-3 text-sm min-w-0 sm:justify-end sm:gap-2">
+            <div class="text-zinc-500 min-w-0">
               <%= t("common.page_of", page: @music_page, total: @musics_total_pages) %>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-shrink-0">
               <% if @music_page > 1 %>
                 <%= link_to t("common.previous"), band_path(@band, pagination_params(:music_page, @music_page - 1).merge(tab: "musics")),
                     class: "border border-zinc-700 hover:border-zinc-500 rounded-lg px-3 py-1.5 text-zinc-300 transition-colors" %>
@@ -82,12 +93,12 @@
       <% else %>
         <div class="space-y-2">
           <% @musics.each do |music| %>
-            <%= link_to band_music_path(@band, music), class: "flex items-center justify-between bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-lg px-4 py-3 transition-colors group" do %>
-              <div>
-                <div class="font-medium group-hover:text-amber-400 transition-colors"><%= music.title %></div>
-                <div class="text-zinc-400 text-sm"><%= music.artist %></div>
+            <%= link_to band_music_path(@band, music), class: "flex items-center justify-between gap-3 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-lg px-4 py-3 transition-colors group min-w-0" do %>
+              <div class="min-w-0">
+                <div class="font-medium group-hover:text-amber-400 transition-colors truncate"><%= music.title %></div>
+                <div class="text-zinc-400 text-sm truncate"><%= music.artist %></div>
               </div>
-              <div class="flex items-center gap-2 text-xs text-zinc-500">
+              <div class="flex items-center gap-2 text-xs text-zinc-500 flex-shrink-0">
                 <% if music.bpm.present? %>
                   <span class="bg-zinc-800 px-2 py-0.5 rounded"><%= music.bpm_display %> BPM</span>
                 <% end %>
@@ -100,11 +111,11 @@
         </div>
 
         <% if @musics_total_pages > 1 %>
-          <div class="mt-4 flex items-center justify-between text-sm">
-            <div class="text-zinc-500">
+          <div class="mt-4 flex items-center justify-between gap-3 text-sm min-w-0">
+            <div class="text-zinc-500 min-w-0">
               <%= t("common.page_of", page: @music_page, total: @musics_total_pages) %>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-shrink-0">
               <% if @music_page > 1 %>
                 <%= link_to t("common.previous"), band_path(@band, pagination_params(:music_page, @music_page - 1).merge(tab: "musics")),
                     class: "border border-zinc-700 hover:border-zinc-500 rounded-lg px-3 py-1.5 text-zinc-300 transition-colors" %>
@@ -120,17 +131,17 @@
     </section>
   <% else %>
     <section>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold"><%= t("bands.show.setlists_title") %></h2>
-        <%= link_to t("bands.show.new_setlist"), new_band_setlist_path(@band), class: "text-sm text-amber-400 hover:text-amber-300" %>
+      <div class="flex items-center justify-between gap-3 mb-4 min-w-0">
+        <h2 class="text-lg font-semibold min-w-0"><%= t("bands.show.setlists_title") %></h2>
+        <%= link_to t("bands.show.new_setlist"), new_band_setlist_path(@band), class: "text-sm text-amber-400 hover:text-amber-300 flex-shrink-0" %>
       </div>
 
       <% if @setlists_total_pages > 1 %>
-        <div class="mb-4 flex items-center justify-between text-sm">
-          <div class="text-zinc-500">
+        <div class="mb-4 flex items-center justify-between gap-3 text-sm min-w-0">
+          <div class="text-zinc-500 min-w-0">
             <%= t("common.page_of", page: @setlist_page, total: @setlists_total_pages) %>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-shrink-0">
             <% if @setlist_page > 1 %>
               <%= link_to t("common.previous"), band_path(@band, pagination_params(:setlist_page, @setlist_page - 1).merge(tab: "setlists")),
                   class: "border border-zinc-700 hover:border-zinc-500 rounded-lg px-3 py-1.5 text-zinc-300 transition-colors" %>
@@ -150,24 +161,24 @@
       <% else %>
         <div class="space-y-2">
           <% @setlists.each do |setlist| %>
-            <%= link_to band_setlist_path(@band, setlist), class: "flex items-center justify-between bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-lg px-4 py-3 transition-colors group" do %>
-              <div>
-                <div class="font-medium group-hover:text-amber-400 transition-colors"><%= setlist.title %></div>
+            <%= link_to band_setlist_path(@band, setlist), class: "flex items-center justify-between gap-3 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-lg px-4 py-3 transition-colors group min-w-0" do %>
+              <div class="min-w-0">
+                <div class="font-medium group-hover:text-amber-400 transition-colors truncate"><%= setlist.title %></div>
                 <% if setlist.performance_date.present? %>
-                  <div class="text-zinc-400 text-sm"><%= l(setlist.performance_date, format: :long) %></div>
+                  <div class="text-zinc-400 text-sm truncate"><%= l(setlist.performance_date, format: :long) %></div>
                 <% end %>
               </div>
-              <span class="text-xs text-zinc-500"><%= t("bands.show.songs_count", count: setlist.music_count) %></span>
+              <span class="text-xs text-zinc-500 flex-shrink-0"><%= t("bands.show.songs_count", count: setlist.music_count) %></span>
             <% end %>
           <% end %>
         </div>
 
         <% if @setlists_total_pages > 1 %>
-          <div class="mt-4 flex items-center justify-between text-sm">
-            <div class="text-zinc-500">
+          <div class="mt-4 flex items-center justify-between gap-3 text-sm min-w-0">
+            <div class="text-zinc-500 min-w-0">
               <%= t("common.page_of", page: @setlist_page, total: @setlists_total_pages) %>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-shrink-0">
               <% if @setlist_page > 1 %>
                 <%= link_to t("common.previous"), band_path(@band, pagination_params(:setlist_page, @setlist_page - 1).merge(tab: "setlists")),
                     class: "border border-zinc-700 hover:border-zinc-500 rounded-lg px-3 py-1.5 text-zinc-300 transition-colors" %>
@@ -186,17 +197,18 @@
 
 <%# ——— MEMBERS & INVITE ——— %>
 <section class="mt-8 border-t border-zinc-800 pt-6">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-lg font-semibold"><%= t("bands.show.members_title") %></h2>
+  <div class="flex items-center justify-between gap-3 mb-4 min-w-0">
+    <h2 class="text-lg font-semibold min-w-0"><%= t("bands.show.members_title") %></h2>
     <% if Current.user.admin_of?(@band) %>
       <%= button_to t("bands.show.generate_invite"), band_invitations_path(@band), method: :post,
+          form_class: "flex-shrink-0",
           class: "text-sm bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-1.5 rounded-lg transition-colors" %>
     <% end %>
   </div>
   <div class="flex flex-wrap gap-2">
     <% @band.band_memberships.includes(:user).each do |membership| %>
-      <div class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm">
-        <span><%= membership.user.name %></span>
+      <div class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm min-w-0">
+        <span class="min-w-0 truncate"><%= membership.user.name %></span>
         <% if membership.role == "admin" %>
           <span class="text-xs text-amber-400"><%= t("bands.show.admin_badge") %></span>
         <% end %>

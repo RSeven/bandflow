@@ -18,7 +18,7 @@
             class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" %>
       </div>
 
-      <div class="flex items-center justify-between pt-1">
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
         <%= form.submit t("layout.sign_in"), class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-6 rounded-lg transition-colors cursor-pointer" %>
         <%= link_to t("sessions.new.forgot_password"), new_password_path, class: "text-sm text-zinc-400 hover:text-zinc-200" %>
       </div>

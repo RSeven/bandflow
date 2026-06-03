@@ -1,21 +1,21 @@
-<div class="max-w-3xl overflow-x-hidden">
-  <div class="flex items-center gap-2 text-sm text-zinc-400 mb-4">
-    <%= link_to @band.name, band_path(@band), class: "hover:text-zinc-200" %>
-    <span>/</span>
-    <span class="text-zinc-200"><%= @setlist.title %></span>
+<div class="max-w-3xl min-w-0">
+  <div class="flex items-center gap-2 text-sm text-zinc-400 mb-4 min-w-0">
+    <%= link_to @band.name, band_path(@band), class: "hover:text-zinc-200 truncate min-w-0" %>
+    <span class="flex-shrink-0">/</span>
+    <span class="text-zinc-200 truncate min-w-0"><%= @setlist.title %></span>
   </div>
 
-  <div class="flex items-start justify-between mb-6">
-    <div>
-      <h1 class="text-2xl font-bold"><%= @setlist.title %></h1>
+  <div class="flex items-start justify-between gap-3 mb-6 min-w-0">
+    <div class="min-w-0">
+      <h1 class="text-2xl font-bold break-all"><%= @setlist.title %></h1>
       <% if @setlist.performance_date.present? %>
         <p class="text-zinc-400 text-sm mt-1"><%= l(@setlist.performance_date, format: :long) %></p>
       <% end %>
       <% if @setlist.notes.present? %>
-        <p class="text-zinc-400 text-sm mt-1"><%= @setlist.notes %></p>
+        <p class="text-zinc-400 text-sm mt-1 break-all"><%= @setlist.notes %></p>
       <% end %>
     </div>
-    <details class="relative ml-4 shrink-0" data-controller="dropdown">
+    <details class="relative flex-shrink-0" data-controller="dropdown">
       <summary class="list-none cursor-pointer flex items-center justify-center w-9 h-9 rounded-lg border border-zinc-700 hover:border-zinc-500 transition-colors text-zinc-300 hover:text-zinc-100 select-none">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
           <circle cx="10" cy="4"  r="1.5"/>

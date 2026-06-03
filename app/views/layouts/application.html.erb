@@ -23,13 +23,13 @@
   </head>
 
   <body class="bg-zinc-950 text-zinc-100 min-h-dvh" data-controller="keyboard-guard">
-    <nav class="bg-zinc-900 border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
-      <%= link_to t("app.name"), root_path, class: "text-xl font-bold text-amber-400 tracking-tight" %>
-      <div class="flex items-center gap-4 text-sm">
+    <nav class="bg-zinc-900 border-b border-zinc-800 px-4 py-3 flex items-center justify-between gap-3 min-w-0">
+      <%= link_to t("app.name"), root_path, class: "min-w-0 truncate text-xl font-bold text-amber-400 tracking-tight" %>
+      <div class="flex items-center justify-end gap-3 text-sm min-w-0">
         <% if Current.user %>
-          <details class="relative">
-            <summary class="list-none cursor-pointer text-zinc-400 hover:text-zinc-100 transition-colors">
-              <span><%= Current.user.name %></span>
+          <details class="relative min-w-0">
+            <summary class="list-none cursor-pointer text-zinc-400 hover:text-zinc-100 transition-colors min-w-0">
+              <span class="block max-w-md truncate"><%= Current.user.name %></span>
             </summary>
             <div class="absolute right-0 mt-2 w-56 rounded-xl border border-zinc-700 bg-zinc-900 p-3 shadow-xl z-20">
               <div class="text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-2"><%= t("layout.language") %></div>
@@ -51,17 +51,17 @@
             </div>
           </details>
         <% else %>
-          <%= link_to t("layout.sign_in"), new_session_path, class: "text-zinc-400 hover:text-zinc-100" %>
-          <%= link_to t("layout.sign_up"), new_registration_path, class: "bg-amber-500 hover:bg-amber-400 text-black font-medium px-3 py-1 rounded transition-colors" %>
+          <%= link_to t("layout.sign_in"), new_session_path, class: "text-zinc-400 hover:text-zinc-100 whitespace-nowrap" %>
+          <%= link_to t("layout.sign_up"), new_registration_path, class: "bg-amber-500 hover:bg-amber-400 text-black font-medium px-3 py-1 rounded transition-colors whitespace-nowrap" %>
         <% end %>
       </div>
     </nav>
     <main class="container mx-auto px-4 py-6 max-w-5xl">
       <% if notice %>
-        <div class="mb-4 bg-emerald-900/50 border border-emerald-700 text-emerald-300 px-4 py-3 rounded-lg text-sm flex items-center justify-between">
-          <span><%= notice %></span>
+        <div class="mb-4 bg-emerald-900/50 border border-emerald-700 text-emerald-300 px-4 py-3 rounded-lg text-sm flex items-center justify-between gap-3 min-w-0">
+          <span class="min-w-0"><%= notice %></span>
           <% if flash[:new_music_link] %>
-            <%= link_to t("layout.add_new_music"), flash[:new_music_link], class: "text-emerald-400 hover:text-emerald-200 font-medium ml-4" %>
+            <%= link_to t("layout.add_new_music"), flash[:new_music_link], class: "text-emerald-400 hover:text-emerald-200 font-medium flex-shrink-0" %>
           <% end %>
         </div>
       <% end %>

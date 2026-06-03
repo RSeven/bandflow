@@ -1,8 +1,8 @@
-<div class="max-w-lg">
-  <div class="flex items-center gap-2 text-sm text-zinc-400 mb-4">
-    <%= link_to @band.name, band_path(@band), class: "hover:text-zinc-200" %>
-    <span>/</span>
-    <span><%= t("events.new.breadcrumb") %></span>
+<div class="max-w-lg min-w-0">
+  <div class="flex items-center gap-2 text-sm text-zinc-400 mb-4 min-w-0">
+    <%= link_to @band.name, band_path(@band), class: "hover:text-zinc-200 truncate min-w-0" %>
+    <span class="flex-shrink-0">/</span>
+    <span class="truncate min-w-0"><%= t("events.new.breadcrumb") %></span>
   </div>
   <h1 class="text-2xl font-bold mb-2"><%= t("events.new.title") %></h1>
   <p class="text-zinc-400 text-sm mb-6"><%= t("events.new.description") %></p>
