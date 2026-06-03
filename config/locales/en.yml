@@ -57,6 +57,8 @@ en:
       title_and_artist_required: "Title and artist are required."
       unknown_source: "Unknown source."
       updated: "Music updated."
+    rehearsals:
+      updated: "%{title} rehearsal updated."
     passwords:
       instructions_sent: "Password reset instructions sent, if that email exists."
       invalid_link: "That password reset link is invalid or has expired."
@@ -103,6 +105,7 @@ en:
       no_music_yet: "No songs in the repertoire yet."
       no_setlists_yet: "No setlists yet."
       repertoire_title: "Repertoire"
+      rehearse: "Rehearse"
       search_musics_label: "Search songs"
       search_musics_placeholder: "Search by title or artist"
       setlists_title: "Setlists"
@@ -230,6 +233,29 @@ en:
     tap_to_pause: "tap to pause"
     tap_to_resume: "tap to resume"
     title: "Presentation"
+
+  rehearsals:
+    index:
+      breadcrumb: "Rehearse"
+      description: "Review your repertoire and keep track of when each song was last rehearsed."
+      empty: "No songs in the repertoire yet."
+      last_rehearsed: "Last rehearsed %{time}"
+      never_rehearsed: "Never rehearsed"
+      no_results: "No songs matched your search."
+      search_label: "Search songs"
+      search_placeholder: "Search by title or artist"
+      sort_label: "Order"
+      sort_newest: "Newest rehearsed first"
+      sort_oldest: "Oldest rehearsed first"
+      title: "Rehearse"
+      update: "Update"
+      update_label: "Last rehearsed at"
+    show:
+      last_rehearsed: "Last rehearsed %{time}"
+      mark_rehearsed: "Mark Rehearsed"
+      mode: "Rehearsal Mode"
+      never_rehearsed: "Never rehearsed"
+      title: "Rehearse"
 
   registrations:
     new:

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_14_122353) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_03_031750) do
   create_table "band_memberships", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "band_id", null: false
@@ -66,6 +66,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_14_122353) do
     t.string "key_mode"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "last_rehearsed_at"
+    t.index ["band_id", "last_rehearsed_at"], name: "index_musics_on_band_id_and_last_rehearsed_at"
     t.index ["band_id", "title"], name: "index_musics_on_band_id_and_title"
     t.index ["band_id"], name: "index_musics_on_band_id"
   end

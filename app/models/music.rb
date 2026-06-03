@@ -26,4 +26,13 @@ class Music < ApplicationRecord
   def display_content
     has_chords? ? chords : lyrics
   end
+
+  def rehearsed?
+    last_rehearsed_at.present?
+  end
+
+  def rehearsal_field_value
+    return "" if last_rehearsed_at.blank?
+    last_rehearsed_at.strftime("%Y-%m-%d")
+  end
 end

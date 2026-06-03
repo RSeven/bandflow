@@ -9,6 +9,10 @@ Rails.application.routes.draw do
   resource :locale, only: :update
 
   resources :bands do
+    get "rehearse", to: "rehearsals#index", as: :rehearsal
+    get "rehearse/musics/:music_id", to: "rehearsals#show", as: :rehearsal_music
+    patch "rehearse/musics/:music_id", to: "rehearsals#update"
+
     resources :musics, except: [ :index ] do
       collection do
         get :search          # iTunes autocomplete

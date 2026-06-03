@@ -57,6 +57,8 @@ pt-BR:
       title_and_artist_required: "Título e artista são obrigatórios."
       unknown_source: "Fonte desconhecida."
       updated: "Música atualizada."
+    rehearsals:
+      updated: "Ensaio de %{title} atualizado."
     passwords:
       instructions_sent: "As instruções de redefinição foram enviadas, se esse e-mail existir."
       invalid_link: "Este link de redefinição é inválido ou expirou."
@@ -103,6 +105,7 @@ pt-BR:
       no_music_yet: "Ainda não há músicas no repertório."
       no_setlists_yet: "Ainda não há setlists."
       repertoire_title: "Repertório"
+      rehearse: "Ensaiar"
       search_musics_label: "Buscar músicas"
       search_musics_placeholder: "Buscar por título ou artista"
       setlists_title: "Setlists"
@@ -230,6 +233,29 @@ pt-BR:
     tap_to_pause: "toque para pausar"
     tap_to_resume: "toque para continuar"
     title: "Apresentação"
+
+  rehearsals:
+    index:
+      breadcrumb: "Ensaiar"
+      description: "Revise o repertório e acompanhe quando cada música foi ensaiada pela última vez."
+      empty: "Ainda não há músicas no repertório."
+      last_rehearsed: "Último ensaio em %{time}"
+      never_rehearsed: "Nunca ensaiada"
+      no_results: "Nenhuma música correspondeu à busca."
+      search_label: "Buscar músicas"
+      search_placeholder: "Buscar por título ou artista"
+      sort_label: "Ordem"
+      sort_newest: "Ensaiadas mais recentemente primeiro"
+      sort_oldest: "Mais antigas primeiro"
+      title: "Ensaiar"
+      update: "Atualizar"
+      update_label: "Último ensaio em"
+    show:
+      last_rehearsed: "Último ensaio em %{time}"
+      mark_rehearsed: "Marcar Como Ensaiada"
+      mode: "Modo Ensaio"
+      never_rehearsed: "Nunca ensaiada"
+      title: "Ensaiar"
 
   registrations:
     new:
