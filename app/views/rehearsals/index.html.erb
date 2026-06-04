@@ -12,37 +12,37 @@
     </div>
   </div>
 
-  <%= turbo_frame_tag "rehearsal-musics-frame", target: "_top" do %>
-    <%= form_with url: band_rehearsal_path(@band), method: :get, local: true,
-        data: { controller: "auto-submit", auto_submit_delay_value: 350, turbo_frame: "rehearsal-musics-frame", turbo_action: "advance", turbo_permanent: true },
-        id: "rehearsal-musics-search-form",
-        class: "grid gap-3 mb-5 sm:grid-cols-2" do |form| %>
-      <div class="min-w-0">
-        <%= form.label :q, t("rehearsals.index.search_label"), class: "sr-only" %>
-        <%= form.text_field :q,
-            value: @query,
-            placeholder: t("rehearsals.index.search_placeholder"),
-            data: { action: "input->auto-submit#submit" },
-            class: "w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
-      </div>
-      <div class="flex items-center gap-2 min-w-0 sm:justify-end">
-        <%= form.label :sort, t("rehearsals.index.sort_label"), class: "text-sm text-zinc-400 flex-shrink-0" %>
-        <%= form.select :sort,
-            options_for_select([
-              [ t("rehearsals.index.sort_oldest"), "oldest" ],
-              [ t("rehearsals.index.sort_newest"), "newest" ]
-            ], @sort),
-            {},
-            data: { action: "change->auto-submit#submit" },
-            class: "min-w-0 bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100" %>
-        <% if @query.present? %>
-          <%= link_to t("common.clear"), band_rehearsal_path(@band, sort: @sort),
-              data: { turbo_frame: "rehearsal-musics-frame", turbo_action: "advance" },
-              class: "text-sm text-zinc-400 hover:text-zinc-200 transition-colors flex-shrink-0" %>
-        <% end %>
-      </div>
-    <% end %>
+  <%= form_with url: band_rehearsal_path(@band), method: :get, local: true,
+      data: { controller: "auto-submit", auto_submit_delay_value: 350, turbo_frame: "rehearsal-musics-frame", turbo_action: "advance" },
+      id: "rehearsal-musics-search-form",
+      class: "grid gap-3 mb-5 sm:grid-cols-2" do |form| %>
+    <div class="min-w-0">
+      <%= form.label :q, t("rehearsals.index.search_label"), class: "sr-only" %>
+      <%= form.text_field :q,
+          value: @query,
+          placeholder: t("rehearsals.index.search_placeholder"),
+          data: { action: "input->auto-submit#submit" },
+          class: "w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
+    </div>
+    <div class="flex items-center gap-2 min-w-0 sm:justify-end">
+      <%= form.label :sort, t("rehearsals.index.sort_label"), class: "text-sm text-zinc-400 flex-shrink-0" %>
+      <%= form.select :sort,
+          options_for_select([
+            [ t("rehearsals.index.sort_oldest"), "oldest" ],
+            [ t("rehearsals.index.sort_newest"), "newest" ]
+          ], @sort),
+          {},
+          data: { action: "change->auto-submit#submit" },
+          class: "min-w-0 bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100" %>
+      <% if @query.present? %>
+        <%= button_tag t("common.clear"), type: "button",
+            data: { action: "auto-submit#clear" },
+            class: "text-sm text-zinc-400 hover:text-zinc-200 transition-colors flex-shrink-0" %>
+      <% end %>
+    </div>
+  <% end %>
 
+  <%= turbo_frame_tag "rehearsal-musics-frame", target: "_top" do %>
     <% if @musics.empty? %>
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center text-zinc-500 text-sm">
         <%= @query.present? ? t("rehearsals.index.no_results") : t("rehearsals.index.empty") %>

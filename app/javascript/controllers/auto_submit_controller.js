@@ -35,6 +35,19 @@ export default class extends Controller {
     }, this.delayValue)
   }
 
+  clear(event) {
+    event.preventDefault()
+
+    this._comparableFields(this.element).forEach((field) => {
+      if (field instanceof HTMLSelectElement) return
+      if (field instanceof HTMLInputElement && (field.type === "checkbox" || field.type === "radio")) return
+
+      field.value = ""
+    })
+
+    this.element.requestSubmit()
+  }
+
   _handleSubmit() {
     this._submitted = true
     this._hasScheduledSubmit = false

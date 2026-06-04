@@ -1,9 +1,25 @@
-<%= turbo_frame_tag "available-musics-panel" do %>
-  <div>
-    <div class="flex items-center justify-between gap-3 mb-2">
-      <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide"><%= t("setlists.available_musics.title") %></h3>
+<div>
+  <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-2"><%= t("setlists.available_musics.title") %></h3>
+
+  <%= form_with url: band_setlist_path(band, setlist), method: :get, local: true,
+      data: { controller: "auto-submit", auto_submit_delay_value: 350, turbo_frame: "available-musics-panel", turbo_action: "advance" },
+      id: "available-musics-search-form",
+      class: "mb-3" do |form| %>
+    <%= form.hidden_field :event_page, value: event_page %>
+    <%= form.hidden_field :event_query, value: event_query %>
+    <%= form.hidden_field :music_page, value: 1 %>
+    <%= form.label :music_query, t("setlists.available_musics.search_label"), class: "sr-only" %>
+    <%= form.text_field :music_query,
+        value: music_query,
+        placeholder: t("setlists.available_musics.search_placeholder"),
+        data: { action: "input->auto-submit#submit" },
+        class: "w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
+  <% end %>
+
+  <%= turbo_frame_tag "available-musics-panel" do %>
+    <div>
       <% if musics_total_pages > 1 %>
-        <div class="flex items-center gap-2 text-xs text-zinc-500">
+        <div class="mb-2 flex items-center gap-2 text-xs text-zinc-500">
           <span><%= t("common.page_of", page: music_page, total: musics_total_pages) %></span>
           <% if music_page > 1 %>
             <%= link_to t("common.previous"), band_setlist_path(band, setlist,
@@ -25,52 +41,37 @@
           <% end %>
         </div>
       <% end %>
-    </div>
 
-    <%= form_with url: band_setlist_path(band, setlist), method: :get, local: true,
-        data: { controller: "auto-submit", auto_submit_delay_value: 350, turbo_frame: "available-musics-panel", turbo_action: "advance", turbo_permanent: true },
-        id: "available-musics-search-form",
-        class: "mb-3" do |form| %>
-      <%= form.hidden_field :event_page, value: event_page %>
-      <%= form.hidden_field :event_query, value: event_query %>
-      <%= form.hidden_field :music_page, value: 1 %>
-      <%= form.label :music_query, t("setlists.available_musics.search_label"), class: "sr-only" %>
-      <%= form.text_field :music_query,
-          value: music_query,
-          placeholder: t("setlists.available_musics.search_placeholder"),
-          data: { action: "input->auto-submit#submit" },
-          class: "w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
-    <% end %>
-
-    <% if musics.any? %>
-      <div class="space-y-1">
-        <% musics.each do |music| %>
-          <%= button_to band_setlist_setlist_items_path(band, setlist),
-              params: {
-                item_type: "Music",
-                item_id: music.id,
-                music_page: music_page,
-                music_query: music_query,
-                event_page: event_page,
-                event_query: event_query
-              },
-              data: { turbo_stream: true },
-              form_class: "w-full min-w-0",
-              class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg px-3 py-2 text-sm transition-colors overflow-hidden" do %>
-            <div class="font-medium truncate"><%= music.title %></div>
-            <div class="text-zinc-400 text-xs truncate"><%= music.artist %></div>
-            <% if music.label_list.any? %>
-              <div class="mt-0.5">
-                <%= music_label_badges(music.label_list, compact: true) %>
-              </div>
+      <% if musics.any? %>
+        <div class="space-y-1">
+          <% musics.each do |music| %>
+            <%= button_to band_setlist_setlist_items_path(band, setlist),
+                params: {
+                  item_type: "Music",
+                  item_id: music.id,
+                  music_page: music_page,
+                  music_query: music_query,
+                  event_page: event_page,
+                  event_query: event_query
+                },
+                data: { turbo_stream: true },
+                form_class: "w-full min-w-0",
+                class: "w-full text-left bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg px-3 py-2 text-sm transition-colors overflow-hidden" do %>
+              <div class="font-medium truncate"><%= music.title %></div>
+              <div class="text-zinc-400 text-xs truncate"><%= music.artist %></div>
+              <% if music.label_list.any? %>
+                <div class="mt-0.5">
+                  <%= music_label_badges(music.label_list, compact: true) %>
+                </div>
+              <% end %>
             <% end %>
           <% end %>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="bg-zinc-900 border border-dashed border-zinc-800 rounded-xl px-4 py-5 text-sm text-zinc-500">
-        <%= music_query.present? ? t("setlists.available_musics.no_results") : t("setlists.available_musics.all_added") %>
-      </div>
-    <% end %>
-  </div>
-<% end %>
+        </div>
+      <% else %>
+        <div class="bg-zinc-900 border border-dashed border-zinc-800 rounded-xl px-4 py-5 text-sm text-zinc-500">
+          <%= music_query.present? ? t("setlists.available_musics.no_results") : t("setlists.available_musics.all_added") %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
