@@ -43,7 +43,8 @@
   </div>
 
   <% if @active_tab == "musics" %>
-    <section>
+    <%= turbo_frame_tag "band-musics-frame", target: "_top" do %>
+      <section>
       <div class="flex items-center justify-between gap-3 mb-4 min-w-0">
         <h2 class="text-lg font-semibold min-w-0"><%= t("bands.show.repertoire_title") %></h2>
         <div class="flex items-center gap-3 flex-shrink-0">
@@ -54,7 +55,8 @@
 
       <div class="flex flex-col gap-3 mb-4 sm:grid sm:grid-cols-2">
         <%= form_with url: band_path(@band), method: :get, local: true,
-            data: { controller: "auto-submit", auto_submit_delay_value: 350 },
+            data: { controller: "auto-submit", auto_submit_delay_value: 350, turbo_frame: "band-musics-frame", turbo_action: "advance", turbo_permanent: true },
+            id: "band-musics-search-form",
             class: "flex items-center gap-2 min-w-0" do |form| %>
           <%= form.hidden_field :tab, value: "musics" %>
           <%= form.hidden_field :setlist_page, value: @setlist_page %>
@@ -66,6 +68,7 @@
               class: "flex-1 bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
           <% if @music_query.present? %>
             <%= link_to t("common.clear"), band_path(@band, tab: "musics", setlist_page: @setlist_page),
+                data: { turbo_frame: "band-musics-frame", turbo_action: "advance" },
                 class: "text-sm text-zinc-400 hover:text-zinc-200 transition-colors" %>
           <% end %>
         <% end %>
@@ -78,10 +81,12 @@
             <div class="flex items-center gap-2 flex-shrink-0">
               <% if @music_page > 1 %>
                 <%= link_to t("common.previous"), band_path(@band, pagination_params(:music_page, @music_page - 1).merge(tab: "musics")),
+                    data: { turbo_frame: "band-musics-frame", turbo_action: "advance" },
                     class: "border border-zinc-700 hover:border-zinc-500 rounded-lg px-3 py-1.5 text-zinc-300 transition-colors" %>
               <% end %>
               <% if @music_page < @musics_total_pages %>
                 <%= link_to t("common.next"), band_path(@band, pagination_params(:music_page, @music_page + 1).merge(tab: "musics")),
+                    data: { turbo_frame: "band-musics-frame", turbo_action: "advance" },
                     class: "border border-zinc-700 hover:border-zinc-500 rounded-lg px-3 py-1.5 text-zinc-300 transition-colors" %>
               <% end %>
             </div>
@@ -126,17 +131,20 @@
             <div class="flex items-center gap-2 flex-shrink-0">
               <% if @music_page > 1 %>
                 <%= link_to t("common.previous"), band_path(@band, pagination_params(:music_page, @music_page - 1).merge(tab: "musics")),
+                    data: { turbo_frame: "band-musics-frame", turbo_action: "advance" },
                     class: "border border-zinc-700 hover:border-zinc-500 rounded-lg px-3 py-1.5 text-zinc-300 transition-colors" %>
               <% end %>
               <% if @music_page < @musics_total_pages %>
                 <%= link_to t("common.next"), band_path(@band, pagination_params(:music_page, @music_page + 1).merge(tab: "musics")),
+                    data: { turbo_frame: "band-musics-frame", turbo_action: "advance" },
                     class: "border border-zinc-700 hover:border-zinc-500 rounded-lg px-3 py-1.5 text-zinc-300 transition-colors" %>
               <% end %>
             </div>
           </div>
         <% end %>
       <% end %>
-    </section>
+      </section>
+    <% end %>
   <% else %>
     <section>
       <div class="flex items-center justify-between gap-3 mb-4 min-w-0">

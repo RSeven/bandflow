@@ -23,6 +23,8 @@ RSpec.describe "Rehearsals", type: :request do
       expect(response.body).to include("Older Song")
       expect(response.body).to include("Fresh Song")
       expect(response.body).to include("Never rehearsed")
+      expect(response.body).to include(%(turbo-frame id="rehearsal-musics-frame"))
+      expect(response.body).to include(%(data-turbo-frame="rehearsal-musics-frame"))
     end
 
     it "filters musics by title or artist" do

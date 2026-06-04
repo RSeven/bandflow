@@ -30,6 +30,8 @@ RSpec.describe "Bands", type: :request do
       expect(response.body).to include("Repertoire")
       expect(response.body).to include("Setlists")
       expect(response.body).to include("Search by title or artist")
+      expect(response.body).to include(%(turbo-frame id="band-musics-frame"))
+      expect(response.body).to include(%(data-turbo-frame="band-musics-frame"))
     end
 
     it "paginates musics separately from setlists" do

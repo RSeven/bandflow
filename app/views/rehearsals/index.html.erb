@@ -12,94 +12,98 @@
     </div>
   </div>
 
-  <%= form_with url: band_rehearsal_path(@band), method: :get, local: true,
-      data: { controller: "auto-submit", auto_submit_delay_value: 350 },
-      class: "grid gap-3 mb-5 sm:grid-cols-2" do |form| %>
-    <div class="min-w-0">
-      <%= form.label :q, t("rehearsals.index.search_label"), class: "sr-only" %>
-      <%= form.text_field :q,
-          value: @query,
-          placeholder: t("rehearsals.index.search_placeholder"),
-          data: { action: "input->auto-submit#submit" },
-          class: "w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
-    </div>
-    <div class="flex items-center gap-2 min-w-0 sm:justify-end">
-      <%= form.label :sort, t("rehearsals.index.sort_label"), class: "text-sm text-zinc-400 flex-shrink-0" %>
-      <%= form.select :sort,
-          options_for_select([
-            [ t("rehearsals.index.sort_oldest"), "oldest" ],
-            [ t("rehearsals.index.sort_newest"), "newest" ]
-          ], @sort),
-          {},
-          data: { action: "change->auto-submit#submit" },
-          class: "min-w-0 bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100" %>
-      <% if @query.present? %>
-        <%= link_to t("common.clear"), band_rehearsal_path(@band, sort: @sort),
-            class: "text-sm text-zinc-400 hover:text-zinc-200 transition-colors flex-shrink-0" %>
-      <% end %>
-    </div>
-  <% end %>
+  <%= turbo_frame_tag "rehearsal-musics-frame", target: "_top" do %>
+    <%= form_with url: band_rehearsal_path(@band), method: :get, local: true,
+        data: { controller: "auto-submit", auto_submit_delay_value: 350, turbo_frame: "rehearsal-musics-frame", turbo_action: "advance", turbo_permanent: true },
+        id: "rehearsal-musics-search-form",
+        class: "grid gap-3 mb-5 sm:grid-cols-2" do |form| %>
+      <div class="min-w-0">
+        <%= form.label :q, t("rehearsals.index.search_label"), class: "sr-only" %>
+        <%= form.text_field :q,
+            value: @query,
+            placeholder: t("rehearsals.index.search_placeholder"),
+            data: { action: "input->auto-submit#submit" },
+            class: "w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500" %>
+      </div>
+      <div class="flex items-center gap-2 min-w-0 sm:justify-end">
+        <%= form.label :sort, t("rehearsals.index.sort_label"), class: "text-sm text-zinc-400 flex-shrink-0" %>
+        <%= form.select :sort,
+            options_for_select([
+              [ t("rehearsals.index.sort_oldest"), "oldest" ],
+              [ t("rehearsals.index.sort_newest"), "newest" ]
+            ], @sort),
+            {},
+            data: { action: "change->auto-submit#submit" },
+            class: "min-w-0 bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-lg px-3 py-2 text-sm text-zinc-100" %>
+        <% if @query.present? %>
+          <%= link_to t("common.clear"), band_rehearsal_path(@band, sort: @sort),
+              data: { turbo_frame: "rehearsal-musics-frame", turbo_action: "advance" },
+              class: "text-sm text-zinc-400 hover:text-zinc-200 transition-colors flex-shrink-0" %>
+        <% end %>
+      </div>
+    <% end %>
 
-  <% if @musics.empty? %>
-    <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center text-zinc-500 text-sm">
-      <%= @query.present? ? t("rehearsals.index.no_results") : t("rehearsals.index.empty") %>
-    </div>
-  <% else %>
-    <div class="space-y-2">
-      <% @musics.each do |music| %>
-        <div class="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 min-w-0">
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <%= link_to band_rehearsal_music_path(@band, music), class: "min-w-0 hover:opacity-80 transition-opacity" do %>
-              <div class="font-medium text-zinc-100 truncate"><%= music.title %></div>
-              <div class="text-zinc-400 text-sm truncate"><%= music.artist %></div>
-              <% if music.label_list.any? %>
-                <div class="mt-0.5">
-                  <%= music_label_badges(music.label_list) %>
-                </div>
+    <% if @musics.empty? %>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center text-zinc-500 text-sm">
+        <%= @query.present? ? t("rehearsals.index.no_results") : t("rehearsals.index.empty") %>
+      </div>
+    <% else %>
+      <div class="space-y-2">
+        <% @musics.each do |music| %>
+          <div class="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 min-w-0">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <%= link_to band_rehearsal_music_path(@band, music), class: "min-w-0 hover:opacity-80 transition-opacity" do %>
+                <div class="font-medium text-zinc-100 truncate"><%= music.title %></div>
+                <div class="text-zinc-400 text-sm truncate"><%= music.artist %></div>
+                <% if music.label_list.any? %>
+                  <div class="mt-0.5">
+                    <%= music_label_badges(music.label_list) %>
+                  </div>
+                <% end %>
               <% end %>
-            <% end %>
 
-            <div class="flex flex-col gap-2 sm:items-end">
-              <div class="flex items-center gap-3 flex-wrap justify-start sm:justify-end">
-                <div class="text-xs <%= music.rehearsed? ? "text-zinc-400" : "text-amber-400" %>">
-                  <% if music.rehearsed? %>
-                    <%= t("rehearsals.index.last_rehearsed", time: l(music.last_rehearsed_at, format: :long)) %>
-                  <% else %>
-                    <%= t("rehearsals.index.never_rehearsed") %>
+              <div class="flex flex-col gap-2 sm:items-end">
+                <div class="flex items-center gap-3 flex-wrap justify-start sm:justify-end">
+                  <div class="text-xs <%= music.rehearsed? ? "text-zinc-400" : "text-amber-400" %>">
+                    <% if music.rehearsed? %>
+                      <%= t("rehearsals.index.last_rehearsed", time: l(music.last_rehearsed_at, format: :long)) %>
+                    <% else %>
+                      <%= t("rehearsals.index.never_rehearsed") %>
+                    <% end %>
+                  </div>
+
+                  <%= form_with url: band_rehearsal_music_priority_path(@band, music), method: :patch, local: true,
+                      data: { controller: "auto-submit" },
+                      class: "flex items-center gap-1.5" do |form| %>
+                    <%= hidden_field_tag :q, @query %>
+                    <%= hidden_field_tag :sort, @sort %>
+                    <%= label_tag "rehearsal_priority_#{music.id}", t("rehearsals.index.priority_label"), class: "text-xs text-zinc-500 flex-shrink-0" %>
+                    <%= form.select :rehearsal_priority,
+                        options_for_select([["—", ""], *(1..10).map { |i| [i.to_s, i.to_s] }], music.rehearsal_priority.to_s),
+                        {},
+                        id: "rehearsal_priority_#{music.id}",
+                        data: { action: "change->auto-submit#submit" },
+                        class: "bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" %>
                   <% end %>
                 </div>
 
-                <%= form_with url: band_rehearsal_music_priority_path(@band, music), method: :patch, local: true,
-                    data: { controller: "auto-submit" },
-                    class: "flex items-center gap-1.5" do |form| %>
+                <%= form_with url: band_rehearsal_music_path(@band, music), method: :patch, local: true,
+                    class: "flex flex-wrap items-center gap-2 justify-start sm:justify-end" do |form| %>
                   <%= hidden_field_tag :q, @query %>
                   <%= hidden_field_tag :sort, @sort %>
-                  <%= label_tag "rehearsal_priority_#{music.id}", t("rehearsals.index.priority_label"), class: "text-xs text-zinc-500 flex-shrink-0" %>
-                  <%= form.select :rehearsal_priority,
-                      options_for_select([["—", ""], *(1..10).map { |i| [i.to_s, i.to_s] }], music.rehearsal_priority.to_s),
-                      {},
-                      id: "rehearsal_priority_#{music.id}",
-                      data: { action: "change->auto-submit#submit" },
-                      class: "bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" %>
+                  <%= label_tag "last_rehearsed_at_#{music.id}", t("rehearsals.index.update_label"), class: "sr-only" %>
+                  <%= date_field_tag :last_rehearsed_at,
+                      music.rehearsal_field_value,
+                      id: "last_rehearsed_at_#{music.id}",
+                      class: "bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" %>
+                  <%= form.submit t("rehearsals.index.update"),
+                      class: "text-sm bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-1.5 rounded-lg transition-colors cursor-pointer" %>
                 <% end %>
               </div>
-
-              <%= form_with url: band_rehearsal_music_path(@band, music), method: :patch, local: true,
-                  class: "flex flex-wrap items-center gap-2 justify-start sm:justify-end" do |form| %>
-                <%= hidden_field_tag :q, @query %>
-                <%= hidden_field_tag :sort, @sort %>
-                <%= label_tag "last_rehearsed_at_#{music.id}", t("rehearsals.index.update_label"), class: "sr-only" %>
-                <%= date_field_tag :last_rehearsed_at,
-                    music.rehearsal_field_value,
-                    id: "last_rehearsed_at_#{music.id}",
-                    class: "bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" %>
-                <%= form.submit t("rehearsals.index.update"),
-                    class: "text-sm bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-1.5 rounded-lg transition-colors cursor-pointer" %>
-              <% end %>
             </div>
           </div>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 </div>

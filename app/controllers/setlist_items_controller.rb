@@ -77,11 +77,8 @@ class SetlistItemsController < ApplicationController
 
     musics_scope = @band.musics
       .where.not(id: @setlist.setlist_items.where(item_type: "Music").select(:item_id))
+      .matching(@music_query)
       .order(:title)
-    if @music_query.present?
-      escaped_query = ActiveRecord::Base.sanitize_sql_like(@music_query)
-      musics_scope = musics_scope.where("title LIKE :query OR artist LIKE :query", query: "%#{escaped_query}%")
-    end
 
     events_scope = @band.events.order(:title)
     if @event_query.present?

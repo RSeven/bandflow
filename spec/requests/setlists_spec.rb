@@ -18,6 +18,8 @@ RSpec.describe "Setlists", type: :request do
     it "returns 200" do
       get band_setlist_path(band, setlist)
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include(%(turbo-frame id="available-musics-panel"))
+      expect(response.body).to include(%(turbo-frame id="available-events-panel"))
     end
 
     it "shows only musics that are not already in the setlist" do
