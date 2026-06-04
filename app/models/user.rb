@@ -10,6 +10,7 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :email_address, presence: true, uniqueness: { case_sensitive: false },
                              format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :locale, presence: true, inclusion: { in: ->(_) { I18n.available_locales.map(&:to_s) } }
 
   def member_of?(band)
     band_memberships.exists?(band: band)

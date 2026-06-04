@@ -46,8 +46,8 @@ RSpec.describe "Setlists", type: :request do
         event_query: "Event 08"
       }
 
-      expect(response.body).to include("Search by title or artist")
-      expect(response.body).to include("Search by title or description")
+      expect(response.body).to include("Buscar por título ou artista")
+      expect(response.body).to include("Buscar por título ou descrição")
       expect(response.body).to include("Song 08")
       expect(response.body).not_to include("Song 00")
       expect(response.body).to include("Event 08")
@@ -68,9 +68,9 @@ RSpec.describe "Setlists", type: :request do
     it "renders with presentation layout" do
       get present_band_setlist_path(band, setlist)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Scroll Up")
-      expect(response.body).to include("Scroll Down")
-      expect(response.body).to include("Next stop")
+      expect(response.body).to include("Rolar Para Cima")
+      expect(response.body).to include("Rolar Para Baixo")
+      expect(response.body).to include("Próxima parada")
     end
 
     it "shows a chords and lyrics switch when both are available" do

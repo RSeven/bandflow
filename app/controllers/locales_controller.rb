@@ -3,7 +3,10 @@ class LocalesController < ApplicationController
 
   def update
     locale = params[:locale].to_s
-    session[:locale] = locale if app_locales.map(&:to_s).include?(locale)
+    if app_locales.map(&:to_s).include?(locale)
+      session[:locale] = locale
+      resume_session&.user&.update!(locale: locale)
+    end
 
     redirect_to safe_redirect_path
   end

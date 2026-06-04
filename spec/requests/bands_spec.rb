@@ -27,9 +27,9 @@ RSpec.describe "Bands", type: :request do
     it "shows tab navigation for musics and setlists" do
       get band_path(band)
 
-      expect(response.body).to include("Repertoire")
+      expect(response.body).to include("Repertório")
       expect(response.body).to include("Setlists")
-      expect(response.body).to include("Search by title or artist")
+      expect(response.body).to include("Buscar por título ou artista")
       expect(response.body).to include(%(turbo-frame id="band-musics-frame"))
       expect(response.body).to include(%(data-turbo-frame="band-musics-frame"))
     end
@@ -46,7 +46,7 @@ RSpec.describe "Bands", type: :request do
 
       expect(response.body).to include("Song 10")
       expect(response.body).not_to include("Song 00")
-      expect(response.body).to include("Page 2 of 2")
+      expect(response.body).to include("Página 2 de 2")
       expect(response.body).not_to include("Setlist 00")
     end
 

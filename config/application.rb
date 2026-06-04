@@ -37,7 +37,7 @@ module Bandflow
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.i18n.available_locales = [ :en, :"pt-BR" ]
-    config.i18n.default_locale = :en
+    config.i18n.default_locale = :"pt-BR"
     config.i18n.fallbacks = true
 
     # Don't generate system test files.

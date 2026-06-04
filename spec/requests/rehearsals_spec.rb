@@ -19,10 +19,10 @@ RSpec.describe "Rehearsals", type: :request do
       get band_rehearsal_path(band)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Rehearse")
+      expect(response.body).to include("Ensaiar")
       expect(response.body).to include("Older Song")
       expect(response.body).to include("Fresh Song")
-      expect(response.body).to include("Never rehearsed")
+      expect(response.body).to include("Nunca ensaiada")
       expect(response.body).to include(%(turbo-frame id="rehearsal-musics-frame"))
       expect(response.body).to include(%(data-turbo-frame="rehearsal-musics-frame"))
     end
@@ -88,9 +88,9 @@ RSpec.describe "Rehearsals", type: :request do
       get band_rehearsal_music_path(band, music)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Rehearsal Mode")
+      expect(response.body).to include("Modo Ensaio")
       expect(response.body).to include("Practice Song")
-      expect(response.body).to include("Mark Rehearsed")
+      expect(response.body).to include("Marcar Como Ensaiada")
     end
   end
 
