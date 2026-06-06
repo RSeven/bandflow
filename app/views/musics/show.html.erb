@@ -9,9 +9,9 @@
     <div class="min-w-0">
       <h1 class="text-2xl font-bold break-all"><%= @music.title %></h1>
       <p class="text-zinc-400 break-all"><%= @music.artist %></p>
-      <% if @music.label_list.any? %>
+      <% if @music.virtual_tag_keys.any? || @music.label_list.any? %>
         <div class="mt-1">
-          <%= music_label_badges(@music.label_list) %>
+          <%= music_display_label_badges(@music) %>
         </div>
       <% end %>
     </div>

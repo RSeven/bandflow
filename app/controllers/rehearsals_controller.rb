@@ -40,7 +40,7 @@ class RehearsalsController < ApplicationController
   end
 
   def rehearsal_scope
-    scope = @band.musics.matching(@query)
+    scope = MusicSearchQuery.call(@band.musics, @query)
 
     case @sort
     when "newest"

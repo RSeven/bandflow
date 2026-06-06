@@ -127,14 +127,13 @@ RSpec.describe Music, type: :model do
 
       expect(music.labels).to eq([ "rock", "acoustic", "punk" ])
     end
-  end
 
-  describe ".matching" do
-    it "matches labels" do
-      matching_music = create(:music, title: "Quiet Song", artist: "Artist", labels: [ "acoustic" ])
-      create(:music, title: "Loud Song", artist: "Artist", labels: [ "punk" ])
+    it "splits labels into single words" do
+      music.labels_text = "Rock Nacional, indie pop"
+      music.validate
 
-      expect(Music.matching("acoustic")).to contain_exactly(matching_music)
+      expect(music.labels).to eq([ "rock", "nacional", "indie", "pop" ])
     end
   end
+
 end

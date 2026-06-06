@@ -20,10 +20,10 @@ export default class extends Controller {
   search() {
     const value = this.inputTarget.value
 
-    if (value.includes(",")) {
-      const parts = value.split(",")
+    if (/[,\s]/.test(value)) {
+      const parts = value.split(/[,\s]+/)
       parts.slice(0, -1).forEach((label) => this._addLabel(label))
-      this.inputTarget.value = parts[parts.length - 1].trimStart()
+      this.inputTarget.value = parts[parts.length - 1]
     }
 
     const query = this.inputTarget.value.trim()
@@ -139,7 +139,7 @@ export default class extends Controller {
 
   _parseLabels(value) {
     return String(value || "")
-      .split(",")
+      .split(/[,\s]+/)
       .map((label) => label.trim().toLowerCase())
       .filter((label) => label.length > 0)
   }

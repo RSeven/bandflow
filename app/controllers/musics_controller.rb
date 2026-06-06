@@ -54,7 +54,7 @@ class MusicsController < ApplicationController
       .uniq
       .sort
 
-    labels = labels.select { |label| label.include?(query) } if query.present?
+    labels = labels.select { |label| label.start_with?(query) } if query.present?
 
     render json: labels.first(8)
   end

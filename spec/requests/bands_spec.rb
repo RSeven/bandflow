@@ -29,7 +29,7 @@ RSpec.describe "Bands", type: :request do
 
       expect(response.body).to include("Repertório")
       expect(response.body).to include("Setlists")
-      expect(response.body).to include("Buscar por título ou artista")
+      expect(response.body).to include("Buscar por título, artista ou #rótulo")
       expect(response.body).to include(%(turbo-frame id="band-musics-frame"))
       expect(response.body).to include(%(data-turbo-frame="band-musics-frame"))
     end
@@ -84,14 +84,22 @@ RSpec.describe "Bands", type: :request do
       expect(response.body).not_to include("Paranoid Android")
     end
 
-    it "filters musics by label" do
+    it "filters musics by hashtag label prefix" do
       create(:music, band: band, title: "Campfire Song", artist: "Artist", labels: [ "acoustic" ])
       create(:music, band: band, title: "Club Song", artist: "Artist", labels: [ "pop" ])
 
-      get band_path(band), params: { tab: "musics", music_query: "acoustic" }
+      get band_path(band), params: { tab: "musics", music_query: "#aco" }
 
       expect(response.body).to include("Campfire Song")
       expect(response.body).not_to include("Club Song")
+    end
+
+    it "does not match labels during plain text search" do
+      create(:music, band: band, title: "Campfire Song", artist: "Artist", labels: [ "acoustic" ])
+
+      get band_path(band), params: { tab: "musics", music_query: "acoustic" }
+
+      expect(response.body).not_to include("Campfire Song")
     end
 
     it "redirects to bands index for non-members" do

@@ -17,16 +17,9 @@ class Music < ApplicationRecord
 
   PITCH_CLASSES = %w[C C# D D# E F F# G G# A A# B].freeze
   MODES = { "major" => "Major", "minor" => "Minor" }.freeze
+  NEW_WINDOW = 60.days
 
-  scope :matching, ->(query) {
-    stripped_query = query.to_s.strip
-    if stripped_query.present?
-      escaped_query = ActiveRecord::Base.sanitize_sql_like(stripped_query)
-      where("title LIKE :query OR artist LIKE :query OR labels LIKE :query", query: "%#{escaped_query}%")
-    else
-      all
-    end
-  }
+  scope :newly_created, -> { where("created_at >= ?", Time.current - NEW_WINDOW) }
 
   def musical_key
     return nil if key_name.blank?
@@ -93,12 +86,24 @@ class Music < ApplicationRecord
     labels.to_a
   end
 
+  def new?
+    created_at.present? && created_at >= Time.current - NEW_WINDOW
+  end
+
+  def virtual_tag_keys
+    new? ? [ "new" ] : []
+  end
+
   private
+
+  def self.normalize_label_token(value)
+    value.to_s.squish.downcase.split(/[\s,]+/).first.to_s
+  end
 
   def normalize_labels
     self.labels = labels.to_a
-      .flat_map { |label| label.to_s.split(",") }
-      .map { |label| label.squish.downcase }
+      .flat_map { |label| label.to_s.split(/[\s,]+/) }
+      .map { |label| self.class.normalize_label_token(label) }
       .reject(&:blank?)
       .uniq
   end

@@ -114,7 +114,7 @@ en:
       repertoire_title: "Repertoire"
       rehearse: "Rehearse"
       search_musics_label: "Search songs"
-      search_musics_placeholder: "Search by title or artist"
+      search_musics_placeholder: "Search by title, artist, or #label"
       setlists_title: "Setlists"
       songs_count:
         one: "1 song"
@@ -161,6 +161,8 @@ en:
         subject: "Reset your password"
 
   musics:
+    virtual_tags:
+      new: "new"
     new:
       breadcrumb: "New music"
       title: "Add Music"
@@ -177,7 +179,7 @@ en:
       key: "Key"
       key_placeholder: "e.g. G"
       labels: "Labels"
-      labels_help: "Choose existing labels or add new ones with comma or Enter."
+      labels_help: "Choose existing one-word labels or add new ones with comma, space, or Enter."
       labels_placeholder: "rock, acoustic, punk"
       lyrics_help: "Lyrics will be shown when no chords are available."
       major: "Major"

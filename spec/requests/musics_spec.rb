@@ -154,11 +154,11 @@ RSpec.describe "Musics", type: :request do
       other_band = create(:band)
       create(:music, band: other_band, title: "Other Song", artist: "Artist", labels: [ "punk" ])
 
-      get labels_band_musics_path(band), params: { q: "o" },
+      get labels_band_musics_path(band), params: { q: "ro" },
           headers: { "Accept" => "application/json" }
 
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)).to eq([ "acoustic", "pop", "rock" ])
+      expect(JSON.parse(response.body)).to eq([ "rock" ])
     end
 
     it "deduplicates labels" do

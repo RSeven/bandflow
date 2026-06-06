@@ -26,6 +26,11 @@ module ApplicationHelper
     safe_join(labels.to_a.map { |label| music_label_badge(label, compact: compact) })
   end
 
+  def music_display_label_badges(music, compact: false)
+    labels = music.virtual_tag_keys.map { |key| t("musics.virtual_tags.#{key}") } + music.label_list
+    music_label_badges(labels, compact: compact)
+  end
+
   def music_label_badge(label, compact: false)
     tag.span(
       label,

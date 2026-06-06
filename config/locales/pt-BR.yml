@@ -114,7 +114,7 @@ pt-BR:
       repertoire_title: "Repertório"
       rehearse: "Ensaiar"
       search_musics_label: "Buscar músicas"
-      search_musics_placeholder: "Buscar por título ou artista"
+      search_musics_placeholder: "Buscar por título, artista ou #rótulo"
       setlists_title: "Setlists"
       songs_count:
         one: "1 música"
@@ -161,6 +161,8 @@ pt-BR:
         subject: "Redefina sua senha"
 
   musics:
+    virtual_tags:
+      new: "nova"
     new:
       breadcrumb: "Nova música"
       title: "Adicionar Música"
@@ -177,7 +179,7 @@ pt-BR:
       key: "Tom"
       key_placeholder: "ex.: G"
       labels: "Rótulos"
-      labels_help: "Escolha rótulos existentes ou adicione novos com vírgula ou Enter."
+      labels_help: "Escolha rótulos de uma palavra ou adicione novos com vírgula, espaço ou Enter."
       labels_placeholder: "rock, acústico, punk"
       lyrics_help: "A letra será exibida quando não houver cifras."
       major: "Maior"
