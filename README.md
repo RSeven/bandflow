@@ -25,7 +25,7 @@ KAMAL_REGISTRY_PASSWORD=...
 Some integrations (OAuth callbacks, shared links) need a public hostname. `config/environments/development.rb` reads `APP_HOST` and `APP_PROTOCOL` from the environment and falls back to a default ngrok hostname, so you can either start ngrok with the baked-in host or override it:
 
 ```bash
-ngrok http --url=horribly-suited-garfish.ngrok-free.app 3000
+ngrok http 3000
 # or, with a different tunnel
 APP_HOST=my-tunnel.ngrok-free.app bin/dev
 ```
