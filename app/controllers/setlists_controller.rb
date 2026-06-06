@@ -85,7 +85,7 @@ class SetlistsController < ApplicationController
   def available_musics
     scope = @band.musics
       .where.not(id: @setlist.setlist_items.where(item_type: "Music").select(:item_id))
-      .order(:title)
+      .repertoire_order
 
     MusicSearchQuery.call(scope, @music_query)
   end

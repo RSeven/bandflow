@@ -33,6 +33,17 @@ RSpec.describe "Setlists", type: :request do
       expect(response.body).not_to include(%(params[item_id]" value="#{excluded_music.id}"))
     end
 
+    it "orders available musics by rehearsal priority before title" do
+      create(:music, band: band, title: "Alpha", artist: "Artist", rehearsal_priority: 3)
+      create(:music, band: band, title: "Bravo", artist: "Artist", rehearsal_priority: 9)
+      create(:music, band: band, title: "Charlie", artist: "Artist")
+
+      get band_setlist_path(band, setlist)
+
+      expect(response.body.index("Bravo")).to be < response.body.index("Alpha")
+      expect(response.body.index("Alpha")).to be < response.body.index("Charlie")
+    end
+
     it "paginates and filters add-music and add-event panels" do
       9.times do |i|
         create(:music, band: band, title: format("Song %02d", i), artist: "Artist")

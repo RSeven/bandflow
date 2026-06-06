@@ -84,6 +84,17 @@ RSpec.describe "Bands", type: :request do
       expect(response.body).not_to include("Paranoid Android")
     end
 
+    it "orders musics by rehearsal priority before title" do
+      create(:music, band: band, title: "Alpha", artist: "Artist", rehearsal_priority: 2)
+      create(:music, band: band, title: "Bravo", artist: "Artist", rehearsal_priority: 8)
+      create(:music, band: band, title: "Charlie", artist: "Artist")
+
+      get band_path(band), params: { tab: "musics" }
+
+      expect(response.body.index("Bravo")).to be < response.body.index("Alpha")
+      expect(response.body.index("Alpha")).to be < response.body.index("Charlie")
+    end
+
     it "filters musics by hashtag label prefix" do
       create(:music, band: band, title: "Campfire Song", artist: "Artist", labels: [ "acoustic" ])
       create(:music, band: band, title: "Club Song", artist: "Artist", labels: [ "pop" ])

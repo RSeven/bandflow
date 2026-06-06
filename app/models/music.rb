@@ -20,6 +20,7 @@ class Music < ApplicationRecord
   NEW_WINDOW = 30.days
 
   scope :newly_created, -> { where("created_at >= ?", Time.current - NEW_WINDOW) }
+  scope :repertoire_order, -> { order(Arel.sql("COALESCE(rehearsal_priority, 0) DESC, title ASC")) }
 
   def musical_key
     return nil if key_name.blank?

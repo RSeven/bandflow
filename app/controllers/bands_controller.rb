@@ -15,7 +15,7 @@ class BandsController < ApplicationController
     @active_tab = active_tab_param
     @music_query = params[:music_query].to_s.strip
 
-    musics_scope = MusicSearchQuery.call(@band.musics, @music_query).order(:title)
+    musics_scope = MusicSearchQuery.call(@band.musics, @music_query).repertoire_order
     setlists_scope = @band.setlists.order(performance_date: :desc, created_at: :desc)
 
     @musics_total_pages = total_pages_for(musics_scope)
