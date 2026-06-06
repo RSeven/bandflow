@@ -17,7 +17,7 @@ class Music < ApplicationRecord
 
   PITCH_CLASSES = %w[C C# D D# E F F# G G# A A# B].freeze
   MODES = { "major" => "Major", "minor" => "Minor" }.freeze
-  NEW_WINDOW = 60.days
+  NEW_WINDOW = 30.days
 
   scope :newly_created, -> { where("created_at >= ?", Time.current - NEW_WINDOW) }
 
