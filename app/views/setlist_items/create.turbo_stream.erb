@@ -14,7 +14,7 @@
   </template>
 </turbo-stream>
 
-<turbo-stream action="replace" target="available-musics-panel">
+<turbo-stream action="replace" target="available-musics-section">
   <template>
     <%= render partial: "setlists/available_musics", formats: [ :html ], locals: {
         band: @band,
@@ -29,7 +29,7 @@
   </template>
 </turbo-stream>
 
-<turbo-stream action="replace" target="available-events-panel">
+<turbo-stream action="replace" target="available-events-section">
   <template>
     <%= render partial: "setlists/available_events", formats: [ :html ], locals: {
         band: @band,

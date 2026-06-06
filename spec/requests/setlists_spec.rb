@@ -108,6 +108,10 @@ RSpec.describe "Setlists", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include(%(target="available-musics-section"))
+      expect(response.body).to include(%(target="available-events-section"))
+      expect(response.body).not_to include(%(target="available-musics-panel"))
+      expect(response.body).not_to include(%(target="available-events-panel"))
       expect(response.body).not_to include(%(name="item_id" value="#{added_music.id}" autocomplete="off"))
       expect(response.body).to include("Still Available")
     end
