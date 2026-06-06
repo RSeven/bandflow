@@ -135,5 +135,4 @@ RSpec.describe Music, type: :model do
       expect(music.labels).to eq([ "rock", "nacional", "indie", "pop" ])
     end
   end
-
 end
