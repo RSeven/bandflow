@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       member do
         get :present         # Presentation mode
         get :export          # Offline HTML export
+        post :duplicate      # Copy setlist and ordered items
       end
     end
     resources :events, except: [ :index, :show ]

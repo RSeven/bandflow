@@ -75,6 +75,30 @@ RSpec.describe "Setlists", type: :request do
     end
   end
 
+  describe "POST /bands/:band_id/setlists/:id/duplicate" do
+    it "duplicates the setlist and redirects to the copy" do
+      music = create(:music, band: band)
+      event = create(:event, band: band)
+      setlist.update!(title: "Wedding Party", notes: "Start strong")
+      setlist.setlist_items.create!(item: music, position: 0)
+      setlist.setlist_items.create!(item: event, position: 1)
+
+      expect {
+        post duplicate_band_setlist_path(band, setlist)
+      }.to change(Setlist, :count).by(1)
+        .and change(SetlistItem, :count).by(2)
+
+      copy = Setlist.find_by!(title: "Cópia de Wedding Party")
+      expect(response).to redirect_to(band_setlist_path(band, copy))
+      expect(copy.title).to eq("Cópia de Wedding Party")
+      expect(copy.notes).to eq("Start strong")
+      expect(copy.ordered_items.map { |item| [ item.item, item.position ] }).to eq([
+        [ music, 0 ],
+        [ event, 1 ]
+      ])
+    end
+  end
+
   describe "GET /bands/:band_id/setlists/:id/present" do
     it "renders with presentation layout" do
       get present_band_setlist_path(band, setlist)

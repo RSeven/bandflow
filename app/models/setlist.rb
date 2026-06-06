@@ -16,4 +16,23 @@ class Setlist < ApplicationRecord
   def music_count
     setlist_items.where(item_type: "Music").count
   end
+
+  def copy_with_items(title:)
+    self.class.transaction do
+      copy = band.setlists.create!(
+        title: title,
+        performance_date: performance_date,
+        notes: notes
+      )
+
+      ordered_items.each do |setlist_item|
+        copy.setlist_items.create!(
+          item: setlist_item.item,
+          position: setlist_item.position
+        )
+      end
+
+      copy
+    end
+  end
 end

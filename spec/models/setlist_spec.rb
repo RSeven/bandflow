@@ -33,4 +33,29 @@ RSpec.describe Setlist, type: :model do
       expect(setlist.ordered_items.map(&:id)).to eq([ si1.id, si2.id ])
     end
   end
+
+  describe "#copy_with_items" do
+    it "copies setlist details and ordered item references" do
+      original = create(:setlist, title: "Festival", notes: "Keep it tight")
+      music = create(:music, band: original.band)
+      event = create(:event, band: original.band)
+      original.setlist_items.create!(item: music, position: 0)
+      original.setlist_items.create!(item: event, position: 1)
+
+      copy = original.copy_with_items(title: "Festival 2")
+
+      expect(copy).to be_persisted
+      expect(copy).not_to eq(original)
+      expect(copy.attributes.slice("band_id", "title", "performance_date", "notes")).to eq(
+        "band_id" => original.band_id,
+        "title" => "Festival 2",
+        "performance_date" => original.performance_date,
+        "notes" => "Keep it tight"
+      )
+      expect(copy.ordered_items.map { |item| [ item.item_type, item.item_id, item.position ] }).to eq([
+        [ "Music", music.id, 0 ],
+        [ "Event", event.id, 1 ]
+      ])
+    end
+  end
 end

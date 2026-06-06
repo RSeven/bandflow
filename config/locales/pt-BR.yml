@@ -11,6 +11,7 @@ pt-BR:
     cancel: "Cancelar"
     clear: "Limpar"
     delete: "Excluir"
+    duplicate: "Duplicar"
     edit: "Editar"
     email: "E-mail"
     email_placeholder: "voce@exemplo.com"
@@ -81,6 +82,7 @@ pt-BR:
     setlists:
       created: "Setlist criada."
       deleted: "Setlist excluída."
+      duplicated: "Setlist duplicada."
       updated: "Setlist atualizada."
 
   bands:
@@ -308,6 +310,8 @@ pt-BR:
       title: "Entrar"
 
   setlists:
+    duplicate:
+      title: "Cópia de %{title}"
     new:
       breadcrumb: "Nova setlist"
       title: "Criar Setlist"

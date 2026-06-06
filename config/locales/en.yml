@@ -11,6 +11,7 @@ en:
     cancel: "Cancel"
     clear: "Clear"
     delete: "Delete"
+    duplicate: "Duplicate"
     edit: "Edit"
     email: "Email"
     email_placeholder: "you@example.com"
@@ -81,6 +82,7 @@ en:
     setlists:
       created: "Setlist created."
       deleted: "Setlist deleted."
+      duplicated: "Setlist duplicated."
       updated: "Setlist updated."
 
   bands:
@@ -308,6 +310,8 @@ en:
       title: "Sign in"
 
   setlists:
+    duplicate:
+      title: "Copy of %{title}"
     new:
       breadcrumb: "New setlist"
       title: "Create Setlist"

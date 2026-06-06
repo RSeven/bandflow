@@ -3,7 +3,7 @@ class SetlistsController < ApplicationController
 
   before_action :set_band
   before_action :require_membership
-  before_action :set_setlist, only: [ :show, :edit, :update, :destroy, :present, :export ]
+  before_action :set_setlist, only: [ :show, :edit, :update, :destroy, :present, :export, :duplicate ]
 
   def show
     respond_to do |format|
@@ -47,6 +47,11 @@ class SetlistsController < ApplicationController
   def destroy
     @setlist.destroy
     redirect_to @band, notice: t("flash.setlists.deleted")
+  end
+
+  def duplicate
+    copy = @setlist.copy_with_items(title: t("setlists.duplicate.title", title: @setlist.title))
+    redirect_to band_setlist_path(@band, copy), notice: t("flash.setlists.duplicated")
   end
 
   def present

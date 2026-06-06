@@ -36,6 +36,9 @@
         <% end %>
         <%= link_to t("common.edit"), edit_band_setlist_path(@band, @setlist),
             class: "flex items-center whitespace-nowrap px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 transition-colors" %>
+        <%= button_to t("common.duplicate"), duplicate_band_setlist_path(@band, @setlist), method: :post,
+            form_class: "w-full",
+            class: "flex items-center w-full px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 transition-colors" %>
         <%= button_to t("common.delete"), band_setlist_path(@band, @setlist), method: :delete,
             data: { turbo_confirm: t("setlists.show.delete_confirm") },
             form_class: "w-full",
