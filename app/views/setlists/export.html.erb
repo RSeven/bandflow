@@ -154,11 +154,11 @@
   </div>
 </div>
 
-<script>
+<script nonce="<%= request.content_security_policy_nonce %>">
 (function () {
-  var MUSIC_COUNT  = <%= @setlist.music_count %>;
-  var TAP_TO_PAUSE  = "<%= j(t('presentation.tap_to_pause')) %>";
-  var TAP_TO_RESUME = "<%= j(t('presentation.tap_to_resume')) %>";
+  var MUSIC_COUNT  = <%= raw @setlist.music_count.to_json %>;
+  var TAP_TO_PAUSE  = <%= raw t('presentation.tap_to_pause').to_json %>;
+  var TAP_TO_RESUME = <%= raw t('presentation.tap_to_resume').to_json %>;
 
   var items    = Array.from(document.querySelectorAll('[data-ps-item]'));
   var content  = document.getElementById('ps-content');
