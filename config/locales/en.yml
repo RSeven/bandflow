@@ -57,6 +57,12 @@ en:
       title_and_artist_required: "Title and artist are required."
       unknown_source: "Unknown source."
       updated: "Music updated."
+    music_versions:
+      created: "Version added."
+      default_updated: "Your default version was updated."
+      deleted: "Version removed."
+      primary_updated: "Primary version updated."
+      updated: "Version updated."
     rehearsals:
       updated: "%{title} rehearsal updated."
       priority_updated: "%{title} priority updated."
@@ -216,6 +222,25 @@ en:
       no_content: "No chords or lyrics added."
       spotify: "Spotify"
       youtube: "YouTube"
+
+  music_versions:
+    edit:
+      title: "Edit %{name}"
+    form:
+      default_for_me: "Use this as my default version"
+      name: "Version name"
+      name_placeholder: "Acoustic, live, lower key..."
+      primary: "Use this version for rehearsal and setlists"
+    index:
+      delete_confirm: "Delete %{name}?"
+      default_for_you: "Your default"
+      make_primary: "Use as my default"
+      primary: "Primary"
+      title: "Versions"
+    new:
+      action: "Add Version"
+      breadcrumb: "New version"
+      title: "Add Version for %{title}"
 
   passwords:
     new:

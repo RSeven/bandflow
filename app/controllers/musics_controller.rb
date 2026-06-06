@@ -3,7 +3,9 @@ class MusicsController < ApplicationController
   before_action :require_membership
   before_action :set_music, only: [ :show, :edit, :update, :destroy ]
 
-  def show; end
+  def show
+    @default_version = @music.default_version_for(Current.user)
+  end
 
   def new
     @music = @band.musics.new

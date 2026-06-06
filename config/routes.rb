@@ -20,6 +20,12 @@ Rails.application.routes.draw do
         get :labels          # Existing label autocomplete
         post :fetch_metadata # Fetch Spotify/lyrics/chords
       end
+
+      resources :music_versions, except: [ :index, :show ], path: :versions do
+        member do
+          patch :make_primary
+        end
+      end
     end
     resources :setlists do
       resources :setlist_items, only: [ :create, :destroy, :update ]

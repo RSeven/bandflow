@@ -34,6 +34,7 @@ RSpec.describe "Musics", type: :request do
       }.to change(Music, :count).by(1)
       expect(Music.last.labels).to eq([ "rock", "acoustic" ])
       expect(Music.last.rehearsal_priority).to eq(8)
+      expect(Music.last.primary_version).to be_present
       expect(response).to redirect_to(band_music_path(band, Music.last))
     end
 
@@ -65,6 +66,58 @@ RSpec.describe "Musics", type: :request do
       music # ensure exists
       expect { delete band_music_path(band, music) }.to change(Music, :count).by(-1)
       expect(response).to redirect_to(band_path(band))
+    end
+  end
+
+  describe "music versions" do
+    it "creates a new version" do
+      music
+
+      expect {
+        post band_music_music_versions_path(band, music), params: {
+          music_version: { name: "Acoustic", chords: "Am F C G", lyrics: "Acoustic lyrics" }
+        }
+      }.to change(MusicVersion, :count).by(1)
+
+      expect(response).to redirect_to(band_music_path(band, music))
+      expect(music.versions.last.name).to eq("Acoustic")
+    end
+
+    it "sets a version as the current user's default without changing the shared primary version" do
+      original = music.primary_version
+      version = create(:music_version, music: music, name: "Live", chords: "D A", lyrics: "Live lyrics")
+
+      patch make_primary_band_music_music_version_path(band, music, version)
+
+      expect(response).to redirect_to(band_music_path(band, music))
+      expect(version.reload).not_to be_primary
+      expect(music.reload.primary_version).to eq(original)
+      expect(music.default_version_for(user)).to eq(version)
+    end
+
+    it "stores separate defaults for different users" do
+      other_user = create(:user)
+      create(:band_membership, user: other_user, band: band)
+      version_a = create(:music_version, music: music, name: "User A", chords: "A")
+      version_b = create(:music_version, music: music, name: "User B", chords: "B")
+
+      patch make_primary_band_music_music_version_path(band, music, version_a)
+      sign_in(other_user)
+      patch make_primary_band_music_music_version_path(band, music, version_b)
+
+      expect(music.default_version_for(user)).to eq(version_a)
+      expect(music.default_version_for(other_user)).to eq(version_b)
+    end
+
+    it "can make a newly created version the current user's default" do
+      music
+
+      post band_music_music_versions_path(band, music), params: {
+        music_version: { name: "Acoustic", chords: "Am F C G", lyrics: "Acoustic lyrics", default_for_me: "1" }
+      }
+
+      expect(response).to redirect_to(band_music_path(band, music))
+      expect(music.default_version_for(user).name).to eq("Acoustic")
     end
   end
 

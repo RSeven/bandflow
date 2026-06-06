@@ -16,6 +16,7 @@
       <% end %>
     </div>
     <div class="flex gap-2 flex-shrink-0">
+      <%= link_to t("music_versions.new.action"), new_band_music_music_version_path(@band, @music), class: "text-sm bg-amber-500 hover:bg-amber-400 text-black font-semibold px-3 py-1.5 rounded-lg transition-colors" %>
       <%= link_to t("common.edit"), edit_band_music_path(@band, @music), class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-1.5 rounded-lg transition-colors" %>
       <%= button_to t("common.delete"), band_music_path(@band, @music), method: :delete,
           data: { turbo_confirm: t("musics.show.delete_confirm", title: @music.title) },
@@ -55,24 +56,74 @@
 
   <%# ——— Chords / Lyrics tabs ——— %>
   <div class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-    <% if @music.has_chords? %>
+    <% default_chords = @default_version&.chords %>
+    <% default_lyrics = @default_version&.lyrics %>
+    <% if @default_version.present? %>
+      <div class="border-b border-zinc-800 px-5 py-3 text-xs text-zinc-400">
+        <%= t("music_versions.index.default_for_you") %>: <span class="font-semibold text-zinc-200"><%= @default_version.name %></span>
+      </div>
+    <% end %>
+    <% if default_chords.present? %>
       <div class="border-b border-zinc-800 px-5 py-3 flex gap-4 text-sm font-medium">
           <span class="text-amber-400 border-b-2 border-amber-400 pb-2 -mb-3"><%= t("musics.show.chords") %></span>
-        <% if @music.lyrics.present? %>
+        <% if default_lyrics.present? %>
           <span class="text-zinc-400"><%= t("musics.show.lyrics") %></span>
         <% end %>
       </div>
-      <pre class="px-5 py-4 text-sm font-mono whitespace-pre-wrap text-zinc-200 leading-relaxed overflow-x-auto"><%= @music.chords %></pre>
-    <% elsif @music.lyrics.present? %>
+      <pre class="px-5 py-4 text-sm font-mono whitespace-pre-wrap text-zinc-200 leading-relaxed overflow-x-auto"><%= default_chords %></pre>
+    <% elsif default_lyrics.present? %>
       <div class="border-b border-zinc-800 px-5 py-3 text-sm font-medium">
         <span class="text-amber-400 border-b-2 border-amber-400 pb-2 -mb-3"><%= t("musics.show.lyrics") %></span>
       </div>
-      <pre class="px-5 py-4 text-sm whitespace-pre-wrap text-zinc-200 leading-relaxed"><%= @music.lyrics %></pre>
+      <pre class="px-5 py-4 text-sm whitespace-pre-wrap text-zinc-200 leading-relaxed"><%= default_lyrics %></pre>
     <% else %>
       <div class="px-5 py-8 text-center text-zinc-500 text-sm">
         <%= t("musics.show.no_content") %>
         <%= link_to t("musics.show.add_now"), edit_band_music_path(@band, @music), class: "text-amber-400 hover:text-amber-300 ml-1" %>
       </div>
     <% end %>
+  </div>
+
+  <div class="mt-6">
+    <div class="flex items-center justify-between gap-3 mb-3">
+      <h2 class="text-lg font-semibold"><%= t("music_versions.index.title") %></h2>
+      <%= link_to t("music_versions.new.action"), new_band_music_music_version_path(@band, @music), class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-1.5 rounded-lg transition-colors" %>
+    </div>
+
+    <div class="space-y-3">
+      <% @music.versions.each do |version| %>
+        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 mb-3">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="font-semibold break-all"><%= version.name %></h3>
+                <% if version == @default_version %>
+                  <span class="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full px-2 py-0.5"><%= t("music_versions.index.default_for_you") %></span>
+                <% end %>
+              </div>
+              <p class="text-sm text-zinc-500 mt-1">
+                <% details = [] %>
+                <% details << t("musics.show.chords") if version.chords.present? %>
+                <% details << t("musics.show.lyrics") if version.lyrics.present? %>
+                <%= details.presence&.join(" / ") || t("musics.show.no_content") %>
+              </p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 justify-end flex-shrink-0">
+              <% unless version == @default_version %>
+                <%= button_to t("music_versions.index.make_primary"), make_primary_band_music_music_version_path(@band, @music, version),
+                    method: :patch,
+                    class: "text-sm border border-amber-500/40 text-amber-300 hover:border-amber-400 px-3 py-1.5 rounded-lg transition-colors" %>
+              <% end %>
+              <%= link_to t("common.edit"), edit_band_music_music_version_path(@band, @music, version), class: "text-sm border border-zinc-700 hover:border-zinc-500 px-3 py-1.5 rounded-lg transition-colors" %>
+              <%= button_to t("common.delete"), band_music_music_version_path(@band, @music, version),
+                  method: :delete,
+                  data: { turbo_confirm: t("music_versions.index.delete_confirm", name: version.name) },
+                  class: "text-sm border border-red-800 text-red-400 hover:border-red-600 px-3 py-1.5 rounded-lg transition-colors" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>

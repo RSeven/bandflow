@@ -1,0 +1,13 @@
+<div class="max-w-3xl">
+  <div class="flex items-center gap-2 text-sm text-zinc-400 mb-4 min-w-0">
+    <%= link_to @band.name, band_path(@band), class: "hover:text-zinc-200 truncate min-w-0" %>
+    <span class="flex-shrink-0">/</span>
+    <%= link_to @music.title, band_music_path(@band, @music), class: "hover:text-zinc-200 truncate min-w-0" %>
+    <span class="flex-shrink-0">/</span>
+    <span class="text-zinc-200 truncate min-w-0"><%= @version.name %></span>
+  </div>
+
+  <h1 class="text-2xl font-bold mb-6"><%= t("music_versions.edit.title", name: @version.name) %></h1>
+
+  <%= render "form", band: @band, music: @music, version: @version %>
+</div>

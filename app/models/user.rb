@@ -4,6 +4,7 @@ class User < ApplicationRecord
   has_many :band_memberships, dependent: :destroy
   has_many :bands, through: :band_memberships
   has_many :invitations, foreign_key: :invited_by_id, dependent: :destroy
+  has_many :music_version_preferences, dependent: :destroy
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 

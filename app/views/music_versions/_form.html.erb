@@ -1,0 +1,43 @@
+<%= form_with model: [ band, music, version ], class: "space-y-6" do |f| %>
+  <% if version.errors.any? %>
+    <div class="bg-red-900/40 border border-red-700 text-red-300 rounded-lg px-4 py-3 text-sm">
+      <ul class="list-disc list-inside space-y-1">
+        <% version.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, t("music_versions.form.name"), class: "block text-sm font-medium text-zinc-300 mb-1" %>
+    <%= f.text_field :name,
+        class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+        placeholder: t("music_versions.form.name_placeholder") %>
+  </div>
+
+  <label class="flex items-center gap-2 text-sm text-zinc-300">
+    <%= check_box_tag "music_version[default_for_me]", "1", false, class: "rounded border-zinc-700 bg-zinc-800 text-amber-500 focus:ring-amber-500" %>
+    <span><%= t("music_versions.form.default_for_me") %></span>
+  </label>
+
+  <div>
+    <%= f.label :chords, t("musics.form.chords"), class: "block text-sm font-medium text-zinc-300 mb-1" %>
+    <p class="text-xs text-zinc-500 mb-2"><%= t("musics.form.chords_help") %></p>
+    <%= f.text_area :chords, rows: 10,
+        class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent font-mono resize-y",
+        placeholder: t("musics.form.chords_placeholder") %>
+  </div>
+
+  <div>
+    <%= f.label :lyrics, t("musics.show.lyrics"), class: "block text-sm font-medium text-zinc-300 mb-1" %>
+    <p class="text-xs text-zinc-500 mb-2"><%= t("musics.form.lyrics_help") %></p>
+    <%= f.text_area :lyrics, rows: 12,
+        class: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-y" %>
+  </div>
+
+  <div class="flex flex-wrap gap-3">
+    <%= f.submit class: "bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-6 rounded-lg transition-colors cursor-pointer text-sm" %>
+    <%= link_to t("common.cancel"), band_music_path(band, music), class: "text-sm text-zinc-400 hover:text-zinc-200 py-2 px-4" %>
+  </div>
+<% end %>

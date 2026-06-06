@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_04_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_06_121000) do
   create_table "band_memberships", force: :cascade do |t|
     t.integer "band_id", null: false
     t.datetime "created_at", null: false
@@ -50,6 +50,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_04_120000) do
     t.index ["band_id"], name: "index_invitations_on_band_id"
     t.index ["invited_by_id"], name: "index_invitations_on_invited_by_id"
     t.index ["token"], name: "index_invitations_on_token", unique: true
+  end
+
+  create_table "music_version_preferences", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "music_id", null: false
+    t.integer "music_version_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["music_id"], name: "index_music_version_preferences_on_music_id"
+    t.index ["music_version_id"], name: "index_music_version_preferences_on_music_version_id"
+    t.index ["user_id", "music_id"], name: "index_music_version_preferences_on_user_id_and_music_id", unique: true
+    t.index ["user_id"], name: "index_music_version_preferences_on_user_id"
+  end
+
+  create_table "music_versions", force: :cascade do |t|
+    t.text "chords"
+    t.datetime "created_at", null: false
+    t.text "lyrics"
+    t.integer "music_id", null: false
+    t.string "name", default: "Original", null: false
+    t.boolean "primary", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.index ["music_id", "primary"], name: "index_music_versions_on_music_id_and_primary"
+    t.index ["music_id"], name: "index_music_versions_on_music_id"
   end
 
   create_table "musics", force: :cascade do |t|
@@ -120,6 +144,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_04_120000) do
   add_foreign_key "events", "bands"
   add_foreign_key "invitations", "bands"
   add_foreign_key "invitations", "users", column: "invited_by_id"
+  add_foreign_key "music_version_preferences", "music_versions"
+  add_foreign_key "music_version_preferences", "musics"
+  add_foreign_key "music_version_preferences", "users"
+  add_foreign_key "music_versions", "musics"
   add_foreign_key "musics", "bands"
   add_foreign_key "sessions", "users"
   add_foreign_key "setlist_items", "setlists"

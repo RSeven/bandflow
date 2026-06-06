@@ -92,7 +92,15 @@
           <% end %>
         </div>
       </div>
-      <% if @music.has_chords? && @music.lyrics.present? %>
+      <% default_version = @music.default_version_for(Current.user) %>
+      <% default_chords = default_version&.chords %>
+      <% default_lyrics = default_version&.lyrics %>
+      <% if default_version.present? %>
+        <div class="mb-3 text-xs text-zinc-500">
+          <%= t("music_versions.index.default_for_you") %>: <span class="text-zinc-300"><%= default_version.name %></span>
+        </div>
+      <% end %>
+      <% if default_chords.present? && default_lyrics.present? %>
         <div class="mb-4 flex gap-2">
           <button type="button"
                   data-action="click->presentation#showChords"
@@ -109,13 +117,13 @@
         </div>
 
         <pre data-presentation-content="chords"
-             class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= @music.chords %></pre>
+             class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= default_chords %></pre>
         <pre data-presentation-content="lyrics"
-             class="hidden text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= @music.lyrics %></pre>
-      <% elsif @music.has_chords? %>
-        <pre class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= @music.chords %></pre>
-      <% elsif @music.lyrics.present? %>
-        <pre class="text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= @music.lyrics %></pre>
+             class="hidden text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= default_lyrics %></pre>
+      <% elsif default_chords.present? %>
+        <pre class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= default_chords %></pre>
+      <% elsif default_lyrics.present? %>
+        <pre class="text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= default_lyrics %></pre>
       <% else %>
         <p class="text-zinc-500 text-sm italic"><%= t("presentation.no_content") %></p>
       <% end %>

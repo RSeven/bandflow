@@ -57,6 +57,12 @@ pt-BR:
       title_and_artist_required: "Título e artista são obrigatórios."
       unknown_source: "Fonte desconhecida."
       updated: "Música atualizada."
+    music_versions:
+      created: "Versão adicionada."
+      default_updated: "Sua versão padrão foi atualizada."
+      deleted: "Versão removida."
+      primary_updated: "Versão principal atualizada."
+      updated: "Versão atualizada."
     rehearsals:
       updated: "Ensaio de %{title} atualizado."
       priority_updated: "Prioridade de %{title} atualizada."
@@ -216,6 +222,25 @@ pt-BR:
       no_content: "Nenhuma cifra ou letra foi adicionada."
       spotify: "Spotify"
       youtube: "YouTube"
+
+  music_versions:
+    edit:
+      title: "Editar %{name}"
+    form:
+      default_for_me: "Usar como minha versão padrão"
+      name: "Nome da versão"
+      name_placeholder: "Acústica, ao vivo, tom mais baixo..."
+      primary: "Usar esta versão nos ensaios e setlists"
+    index:
+      delete_confirm: "Excluir %{name}?"
+      default_for_you: "Seu padrão"
+      make_primary: "Usar como meu padrão"
+      primary: "Principal"
+      title: "Versões"
+    new:
+      action: "Adicionar Versão"
+      breadcrumb: "Nova versão"
+      title: "Adicionar Versão para %{title}"
 
   passwords:
     new:

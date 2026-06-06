@@ -74,6 +74,44 @@ RSpec.describe Music, type: :model do
     end
   end
 
+  describe "versions" do
+    it "creates an original version from the music content" do
+      music = create(:music, lyrics: "Some lyrics", chords: "Am G")
+
+      expect(music.versions.count).to eq(1)
+      expect(music.primary_version.name).to eq("Original")
+      expect(music.primary_version.lyrics).to eq("Some lyrics")
+      expect(music.primary_version.chords).to eq("Am G")
+    end
+
+    it "returns a user's preferred version as their default" do
+      user = create(:user)
+      music = create(:music, lyrics: "Original lyrics")
+      alternate = create(:music_version, music: music, name: "Lower key", lyrics: "Lower lyrics")
+      create(:music_version_preference, user: user, music: music, music_version: alternate)
+
+      expect(music.default_version_for(user)).to eq(alternate)
+      expect(music.lyrics_for(user)).to eq("Lower lyrics")
+    end
+
+    it "falls back to the shared primary version when the user has no preference" do
+      user = create(:user)
+      music = create(:music, lyrics: "Original lyrics")
+
+      expect(music.default_version_for(user)).to eq(music.primary_version)
+      expect(music.lyrics_for(user)).to eq("Original lyrics")
+    end
+
+    it "syncs legacy content edits into the primary version" do
+      music = create(:music, lyrics: "Old lyrics", chords: nil)
+
+      music.update!(lyrics: "New lyrics", chords: "C G")
+
+      expect(music.primary_version.reload.lyrics).to eq("New lyrics")
+      expect(music.primary_version.chords).to eq("C G")
+    end
+  end
+
   describe "#labels_text" do
     it "returns comma-separated labels" do
       music.labels = [ "rock", "acoustic" ]

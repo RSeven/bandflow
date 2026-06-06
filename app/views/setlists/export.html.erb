@@ -66,6 +66,9 @@
               data-type="<%= si.music? ? 'music' : 'event' %>"
               data-music-index="<%= si.music? ? si.music_index : '' %>">
       <% if si.music? %>
+        <% default_version = si.item.default_version_for(Current.user) %>
+        <% default_chords = default_version&.chords %>
+        <% default_lyrics = default_version&.lyrics %>
         <div class="px-6 py-4">
           <div class="flex items-center gap-3 mb-4 pb-3 border-b border-zinc-800">
             <div>
@@ -81,7 +84,12 @@
               <% end %>
             </div>
           </div>
-          <% if si.item.has_chords? && si.item.lyrics.present? %>
+          <% if default_version.present? %>
+            <div class="mb-3 text-xs text-zinc-500">
+              <%= t("music_versions.index.default_for_you") %>: <span class="text-zinc-300"><%= default_version.name %></span>
+            </div>
+          <% end %>
+          <% if default_chords.present? && default_lyrics.present? %>
             <div class="mb-4 flex gap-2">
               <button type="button" data-ps-view-btn="chords"
                       class="flex-1 rounded-lg border border-amber-500/40 bg-amber-500/20 px-3 py-2.5 text-sm font-semibold text-amber-300 transition-colors">
@@ -92,12 +100,12 @@
                 <%= t("musics.show.lyrics") %>
               </button>
             </div>
-            <pre data-ps-content="chords" class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.chords %></pre>
-            <pre data-ps-content="lyrics" class="hidden text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.lyrics %></pre>
-          <% elsif si.item.has_chords? %>
-            <pre class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.chords %></pre>
-          <% elsif si.item.lyrics.present? %>
-            <pre class="text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= si.item.lyrics %></pre>
+            <pre data-ps-content="chords" class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= default_chords %></pre>
+            <pre data-ps-content="lyrics" class="hidden text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= default_lyrics %></pre>
+          <% elsif default_chords.present? %>
+            <pre class="font-mono text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= default_chords %></pre>
+          <% elsif default_lyrics.present? %>
+            <pre class="text-base leading-relaxed whitespace-pre-wrap text-zinc-100"><%= default_lyrics %></pre>
           <% else %>
             <p class="text-zinc-500 text-sm italic"><%= t("presentation.no_content") %></p>
           <% end %>
