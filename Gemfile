@@ -76,4 +76,4 @@ gem "factory_bot_rails", "~> 6.5", groups: [ :development, :test ]
 gem "faker", "~> 3.8", groups: [ :development, :test ]
 gem "mutant-rspec", groups: [ :development, :test ], require: false
 gem "pdf-inspector", "~> 1.3", group: :test, require: false
-gem "simplecov", "~> 0.22.0", group: :test, require: false
+gem "simplecov", "~> 1.0.1", group: :test, require: false
