@@ -13,7 +13,22 @@ RSpec.describe ChordsScraperService do
     instance_double(HTTParty::Response, success?: false, body: "<h1>Access Denied</h1>")
   end
 
+  # Mirrors the current Cifra Club markup: a <pre data-chord-content> whose
+  # chords are wrapped in <b data-chord-name> tags.
   def cifra_page(content)
+    marked = content.gsub(/\b([A-G][#b]?(?:m|maj|dim|aug|sus)?\d*)\b(?=\s|$)/) { "<b data-chord-name=\"#{$1}\">#{$1}</b>" }
+    <<~HTML
+      <html>
+        <body>
+          <div id="song-sheet-root">
+            <pre class="_crVx" data-chord-content="true" data-chord-select="true">#{marked}</pre>
+          </div>
+        </body>
+      </html>
+    HTML
+  end
+
+  def legacy_cifra_page(content)
     <<~HTML
       <html>
         <body>
@@ -48,6 +63,18 @@ RSpec.describe ChordsScraperService do
       end
     end
 
+    context "when Cifra Club serves the legacy markup" do
+      before do
+        allow(HTTParty).to receive(:get)
+          .with("https://www.cifraclub.com.br/queen/bohemian-rhapsody/", anything)
+          .and_return(http_ok(legacy_cifra_page("[Intro]\nF#m7  B7")))
+      end
+
+      it "still extracts the chart" do
+        expect(described_class.fetch("Bohemian Rhapsody", "Queen")).to include("F#m7  B7")
+      end
+    end
+
     context "when the title needs version suffix cleanup" do
       before do
         allow(HTTParty).to receive(:get)
@@ -62,6 +89,22 @@ RSpec.describe ChordsScraperService do
         result = described_class.fetch("Bohemian Rhapsody - Remastered 2011", "Queen")
 
         expect(result).to include("Mama, just killed a man")
+      end
+    end
+
+    context "when the artist name contains an ampersand" do
+      before do
+        allow(HTTParty).to receive(:get)
+          .with("https://www.cifraclub.com.br/chitaozinho-e-xororo/evidencias/", anything)
+          .and_return(http_ok(cifra_page("[Intro]\nD  A  Bm")))
+      end
+
+      it "spells the ampersand as 'e' in the artist slug" do
+        result = described_class.fetch("Evidências", "Chitãozinho & Xororó")
+
+        expect(result).to include("D  A  Bm")
+        expect(HTTParty).to have_received(:get)
+          .with("https://www.cifraclub.com.br/chitaozinho-e-xororo/evidencias/", anything)
       end
     end
 

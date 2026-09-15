@@ -61,6 +61,10 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  gem "rails-erd", path: "../rails-erd"
+
+  gem "ruby-graphviz"
 end
 
 gem "httparty", "~> 0.24.2"

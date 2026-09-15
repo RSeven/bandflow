@@ -35,9 +35,10 @@ BandFlow is a Rails 8 web app for band management: repertoire, setlists, events,
 3. Controller calls `MusicMetadataService.fetch` → fans out to all external services in parallel
 4. JS fills BPM, key, lyrics, chords, Spotify URL, YouTube URL fields
 
-## Known issues (as of 2026-04-14)
+## Known issues (as of 2026-09-15)
 1. **SongBPM dependency** — BPM/key now come from SongBPM first. If its search markup or anti-bot behavior changes, `SpotifyService` will fall back to Spotify only when `/v1/audio-features` is still available for the current app.
 2. **Cifra Club slug matching** — `ChordsScraperService` depends on predictable artist/title slugs. Covers parentheticals and common suffix cleanup, but unusual release names may still miss.
+3. **Cifra Club markup** — the song page was rebuilt in 2026 (Next.js, hashed CSS classes). The chart is read from `pre[data-chord-content]`; `CHART_SELECTORS` keeps the old `.cifra_cnt pre` as a fallback. If the scraper breaks again, `curl` a song page and check that selector list first.
 
 ## Running locally
 ```bash

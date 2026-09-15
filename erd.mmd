@@ -1,0 +1,79 @@
+erDiagram
+	direction TB
+	Band {
+		text description
+		string name
+		string slug
+	}
+	BandMembership {
+		string role
+	}
+	Event {
+		text description
+		string title
+	}
+	Invitation {
+		string email_address
+		string token
+		datetime used_at
+	}
+	Music {
+		string artist
+		decimal bpm
+		text chords
+		string key_mode
+		string key_name
+		text labels
+		date last_rehearsed_at
+		text lyrics
+		integer rehearsal_priority
+		string spotify_track_id
+		string spotify_url
+		string title
+		string youtube_url
+	}
+	MusicVersion {
+		text chords
+		text lyrics
+		string name
+		boolean primary
+	}
+	MusicVersionPreference {
+	}
+	Session {
+		string ip_address
+		string user_agent
+	}
+	Setlist {
+		text notes
+		date performance_date
+		string title
+	}
+	SetlistItem {
+		string item_type
+		integer position
+	}
+	User {
+		string email_address
+		string locale
+		string name
+		string password_digest
+	}
+	User ||--}o Session : ""
+	User ||--}o BandMembership : ""
+	User o|..}o Band : ""
+	User ||--}o Invitation : ""
+	User ||--}o MusicVersionPreference : ""
+	Setlist ||--}o SetlistItem : ""
+	Item ||--}o SetlistItem : ""
+	Event ||--}o SetlistItem : ""
+	Music ||--}o SetlistItem : ""
+	Band ||--}o Setlist : ""
+	Setlist o|..}o Music : ""
+	Music ||--}o MusicVersionPreference : ""
+	MusicVersion ||--}o MusicVersionPreference : ""
+	Music ||--}o MusicVersion : ""
+	Band ||--}o Music : ""
+	Band ||--}o Invitation : ""
+	Band ||--}o Event : ""
+	Band ||--}o BandMembership : ""

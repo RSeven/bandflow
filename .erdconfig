@@ -1,0 +1,23 @@
+attributes:
+  - content
+disconnected: true
+filename: erd
+filetype: mmd
+generator: mermaid
+indirect: true
+inheritance: false
+markup: true
+mermaid_style: erdiagram
+notation: simple
+orientation: horizontal
+polymorphism: false
+sort: true
+warn: true
+title: true
+exclude: null
+exclude_attributes: null
+only: null
+only_recursion_depth: null
+prepend_primary: false
+cluster: false
+splines: spline
